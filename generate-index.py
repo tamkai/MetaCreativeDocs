@@ -130,6 +130,7 @@ def generate_index():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>MetaCreative Docs</title>
     <link rel="stylesheet" href="style.css">
 </head>
