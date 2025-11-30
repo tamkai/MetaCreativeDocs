@@ -241,6 +241,139 @@ main {
     color: #888;
 }
 
+/* タグ編集UI */
+.doc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    align-items: center;
+}
+
+.tag-with-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px 2px 8px;
+    background: #e8e8e8;
+    color: #555;
+    font-size: 0.75rem;
+    border-radius: 4px;
+}
+
+.tag-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border: none;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.tag-delete-btn:hover {
+    background: #ff5555;
+    color: white;
+}
+
+.add-tag-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 1px dashed #ccc;
+    background: white;
+    color: #888;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.add-tag-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.tag-input-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tag-input {
+    padding: 4px 8px;
+    border: 1px solid #667eea;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    width: 120px;
+    outline: none;
+}
+
+.tag-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.tag-suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.tag-suggestion-item:hover {
+    background: #f0f0f0;
+}
+
+.tag-suggestion-item.new-tag {
+    color: #667eea;
+    border-top: 1px solid #eee;
+}
+
+/* エクスポートボタン */
+.export-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid #667eea;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #667eea;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.export-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 footer {
     text-align: center;
     padding: 20px;

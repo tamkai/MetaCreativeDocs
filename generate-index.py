@@ -176,13 +176,11 @@ def generate_index():
             date_str = doc['date'].strftime('%Y-%m-%d')
             full_url = BASE_URL + doc['path']
             sort_key = f"{doc['sort_key'][0]}_{doc['sort_key'][1]:02d}"
-            tags_attr = ' '.join(doc['tags']) if doc['tags'] else ''
-            tags_html = ''.join([f'<span class="tag">{tag}</span>' for tag in doc['tags']])
-            docs_html += f'''        <li class="doc-item" data-sort-key="{sort_key}" data-tags="{tags_attr}">
+            docs_html += f'''        <li class="doc-item" data-sort-key="{sort_key}" data-filename="{doc['filename']}" data-tags="">
             <a href="{doc['path']}" class="doc-link">
                 <div class="doc-info">
                     <span class="doc-title">{doc['title']}</span>
-                    <div class="doc-tags">{tags_html}</div>
+                    <div class="doc-tags"></div>
                 </div>
                 <span class="doc-meta">
                     <span class="doc-date">{date_str}</span>
@@ -196,14 +194,13 @@ def generate_index():
     else:
         docs_html = '        <li class="no-docs">ドキュメントはまだありません</li>\n'
 
-    # タグフィルターのHTML生成
-    tags_filter_html = ''
-    if all_tags:
-        tags_filter_html = '<div class="tag-filter"><span class="filter-label">タグで絞り込み:</span><div class="tag-buttons">'
-        tags_filter_html += '<button class="tag-btn active" data-tag="">すべて</button>'
-        for tag in all_tags:
-            tags_filter_html += f'<button class="tag-btn" data-tag="{tag}">{tag}</button>'
-        tags_filter_html += '</div></div>'
+    # タグフィルターのHTML生成（localStorageから動的に生成するので空のコンテナのみ）
+    tags_filter_html = '''<div class="tag-filter">
+                    <span class="filter-label">タグで絞り込み:</span>
+                    <div class="tag-buttons" id="tag-filter-buttons">
+                        <button class="tag-btn active" data-tag="">すべて</button>
+                    </div>
+                </div>'''
 
     # index.html生成
     html_content = f'''<!DOCTYPE html>
@@ -226,10 +223,16 @@ def generate_index():
             <section class="doc-list">
                 <div class="list-header">
                     <h2>ドキュメント <span class="count" id="doc-count">({len(html_files)}件)</span></h2>
-                    <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
-                        <span class="sort-label">新しい順</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                    </button>
+                    <div class="header-actions">
+                        <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
+                            <span class="sort-label">新しい順</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                        </button>
+                        <button class="export-btn" onclick="exportTags()" title="タグデータをエクスポート">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            エクスポート
+                        </button>
+                    </div>
                 </div>
                 {tags_filter_html}
                 <ul id="doc-list">
@@ -245,21 +248,248 @@ def generate_index():
     <div id="toast" class="toast">リンクをコピーしました</div>
 
     <script>
+    const STORAGE_KEY = 'metacreative_tags';
     let isDescending = true;
+    let currentTag = '';
+    let tagsData = {{}};
+
+    // localStorageからタグデータを読み込み
+    function loadTagsFromStorage() {{
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {{
+            try {{
+                tagsData = JSON.parse(stored);
+            }} catch (e) {{
+                tagsData = {{}};
+            }}
+        }}
+    }}
+
+    // localStorageにタグデータを保存
+    function saveTagsToStorage() {{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tagsData));
+    }}
+
+    // 全タグのリストを取得
+    function getAllTags() {{
+        const allTags = new Set();
+        Object.values(tagsData).forEach(tags => {{
+            tags.forEach(tag => allTags.add(tag));
+        }});
+        return Array.from(allTags).sort();
+    }}
+
+    // タグフィルターボタンを再生成
+    function renderFilterButtons() {{
+        const container = document.getElementById('tag-filter-buttons');
+        const allTags = getAllTags();
+
+        container.innerHTML = '<button class="tag-btn active" data-tag="">すべて</button>';
+        allTags.forEach(tag => {{
+            const btn = document.createElement('button');
+            btn.className = 'tag-btn';
+            btn.dataset.tag = tag;
+            btn.textContent = tag;
+            container.appendChild(btn);
+        }});
+
+        // イベント再設定
+        container.querySelectorAll('.tag-btn').forEach(btn => {{
+            btn.addEventListener('click', function() {{
+                filterByTag(this.dataset.tag);
+                container.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            }});
+        }});
+    }}
+
+    // ドキュメントのタグ表示を更新
+    function renderDocTags() {{
+        document.querySelectorAll('.doc-item').forEach(item => {{
+            const filename = item.dataset.filename;
+            const tags = tagsData[filename] || [];
+            const tagsContainer = item.querySelector('.doc-tags');
+
+            // data-tags属性も更新
+            item.dataset.tags = tags.join(' ');
+
+            // タグHTML生成
+            let html = '<button class="add-tag-btn" onclick="showTagInput(event, \\''+filename+'\\')">+</button>';
+            tags.forEach(tag => {{
+                html += `<span class="tag-with-delete">
+                    ${{tag}}
+                    <button class="tag-delete-btn" onclick="removeTag(event, '${{filename}}', '${{tag}}')">&times;</button>
+                </span>`;
+            }});
+            tagsContainer.innerHTML = html;
+        }});
+    }}
+
+    // タグ入力を表示
+    function showTagInput(event, filename) {{
+        event.preventDefault();
+        event.stopPropagation();
+
+        // 既存の入力があれば削除
+        const existing = document.querySelector('.tag-input-container');
+        if (existing) existing.remove();
+
+        const btn = event.currentTarget;
+        const container = document.createElement('div');
+        container.className = 'tag-input-container';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'tag-input';
+        input.placeholder = 'タグを入力...';
+
+        const suggestions = document.createElement('div');
+        suggestions.className = 'tag-suggestions';
+        suggestions.style.display = 'none';
+
+        container.appendChild(input);
+        container.appendChild(suggestions);
+        btn.parentNode.insertBefore(container, btn.nextSibling);
+        input.focus();
+
+        // 入力時のサジェスト
+        input.addEventListener('input', function() {{
+            const val = this.value.trim().toLowerCase();
+            const allTags = getAllTags();
+            const currentTags = tagsData[filename] || [];
+
+            // 既についているタグは除外
+            const availableTags = allTags.filter(t => !currentTags.includes(t));
+
+            if (val) {{
+                const matches = availableTags.filter(t => t.toLowerCase().includes(val));
+                let html = '';
+                matches.forEach(t => {{
+                    html += `<div class="tag-suggestion-item" data-tag="${{t}}">${{t}}</div>`;
+                }});
+                // 新規タグとして追加オプション
+                if (!allTags.map(t => t.toLowerCase()).includes(val)) {{
+                    html += `<div class="tag-suggestion-item new-tag" data-tag="${{this.value.trim()}}">「${{this.value.trim()}}」を新規作成</div>`;
+                }}
+                suggestions.innerHTML = html;
+                suggestions.style.display = html ? 'block' : 'none';
+
+                // クリックイベント
+                suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {{
+                    item.addEventListener('click', function() {{
+                        addTag(filename, this.dataset.tag);
+                        container.remove();
+                    }});
+                }});
+            }} else {{
+                // 空の場合は既存タグ一覧を表示
+                let html = '';
+                availableTags.slice(0, 5).forEach(t => {{
+                    html += `<div class="tag-suggestion-item" data-tag="${{t}}">${{t}}</div>`;
+                }});
+                suggestions.innerHTML = html;
+                suggestions.style.display = html ? 'block' : 'none';
+
+                suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {{
+                    item.addEventListener('click', function() {{
+                        addTag(filename, this.dataset.tag);
+                        container.remove();
+                    }});
+                }});
+            }}
+        }});
+
+        // Enterキーで追加
+        input.addEventListener('keydown', function(e) {{
+            if (e.key === 'Enter' && this.value.trim()) {{
+                addTag(filename, this.value.trim());
+                container.remove();
+            }} else if (e.key === 'Escape') {{
+                container.remove();
+            }}
+        }});
+
+        // フォーカス外れたら閉じる（少し遅延させてクリックを受け付ける）
+        input.addEventListener('blur', function() {{
+            setTimeout(() => {{
+                if (!container.contains(document.activeElement)) {{
+                    container.remove();
+                }}
+            }}, 200);
+        }});
+
+        // 初期表示
+        input.dispatchEvent(new Event('input'));
+    }}
+
+    // タグを追加
+    function addTag(filename, tag) {{
+        if (!tagsData[filename]) {{
+            tagsData[filename] = [];
+        }}
+        if (!tagsData[filename].includes(tag)) {{
+            tagsData[filename].push(tag);
+            saveTagsToStorage();
+            renderDocTags();
+            renderFilterButtons();
+            showToast('タグを追加しました');
+        }}
+    }}
+
+    // タグを削除
+    function removeTag(event, filename, tag) {{
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (tagsData[filename]) {{
+            tagsData[filename] = tagsData[filename].filter(t => t !== tag);
+            if (tagsData[filename].length === 0) {{
+                delete tagsData[filename];
+            }}
+            saveTagsToStorage();
+            renderDocTags();
+            renderFilterButtons();
+            // フィルターをリセット
+            if (currentTag === tag) {{
+                filterByTag('');
+            }}
+            showToast('タグを削除しました');
+        }}
+    }}
+
+    // タグデータをエクスポート
+    function exportTags() {{
+        const json = JSON.stringify(tagsData, null, 2);
+        const blob = new Blob([json], {{ type: 'application/json' }});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tags.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('tags.jsonをダウンロードしました');
+    }}
 
     function copyLink(event, url) {{
         event.preventDefault();
         event.stopPropagation();
 
         navigator.clipboard.writeText(url).then(function() {{
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(function() {{
-                toast.classList.remove('show');
-            }}, 2000);
+            showToast('リンクをコピーしました');
         }}).catch(function(err) {{
             console.error('コピーに失敗しました:', err);
         }});
+    }}
+
+    function showToast(message) {{
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(function() {{
+            toast.classList.remove('show');
+        }}, 2000);
     }}
 
     function toggleSort() {{
@@ -281,21 +511,6 @@ def generate_index():
         svg.style.transform = isDescending ? 'rotate(0deg)' : 'rotate(180deg)';
     }}
 
-    // タグフィルター機能
-    let currentTag = '';
-
-    document.addEventListener('DOMContentLoaded', function() {{
-        const tagButtons = document.querySelectorAll('.tag-btn');
-        tagButtons.forEach(btn => {{
-            btn.addEventListener('click', function() {{
-                const tag = this.dataset.tag;
-                filterByTag(tag);
-                tagButtons.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            }});
-        }});
-    }});
-
     function filterByTag(tag) {{
         currentTag = tag;
         const items = document.querySelectorAll('.doc-item');
@@ -313,6 +528,13 @@ def generate_index():
 
         document.getElementById('doc-count').textContent = `(${{visibleCount}}件)`;
     }}
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', function() {{
+        loadTagsFromStorage();
+        renderDocTags();
+        renderFilterButtons();
+    }});
     </script>
 </body>
 </html>
