@@ -349,7 +349,8 @@ main {
     border-top: 1px solid #eee;
 }
 
-/* エクスポートボタン */
+/* インポート・エクスポートボタン */
+.import-btn,
 .export-btn {
     display: flex;
     align-items: center;
@@ -362,9 +363,13 @@ main {
     font-size: 0.85rem;
     color: #667eea;
     transition: all 0.2s;
+}
+
+.export-btn {
     margin-left: auto;
 }
 
+.import-btn:hover,
 .export-btn:hover {
     background: #667eea;
     color: white;

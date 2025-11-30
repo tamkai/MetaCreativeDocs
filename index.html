@@ -23,6 +23,11 @@
                             <span class="sort-label">新しい順</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
                         </button>
+                        <button class="import-btn" onclick="document.getElementById('import-file').click()" title="タグデータをインポート">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            インポート
+                        </button>
+                        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importTags(event)">
                         <button class="export-btn" onclick="exportTags()" title="タグデータをエクスポート">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                             エクスポート
@@ -167,7 +172,7 @@
         </main>
 
         <footer>
-            <p>最終更新: 2025-11-30 12:27</p>
+            <p>最終更新: 2025-11-30 21:30</p>
         </footer>
     </div>
 
@@ -396,6 +401,33 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         showToast('tags.jsonをダウンロードしました');
+    }
+
+    // タグデータをインポート
+    function importTags(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (typeof imported === 'object' && imported !== null) {
+                    tagsData = imported;
+                    saveTagsToStorage();
+                    renderDocTags();
+                    renderFilterButtons();
+                    showToast('タグをインポートしました');
+                } else {
+                    showToast('無効なファイル形式です');
+                }
+            } catch (err) {
+                showToast('JSONの読み込みに失敗しました');
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
     }
 
     function copyLink(event, url) {
