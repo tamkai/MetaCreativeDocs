@@ -365,9 +365,6 @@ main {
     transition: all 0.2s;
 }
 
-.export-btn {
-    margin-left: auto;
-}
 
 .import-btn:hover,
 .export-btn:hover {
