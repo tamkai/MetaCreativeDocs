@@ -172,7 +172,7 @@
         </main>
 
         <footer>
-            <p>最終更新: 2025-11-30 12:32</p>
+            <p>最終更新: 2025-11-30 21:33</p>
         </footer>
     </div>
 
@@ -307,7 +307,9 @@
 
                 // クリックイベント
                 suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {
-                    item.addEventListener('click', function() {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         addTag(filename, this.dataset.tag);
                         container.remove();
                     });
@@ -322,7 +324,9 @@
                 suggestions.style.display = html ? 'block' : 'none';
 
                 suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {
-                    item.addEventListener('click', function() {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         addTag(filename, this.dataset.tag);
                         container.remove();
                     });

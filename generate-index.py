@@ -381,7 +381,9 @@ def generate_index():
 
                 // クリックイベント
                 suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {{
-                    item.addEventListener('click', function() {{
+                    item.addEventListener('click', function(e) {{
+                        e.preventDefault();
+                        e.stopPropagation();
                         addTag(filename, this.dataset.tag);
                         container.remove();
                     }});
@@ -396,7 +398,9 @@ def generate_index():
                 suggestions.style.display = html ? 'block' : 'none';
 
                 suggestions.querySelectorAll('.tag-suggestion-item').forEach(item => {{
-                    item.addEventListener('click', function() {{
+                    item.addEventListener('click', function(e) {{
+                        e.preventDefault();
+                        e.stopPropagation();
                         addTag(filename, this.dataset.tag);
                         container.remove();
                     }});
