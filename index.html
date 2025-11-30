@@ -16,9 +16,15 @@
 
         <main>
             <section class="doc-list">
-                <h2>ドキュメント <span class="count">(6件)</span></h2>
-                <ul>
-        <li class="doc-item">
+                <div class="list-header">
+                    <h2>ドキュメント <span class="count">(6件)</span></h2>
+                    <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
+                        <span class="sort-label">新しい順</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </button>
+                </div>
+                <ul id="doc-list">
+        <li class="doc-item" data-sort-key="20251129_00">
             <a href="docs/20251129_organizational_creativity.html" class="doc-link">
                 <span class="doc-title">創造性は組織に宿るか——個人と集団の狭間で</span>
                 <span class="doc-meta">
@@ -29,18 +35,7 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item">
-            <a href="docs/20251128_02_organization_strategy_dialogue.html" class="doc-link">
-                <span class="doc-title">変革の設計図 - 2025年、組織覚醒とAI時代を見据えた事業戦略対話</span>
-                <span class="doc-meta">
-                    <span class="doc-date">2025-11-28</span>
-                    <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_02_organization_strategy_dialogue.html')" title="リンクをコピー">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </button>
-                </span>
-            </a>
-        </li>
-        <li class="doc-item">
+        <li class="doc-item" data-sort-key="20251128_04">
             <a href="docs/20251128_04_community_platform_future.html" class="doc-link">
                 <span class="doc-title">コミュニティ設計と創造性プラットフォームの未来</span>
                 <span class="doc-meta">
@@ -51,18 +46,7 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item">
-            <a href="docs/20251128_01_pilot_transformation.html" class="doc-link">
-                <span class="doc-title">教科書との決別——パイロット組織変革プロジェクトの設計思想</span>
-                <span class="doc-meta">
-                    <span class="doc-date">2025-11-28</span>
-                    <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_01_pilot_transformation.html')" title="リンクをコピー">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </button>
-                </span>
-            </a>
-        </li>
-        <li class="doc-item">
+        <li class="doc-item" data-sort-key="20251128_03">
             <a href="docs/20251128_03_business_contract_document.html" class="doc-link">
                 <span class="doc-title">共有の畑を耕す</span>
                 <span class="doc-meta">
@@ -73,7 +57,29 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item">
+        <li class="doc-item" data-sort-key="20251128_02">
+            <a href="docs/20251128_02_organization_strategy_dialogue.html" class="doc-link">
+                <span class="doc-title">変革の設計図 - 2025年、組織覚醒とAI時代を見据えた事業戦略対話</span>
+                <span class="doc-meta">
+                    <span class="doc-date">2025-11-28</span>
+                    <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_02_organization_strategy_dialogue.html')" title="リンクをコピー">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </span>
+            </a>
+        </li>
+        <li class="doc-item" data-sort-key="20251128_01">
+            <a href="docs/20251128_01_pilot_transformation.html" class="doc-link">
+                <span class="doc-title">教科書との決別——パイロット組織変革プロジェクトの設計思想</span>
+                <span class="doc-meta">
+                    <span class="doc-date">2025-11-28</span>
+                    <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_01_pilot_transformation.html')" title="リンクをコピー">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </span>
+            </a>
+        </li>
+        <li class="doc-item" data-sort-key="20251126_00">
             <a href="docs/20251126_culture_change_report.html" class="doc-link">
                 <span class="doc-title">現場からカルチャー変革は起こせるのか - フジトラの実践者が語る</span>
                 <span class="doc-meta">
@@ -89,13 +95,15 @@
         </main>
 
         <footer>
-            <p>最終更新: 2025-11-30 07:50</p>
+            <p>最終更新: 2025-11-30 16:53</p>
         </footer>
     </div>
 
     <div id="toast" class="toast">リンクをコピーしました</div>
 
     <script>
+    let isDescending = true;
+
     function copyLink(event, url) {
         event.preventDefault();
         event.stopPropagation();
@@ -109,6 +117,25 @@
         }).catch(function(err) {
             console.error('コピーに失敗しました:', err);
         });
+    }
+
+    function toggleSort() {
+        isDescending = !isDescending;
+        const list = document.getElementById('doc-list');
+        const items = Array.from(list.querySelectorAll('.doc-item'));
+        const btn = document.getElementById('sort-toggle');
+        const label = btn.querySelector('.sort-label');
+        const svg = btn.querySelector('svg');
+
+        items.sort((a, b) => {
+            const keyA = a.dataset.sortKey;
+            const keyB = b.dataset.sortKey;
+            return isDescending ? keyB.localeCompare(keyA) : keyA.localeCompare(keyB);
+        });
+
+        items.forEach(item => list.appendChild(item));
+        label.textContent = isDescending ? '新しい順' : '古い順';
+        svg.style.transform = isDescending ? 'rotate(0deg)' : 'rotate(180deg)';
     }
     </script>
 </body>

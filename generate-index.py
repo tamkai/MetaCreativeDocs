@@ -90,6 +90,16 @@ def get_date_from_filename(filename):
             pass
     return None
 
+def get_sort_key_from_filename(filename):
+    """ファイル名からソートキーを抽出（YYYYMMDD_NN形式）"""
+    # 例: 20251128_02_xxx.html -> (20251128, 2)
+    match = re.match(r'^(\d{8})(?:_(\d+))?', filename)
+    if match:
+        date_str = match.group(1)
+        num = int(match.group(2)) if match.group(2) else 0
+        return (date_str, num)
+    return ('00000000', 0)
+
 def load_ignore_list():
     """除外リストを読み込む"""
     ignore_list = set()
@@ -124,15 +134,17 @@ def generate_index():
             # ファイル名から日付を取得、なければ更新日時を使用
             filename_date = get_date_from_filename(html_file.name)
             date = filename_date if filename_date else get_file_date(html_file)
+            sort_key = get_sort_key_from_filename(html_file.name)
             html_files.append({
                 'path': str(html_file),
                 'filename': html_file.name,
                 'title': title,
-                'date': date
+                'date': date,
+                'sort_key': sort_key
             })
 
-    # 日付の新しい順にソート（ファイル名の日付優先）
-    html_files.sort(key=lambda x: x['date'], reverse=True)
+    # 日付の新しい順、同日は番号順にソート
+    html_files.sort(key=lambda x: (x['sort_key'][0], x['sort_key'][1]), reverse=True)
 
     # ドキュメントリストのHTML生成
     if html_files:
@@ -140,7 +152,8 @@ def generate_index():
         for doc in html_files:
             date_str = doc['date'].strftime('%Y-%m-%d')
             full_url = BASE_URL + doc['path']
-            docs_html += f'''        <li class="doc-item">
+            sort_key = f"{doc['sort_key'][0]}_{doc['sort_key'][1]:02d}"
+            docs_html += f'''        <li class="doc-item" data-sort-key="{sort_key}">
             <a href="{doc['path']}" class="doc-link">
                 <span class="doc-title">{doc['title']}</span>
                 <span class="doc-meta">
@@ -174,8 +187,14 @@ def generate_index():
 
         <main>
             <section class="doc-list">
-                <h2>ドキュメント <span class="count">({len(html_files)}件)</span></h2>
-                <ul>
+                <div class="list-header">
+                    <h2>ドキュメント <span class="count">({len(html_files)}件)</span></h2>
+                    <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
+                        <span class="sort-label">新しい順</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </button>
+                </div>
+                <ul id="doc-list">
 {docs_html}                </ul>
             </section>
         </main>
@@ -188,6 +207,8 @@ def generate_index():
     <div id="toast" class="toast">リンクをコピーしました</div>
 
     <script>
+    let isDescending = true;
+
     function copyLink(event, url) {{
         event.preventDefault();
         event.stopPropagation();
@@ -201,6 +222,25 @@ def generate_index():
         }}).catch(function(err) {{
             console.error('コピーに失敗しました:', err);
         }});
+    }}
+
+    function toggleSort() {{
+        isDescending = !isDescending;
+        const list = document.getElementById('doc-list');
+        const items = Array.from(list.querySelectorAll('.doc-item'));
+        const btn = document.getElementById('sort-toggle');
+        const label = btn.querySelector('.sort-label');
+        const svg = btn.querySelector('svg');
+
+        items.sort((a, b) => {{
+            const keyA = a.dataset.sortKey;
+            const keyB = b.dataset.sortKey;
+            return isDescending ? keyB.localeCompare(keyA) : keyA.localeCompare(keyB);
+        }});
+
+        items.forEach(item => list.appendChild(item));
+        label.textContent = isDescending ? '新しい順' : '古い順';
+        svg.style.transform = isDescending ? 'rotate(0deg)' : 'rotate(180deg)';
     }}
     </script>
 </body>
