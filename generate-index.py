@@ -321,7 +321,7 @@ def generate_index():
             // タグHTML生成
             let html = '<button class="add-tag-btn" onclick="showTagInput(event, \\''+filename+'\\')">+</button>';
             tags.forEach(tag => {{
-                html += `<span class="tag-with-delete">
+                html += `<span class="tag-with-delete" onclick="event.preventDefault(); event.stopPropagation();">
                     ${{tag}}
                     <button class="tag-delete-btn" onclick="removeTag(event, '${{filename}}', '${{tag}}')">&times;</button>
                 </span>`;
