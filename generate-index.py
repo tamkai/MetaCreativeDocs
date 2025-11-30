@@ -7,6 +7,7 @@ docs/フォルダ内のHTMLファイルを検索し、index.htmlを生成しま�
 
 import os
 import re
+import json
 import unicodedata
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,7 @@ DOCS_DIR = "docs"
 OUTPUT_FILE = "index.html"
 BASE_URL = "https://tamkai.github.io/MetaCreativeDocs/"
 IGNORE_FILE = ".docsignore"
+TAGS_FILE = "tags.json"
 
 def sanitize_filename(filename):
     """日本語や特殊文字を含むファイル名をASCII安全な名前に変換"""
@@ -111,12 +113,30 @@ def load_ignore_list():
                     ignore_list.add(line)
     return ignore_list
 
+def load_tags():
+    """タグ情報を読み込む"""
+    if Path(TAGS_FILE).exists():
+        with open(TAGS_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+def get_all_tags(tags_data):
+    """全タグのリストを取得"""
+    all_tags = set()
+    for tags in tags_data.values():
+        all_tags.update(tags)
+    return sorted(all_tags)
+
 def generate_index():
     """index.htmlを生成"""
     docs_path = Path(DOCS_DIR)
 
     # 除外リストを読み込む
     ignore_list = load_ignore_list()
+
+    # タグ情報を読み込む
+    tags_data = load_tags()
+    all_tags = get_all_tags(tags_data)
 
     # 日本語ファイル名をリネーム
     if docs_path.exists():
@@ -135,12 +155,15 @@ def generate_index():
             filename_date = get_date_from_filename(html_file.name)
             date = filename_date if filename_date else get_file_date(html_file)
             sort_key = get_sort_key_from_filename(html_file.name)
+            # タグを取得
+            doc_tags = tags_data.get(html_file.name, [])
             html_files.append({
                 'path': str(html_file),
                 'filename': html_file.name,
                 'title': title,
                 'date': date,
-                'sort_key': sort_key
+                'sort_key': sort_key,
+                'tags': doc_tags
             })
 
     # 日付の新しい順、同日は番号順にソート
@@ -153,9 +176,14 @@ def generate_index():
             date_str = doc['date'].strftime('%Y-%m-%d')
             full_url = BASE_URL + doc['path']
             sort_key = f"{doc['sort_key'][0]}_{doc['sort_key'][1]:02d}"
-            docs_html += f'''        <li class="doc-item" data-sort-key="{sort_key}">
+            tags_attr = ' '.join(doc['tags']) if doc['tags'] else ''
+            tags_html = ''.join([f'<span class="tag">{tag}</span>' for tag in doc['tags']])
+            docs_html += f'''        <li class="doc-item" data-sort-key="{sort_key}" data-tags="{tags_attr}">
             <a href="{doc['path']}" class="doc-link">
-                <span class="doc-title">{doc['title']}</span>
+                <div class="doc-info">
+                    <span class="doc-title">{doc['title']}</span>
+                    <div class="doc-tags">{tags_html}</div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">{date_str}</span>
                     <button class="copy-btn" onclick="copyLink(event, '{full_url}')" title="リンクをコピー">
@@ -167,6 +195,15 @@ def generate_index():
 '''
     else:
         docs_html = '        <li class="no-docs">ドキュメントはまだありません</li>\n'
+
+    # タグフィルターのHTML生成
+    tags_filter_html = ''
+    if all_tags:
+        tags_filter_html = '<div class="tag-filter"><span class="filter-label">タグで絞り込み:</span><div class="tag-buttons">'
+        tags_filter_html += '<button class="tag-btn active" data-tag="">すべて</button>'
+        for tag in all_tags:
+            tags_filter_html += f'<button class="tag-btn" data-tag="{tag}">{tag}</button>'
+        tags_filter_html += '</div></div>'
 
     # index.html生成
     html_content = f'''<!DOCTYPE html>
@@ -188,12 +225,13 @@ def generate_index():
         <main>
             <section class="doc-list">
                 <div class="list-header">
-                    <h2>ドキュメント <span class="count">({len(html_files)}件)</span></h2>
+                    <h2>ドキュメント <span class="count" id="doc-count">({len(html_files)}件)</span></h2>
                     <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
                         <span class="sort-label">新しい順</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
                     </button>
                 </div>
+                {tags_filter_html}
                 <ul id="doc-list">
 {docs_html}                </ul>
             </section>
@@ -241,6 +279,39 @@ def generate_index():
         items.forEach(item => list.appendChild(item));
         label.textContent = isDescending ? '新しい順' : '古い順';
         svg.style.transform = isDescending ? 'rotate(0deg)' : 'rotate(180deg)';
+    }}
+
+    // タグフィルター機能
+    let currentTag = '';
+
+    document.addEventListener('DOMContentLoaded', function() {{
+        const tagButtons = document.querySelectorAll('.tag-btn');
+        tagButtons.forEach(btn => {{
+            btn.addEventListener('click', function() {{
+                const tag = this.dataset.tag;
+                filterByTag(tag);
+                tagButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            }});
+        }});
+    }});
+
+    function filterByTag(tag) {{
+        currentTag = tag;
+        const items = document.querySelectorAll('.doc-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {{
+            const tags = item.dataset.tags || '';
+            if (!tag || tags.split(' ').includes(tag)) {{
+                item.style.display = '';
+                visibleCount++;
+            }} else {{
+                item.style.display = 'none';
+            }}
+        }});
+
+        document.getElementById('doc-count').textContent = `(${{visibleCount}}件)`;
     }}
     </script>
 </body>

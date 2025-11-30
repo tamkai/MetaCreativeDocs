@@ -17,16 +17,20 @@
         <main>
             <section class="doc-list">
                 <div class="list-header">
-                    <h2>ドキュメント <span class="count">(9件)</span></h2>
+                    <h2>ドキュメント <span class="count" id="doc-count">(9件)</span></h2>
                     <button id="sort-toggle" class="sort-btn" onclick="toggleSort()" title="並び順を切り替え">
                         <span class="sort-label">新しい順</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
                     </button>
                 </div>
+                <div class="tag-filter"><span class="filter-label">タグで絞り込み:</span><div class="tag-buttons"><button class="tag-btn active" data-tag="">すべて</button><button class="tag-btn" data-tag="AI">AI</button><button class="tag-btn" data-tag="イノベーション">イノベーション</button><button class="tag-btn" data-tag="カルチャー">カルチャー</button><button class="tag-btn" data-tag="コミュニティ">コミュニティ</button><button class="tag-btn" data-tag="データ分析">データ分析</button><button class="tag-btn" data-tag="プラットフォーム">プラットフォーム</button><button class="tag-btn" data-tag="事業戦略">事業戦略</button><button class="tag-btn" data-tag="人的資本">人的資本</button><button class="tag-btn" data-tag="創造性">創造性</button><button class="tag-btn" data-tag="組織変革">組織変革</button><button class="tag-btn" data-tag="組織論">組織論</button></div></div>
                 <ul id="doc-list">
-        <li class="doc-item" data-sort-key="20251129_00">
+        <li class="doc-item" data-sort-key="20251129_00" data-tags="組織論 創造性">
             <a href="docs/20251129_organizational_creativity.html" class="doc-link">
-                <span class="doc-title">創造性は組織に宿るか——個人と集団の狭間で</span>
+                <div class="doc-info">
+                    <span class="doc-title">創造性は組織に宿るか——個人と集団の狭間で</span>
+                    <div class="doc-tags"><span class="tag">組織論</span><span class="tag">創造性</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-29</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251129_organizational_creativity.html')" title="リンクをコピー">
@@ -35,9 +39,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251128_04">
+        <li class="doc-item" data-sort-key="20251128_04" data-tags="コミュニティ プラットフォーム">
             <a href="docs/20251128_04_community_platform_future.html" class="doc-link">
-                <span class="doc-title">コミュニティ設計と創造性プラットフォームの未来</span>
+                <div class="doc-info">
+                    <span class="doc-title">コミュニティ設計と創造性プラットフォームの未来</span>
+                    <div class="doc-tags"><span class="tag">コミュニティ</span><span class="tag">プラットフォーム</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-28</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_04_community_platform_future.html')" title="リンクをコピー">
@@ -46,9 +53,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251128_03">
+        <li class="doc-item" data-sort-key="20251128_03" data-tags="事業戦略">
             <a href="docs/20251128_03_business_contract_document.html" class="doc-link">
-                <span class="doc-title">共有の畑を耕す</span>
+                <div class="doc-info">
+                    <span class="doc-title">共有の畑を耕す</span>
+                    <div class="doc-tags"><span class="tag">事業戦略</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-28</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_03_business_contract_document.html')" title="リンクをコピー">
@@ -57,9 +67,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251128_02">
+        <li class="doc-item" data-sort-key="20251128_02" data-tags="組織論 事業戦略 AI">
             <a href="docs/20251128_02_organization_strategy_dialogue.html" class="doc-link">
-                <span class="doc-title">変革の設計図 - 2025年、組織覚醒とAI時代を見据えた事業戦略対話</span>
+                <div class="doc-info">
+                    <span class="doc-title">変革の設計図 - 2025年、組織覚醒とAI時代を見据えた事業戦略対話</span>
+                    <div class="doc-tags"><span class="tag">組織論</span><span class="tag">事業戦略</span><span class="tag">AI</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-28</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_02_organization_strategy_dialogue.html')" title="リンクをコピー">
@@ -68,9 +81,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251128_01">
+        <li class="doc-item" data-sort-key="20251128_01" data-tags="組織変革">
             <a href="docs/20251128_01_pilot_transformation.html" class="doc-link">
-                <span class="doc-title">教科書との決別——パイロット組織変革プロジェクトの設計思想</span>
+                <div class="doc-info">
+                    <span class="doc-title">教科書との決別——パイロット組織変革プロジェクトの設計思想</span>
+                    <div class="doc-tags"><span class="tag">組織変革</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-28</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251128_01_pilot_transformation.html')" title="リンクをコピー">
@@ -79,9 +95,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251126_00">
+        <li class="doc-item" data-sort-key="20251126_00" data-tags="組織変革 カルチャー">
             <a href="docs/20251126_culture_change_report.html" class="doc-link">
-                <span class="doc-title">現場からカルチャー変革は起こせるのか - フジトラの実践者が語る</span>
+                <div class="doc-info">
+                    <span class="doc-title">現場からカルチャー変革は起こせるのか - フジトラの実践者が語る</span>
+                    <div class="doc-tags"><span class="tag">組織変革</span><span class="tag">カルチャー</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-26</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251126_culture_change_report.html')" title="リンクをコピー">
@@ -90,9 +109,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251118_00">
+        <li class="doc-item" data-sort-key="20251118_00" data-tags="データ分析">
             <a href="docs/20251118_nekkyou_data.html" class="doc-link">
-                <span class="doc-title">熱狂を設計するデータ分析</span>
+                <div class="doc-info">
+                    <span class="doc-title">熱狂を設計するデータ分析</span>
+                    <div class="doc-tags"><span class="tag">データ分析</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-18</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251118_nekkyou_data.html')" title="リンクをコピー">
@@ -101,9 +123,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251117_00">
+        <li class="doc-item" data-sort-key="20251117_00" data-tags="人的資本">
             <a href="docs/20251117_human_capital.html" class="doc-link">
-                <span class="doc-title">見えない資産が国を創る - 新原浩朗</span>
+                <div class="doc-info">
+                    <span class="doc-title">見えない資産が国を創る - 新原浩朗</span>
+                    <div class="doc-tags"><span class="tag">人的資本</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-17</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251117_human_capital.html')" title="リンクをコピー">
@@ -112,9 +137,12 @@
                 </span>
             </a>
         </li>
-        <li class="doc-item" data-sort-key="20251110_00">
+        <li class="doc-item" data-sort-key="20251110_00" data-tags="イノベーション 創造性">
             <a href="docs/20251110_innovation_report.html" class="doc-link">
-                <span class="doc-title">創造性の奪還——日本経済を動かすイノベーションの本質</span>
+                <div class="doc-info">
+                    <span class="doc-title">創造性の奪還——日本経済を動かすイノベーションの本質</span>
+                    <div class="doc-tags"><span class="tag">イノベーション</span><span class="tag">創造性</span></div>
+                </div>
                 <span class="doc-meta">
                     <span class="doc-date">2025-11-10</span>
                     <button class="copy-btn" onclick="copyLink(event, 'https://tamkai.github.io/MetaCreativeDocs/docs/20251110_innovation_report.html')" title="リンクをコピー">
@@ -128,7 +156,7 @@
         </main>
 
         <footer>
-            <p>最終更新: 2025-11-30 12:03</p>
+            <p>最終更新: 2025-11-30 21:15</p>
         </footer>
     </div>
 
@@ -169,6 +197,39 @@
         items.forEach(item => list.appendChild(item));
         label.textContent = isDescending ? '新しい順' : '古い順';
         svg.style.transform = isDescending ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    // タグフィルター機能
+    let currentTag = '';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tagButtons = document.querySelectorAll('.tag-btn');
+        tagButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tag = this.dataset.tag;
+                filterByTag(tag);
+                tagButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+
+    function filterByTag(tag) {
+        currentTag = tag;
+        const items = document.querySelectorAll('.doc-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const tags = item.dataset.tags || '';
+            if (!tag || tags.split(' ').includes(tag)) {
+                item.style.display = '';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        document.getElementById('doc-count').textContent = `(${visibleCount}件)`;
     }
     </script>
 </body>
