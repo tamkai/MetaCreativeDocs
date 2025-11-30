@@ -14,6 +14,7 @@ from pathlib import Path
 DOCS_DIR = "docs"
 OUTPUT_FILE = "index.html"
 BASE_URL = "https://tamkai.github.io/MetaCreativeDocs/"
+IGNORE_FILE = ".docsignore"
 
 def sanitize_filename(filename):
     """日本語や特殊文字を含むファイル名をASCII安全な名前に変換"""
@@ -79,9 +80,23 @@ def get_file_date(filepath):
     """ファイルの更新日時を取得"""
     return datetime.fromtimestamp(os.path.getmtime(filepath))
 
+def load_ignore_list():
+    """除外リストを読み込む"""
+    ignore_list = set()
+    if Path(IGNORE_FILE).exists():
+        with open(IGNORE_FILE, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    ignore_list.add(line)
+    return ignore_list
+
 def generate_index():
     """index.htmlを生成"""
     docs_path = Path(DOCS_DIR)
+
+    # 除外リストを読み込む
+    ignore_list = load_ignore_list()
 
     # 日本語ファイル名をリネーム
     if docs_path.exists():
@@ -91,6 +106,10 @@ def generate_index():
     html_files = []
     if docs_path.exists():
         for html_file in docs_path.glob("*.html"):
+            # 除外リストに含まれるファイルはスキップ
+            if html_file.name in ignore_list:
+                print(f"Skipped (in ignore list): {html_file.name}")
+                continue
             title = get_html_title(html_file)
             date = get_file_date(html_file)
             html_files.append({
