@@ -80,6 +80,16 @@ def get_file_date(filepath):
     """ファイルの更新日時を取得"""
     return datetime.fromtimestamp(os.path.getmtime(filepath))
 
+def get_date_from_filename(filename):
+    """ファイル名から日付を抽出（YYYYMMDD形式）"""
+    match = re.match(r'^(\d{8})', filename)
+    if match:
+        try:
+            return datetime.strptime(match.group(1), '%Y%m%d')
+        except ValueError:
+            pass
+    return None
+
 def load_ignore_list():
     """除外リストを読み込む"""
     ignore_list = set()
@@ -111,7 +121,9 @@ def generate_index():
                 print(f"Skipped (in ignore list): {html_file.name}")
                 continue
             title = get_html_title(html_file)
-            date = get_file_date(html_file)
+            # ファイル名から日付を取得、なければ更新日時を使用
+            filename_date = get_date_from_filename(html_file.name)
+            date = filename_date if filename_date else get_file_date(html_file)
             html_files.append({
                 'path': str(html_file),
                 'filename': html_file.name,
@@ -119,7 +131,7 @@ def generate_index():
                 'date': date
             })
 
-    # 日付の新しい順にソート
+    # 日付の新しい順にソート（ファイル名の日付優先）
     html_files.sort(key=lambda x: x['date'], reverse=True)
 
     # ドキュメントリストのHTML生成
