@@ -254,9 +254,11 @@ def generate_index():
 
     <script>
     const STORAGE_KEY = 'metacreative_tags';
+    const TAG_USAGE_KEY = 'metacreative_tag_usage';
     let isDescending = true;
     let currentTag = '';
     let tagsData = {{}};
+    let tagUsage = {{}};
 
     // localStorageからタグデータを読み込み
     function loadTagsFromStorage() {{
@@ -268,6 +270,15 @@ def generate_index():
                 tagsData = {{}};
             }}
         }}
+        // タグ使用履歴を読み込み
+        const usageStored = localStorage.getItem(TAG_USAGE_KEY);
+        if (usageStored) {{
+            try {{
+                tagUsage = JSON.parse(usageStored);
+            }} catch (e) {{
+                tagUsage = {{}};
+            }}
+        }}
     }}
 
     // localStorageにタグデータを保存
@@ -275,13 +286,29 @@ def generate_index():
         localStorage.setItem(STORAGE_KEY, JSON.stringify(tagsData));
     }}
 
-    // 全タグのリストを取得
+    // タグ使用履歴を保存
+    function saveTagUsage() {{
+        localStorage.setItem(TAG_USAGE_KEY, JSON.stringify(tagUsage));
+    }}
+
+    // タグの使用を記録
+    function recordTagUsage(tag) {{
+        tagUsage[tag] = Date.now();
+        saveTagUsage();
+    }}
+
+    // 全タグのリストを取得（最近使った順）
     function getAllTags() {{
         const allTags = new Set();
         Object.values(tagsData).forEach(tags => {{
             tags.forEach(tag => allTags.add(tag));
         }});
-        return Array.from(allTags).sort();
+        // 最近使った順にソート（使用履歴がないものは最後）
+        return Array.from(allTags).sort((a, b) => {{
+            const usageA = tagUsage[a] || 0;
+            const usageB = tagUsage[b] || 0;
+            return usageB - usageA;
+        }});
     }}
 
     // タグフィルターボタンを再生成
@@ -438,6 +465,7 @@ def generate_index():
         }}
         if (!tagsData[filename].includes(tag)) {{
             tagsData[filename].push(tag);
+            recordTagUsage(tag);
             saveTagsToStorage();
             renderDocTags();
             renderFilterButtons();
