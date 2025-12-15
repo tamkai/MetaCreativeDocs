@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忍術としてのAI駆動開発——Auto Dev Ninja Meetup Night 1.0</title>
+    <style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@page {
+    margin: 15mm;
+}
+
+body {
+    font-family: "Noto Sans CJK JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    line-height: 1.8;
+    color: #2d2d2d;
+    background-color: #f5f3f0;
+    padding: 0;
+    font-size: 15px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+h1 {
+    font-size: 2.2em;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.5em;
+    line-height: 1.3;
+}
+
+.subtitle {
+    font-size: 1.1em;
+    color: #6b6b6b;
+    margin-bottom: 2em;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    padding-bottom: 0.3em;
+    border-bottom: 2px solid #d4cfc7;
+    page-break-before: always;
+}
+
+h3 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #3a3a3a;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    display: inline-block;
+    background: linear-gradient(transparent 60%, #ffd97d 60%);
+    padding: 0 0.3em;
+    line-height: 1.5;
+}
+
+p {
+    margin-bottom: 1.2em;
+    color: #3a3a3a;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e0dbd3;
+    margin: 2em 0;
+}
+
+/* 会話引用文のスタイル */
+.dialogue {
+    border-left: 4px solid #c4a57b;
+    padding: 1.2em 1.5em;
+    margin: 1.5em 0;
+    border-radius: 6px;
+    font-size: 0.98em;
+}
+
+/* 小林弘人（パープル）*/
+.dialogue.kobayashi {
+    background: linear-gradient(135deg, #f5f0f7 0%, #ebe3f0 100%);
+    border-left-color: #9a82ad;
+}
+.dialogue.kobayashi .dialogue-speaker {
+    color: #6b5a7a;
+}
+
+/* Yoshi（ブルー）*/
+.dialogue.yoshi {
+    background: linear-gradient(135deg, #f0f4f7 0%, #e3ebf0 100%);
+    border-left-color: #7b9aad;
+}
+.dialogue.yoshi .dialogue-speaker {
+    color: #5a7485;
+}
+
+/* 加藤元英（グリーン）*/
+.dialogue.kato {
+    background: linear-gradient(135deg, #f2f7f0 0%, #e5f0e3 100%);
+    border-left-color: #8ba882;
+}
+.dialogue.kato .dialogue-speaker {
+    color: #5d7a57;
+}
+
+/* 木寺（オレンジ）*/
+.dialogue.kidera {
+    background: linear-gradient(135deg, #fdf6e9 0%, #f7ebd4 100%);
+    border-left-color: #d4a574;
+}
+.dialogue.kidera .dialogue-speaker {
+    color: #a87c3f;
+}
+
+/* しんたく（ティール）*/
+.dialogue.shintaku {
+    background: linear-gradient(135deg, #f0f7f5 0%, #e3f0ed 100%);
+    border-left-color: #82ada8;
+}
+.dialogue.shintaku .dialogue-speaker {
+    color: #5a7a75;
+}
+
+/* ババ（レッド）*/
+.dialogue.baba {
+    background: linear-gradient(135deg, #f7f0f2 0%, #f0e3e7 100%);
+    border-left-color: #ad8289;
+}
+.dialogue.baba .dialogue-speaker {
+    color: #7a5a60;
+}
+
+/* 盛川（インディゴ）*/
+.dialogue.morikawa {
+    background: linear-gradient(135deg, #f0f2f7 0%, #e3e7f0 100%);
+    border-left-color: #8289ad;
+}
+.dialogue.morikawa .dialogue-speaker {
+    color: #5a607a;
+}
+
+/* 平野（ゴールド）*/
+.dialogue.hirano {
+    background: linear-gradient(135deg, #f7f5f0 0%, #f0ebe3 100%);
+    border-left-color: #ada882;
+}
+.dialogue.hirano .dialogue-speaker {
+    color: #7a755a;
+}
+
+/* タムカイ（ブルーグレー）*/
+.dialogue.tamkai {
+    background: linear-gradient(135deg, #f0f4f7 0%, #e3ebf0 100%);
+    border-left-color: #7b9aad;
+}
+.dialogue.tamkai .dialogue-speaker {
+    color: #5a7485;
+}
+
+/* 佐伯（シアン）*/
+.dialogue.saeki {
+    background: linear-gradient(135deg, #f0f5f7 0%, #e3edf0 100%);
+    border-left-color: #82a8ad;
+}
+.dialogue.saeki .dialogue-speaker {
+    color: #5a757a;
+}
+
+/* デフォルト */
+.dialogue.default {
+    background: linear-gradient(135deg, #f5f5f5 0%, #ebebeb 100%);
+    border-left-color: #999999;
+}
+.dialogue.default .dialogue-speaker {
+    color: #666666;
+}
+
+.dialogue-speaker {
+    font-weight: 600;
+    margin-bottom: 0.3em;
+}
+
+.dialogue-text {
+    color: #3a3a3a;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+/* 注釈のスタイル */
+.annotation {
+    background-color: #faf9f7;
+    border: 1px solid #e5e1db;
+    border-radius: 8px;
+    padding: 1.5em;
+    margin: 2em 0;
+    font-size: 0.92em;
+}
+
+.annotation-title {
+    font-weight: 700;
+    color: #5a5a5a;
+    margin-bottom: 0.8em;
+    font-size: 1.05em;
+    display: flex;
+    align-items: center;
+}
+
+.annotation-title::before {
+    content: "📚";
+    margin-right: 0.5em;
+    font-size: 1.1em;
+}
+
+.annotation-content {
+    color: #4a4a4a;
+    line-height: 1.7;
+}
+
+.annotation-content p {
+    margin-bottom: 0.8em;
+}
+
+.annotation-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* 目次のスタイル */
+.table-of-contents {
+    background-color: #faf9f7;
+    border: 1px solid #e5e1db;
+    border-radius: 8px;
+    padding: 2em;
+    margin: 2.5em 0;
+    page-break-before: always;
+}
+
+.table-of-contents h2 {
+    font-size: 1.4em;
+    margin-top: 0;
+    margin-bottom: 1em;
+    border-bottom: none;
+    page-break-before: auto;
+}
+
+.table-of-contents ol {
+    list-style: none;
+    margin-left: 0;
+    counter-reset: chapter;
+}
+
+.table-of-contents li {
+    counter-increment: chapter;
+    margin-bottom: 0.8em;
+    font-size: 1.05em;
+}
+
+.table-of-contents li::before {
+    content: "第" counter(chapter) "章";
+    font-weight: 600;
+    color: #8b6f47;
+    margin-right: 1em;
+}
+
+.table-of-contents a {
+    color: #3a3a3a;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.table-of-contents a:hover {
+    color: #8b6f47;
+}
+
+/* 章の画像 */
+.chapter-image {
+    width: 150px;
+    height: 150px;
+    margin: 1.5em auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    color: #8b6f47;
+    background: linear-gradient(135deg, #d4cfc7 0%, #e8e3db 100%);
+    border-radius: 8px;
+}
+
+/* リストのスタイル */
+ol, ul {
+    margin-left: 1.5em;
+    margin-bottom: 1.2em;
+    color: #3a3a3a;
+}
+
+li {
+    margin-bottom: 0.5em;
+}
+
+/* 参考文献セクション */
+.references {
+    margin-top: 3em;
+    padding-top: 2em;
+    border-top: 2px solid #d4cfc7;
+}
+
+.references h2 {
+    page-break-before: auto;
+}
+
+/* 強調テキスト */
+strong {
+    font-weight: 600;
+    color: #2d2d2d;
+}
+
+/* タイトルページの装飾 */
+.title-ornament {
+    font-size: 3em;
+    margin: 0.5em 0;
+    color: #c4a57b;
+    text-align: center;
+}
+
+/* タイトルページ */
+.title-page {
+    text-align: center;
+    padding: 4em 2em;
+}
+
+/* イベント情報 */
+.event-info {
+    text-align: center;
+    margin: 1em 0 2em 0;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.event-info p {
+    margin-bottom: 0.3em;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h2 {
+        font-size: 1.4em;
+    }
+    h3 {
+        font-size: 1.2em;
+    }
+}
+
+/* PDF用スタイル */
+@media print {
+    body {
+        background-color: white;
+    }
+    .container {
+        background-color: white;
+        box-shadow: none;
+    }
+    .title-page {
+        page-break-after: always;
+        padding: 10em 2em 8em 2em;
+    }
+    .title-page h1 {
+        font-size: 2.8em;
+        margin-bottom: 0.5em;
+        border-bottom: 3px solid #d4cfc7;
+        padding-bottom: 0.5em;
+        display: inline-block;
+    }
+    .title-page .subtitle {
+        font-size: 1.3em;
+        margin-bottom: 3em;
+    }
+    .title-ornament {
+        font-size: 4em;
+        margin: 1em 0;
+        color: #c4a57b;
+    }
+    #introduction {
+        page-break-before: auto;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-page">
+            <div class="title-ornament">✦</div>
+            <h1>忍術としてのAI駆動開発——Auto Dev Ninja Meetup Night 1.0</h1>
+            <p class="subtitle"><strong>魔法と区別できない技術を、私たちはどう使いこなすか</strong></p>
+            <div class="event-info">
+        <p>開催日：2025年12月12日</p>
+        <p>場所：東京</p>
+        <p>主催：小林弘人（インフォバーン）</p>
+    </div>
+            <div class="title-ornament">✦</div>
+        </div>
+
+        <hr>
+<h2 id="introduction">はじめに</h2>
+<p>2025年12月、東京のある一室に、奇妙な集団が集まった。彼らは「忍者」と呼ばれることを自ら選んだ——AI駆動開発という、傍目には「忍術」にしか見えない技術を操る者たち。SF作家アーサー・C・クラークの有名な言葉「十分に高度な科学技術は魔法と区別できない」をもじって言えば、彼らは魔法使いではなく忍者なのだ。なぜなら、魔法には神秘が残るが、忍術には必ず「術」——つまり習得可能な技法——があるからだ。</p>
+<div class="annotation">
+    <div class="annotation-title">アーサー・C・クラークの三原則</div>
+    <div class="annotation-content">
+        <p>イギリスのSF作家アーサー・C・クラーク（1917-2008）が提唱した科学と想像力に関する三つの法則。第三法則「十分に高度な科学技術は魔法と区別できない」は、テクノロジーと人間の認知の関係を端的に表現している。本イベントでは、AIという「魔法のような技術」を「忍術」として再定義し、習得可能な技法として捉え直すことが試みられた。</p>
+    </div>
+</div>
+<p>このミートアップの名は「Auto Dev Ninja Meetup Night」。主催者の小林弘人は、日本のデジタルメディア黎明期から活動してきた人物だ。1994年に『WIRED』日本版を創刊し、1998年にはインフォバーンを設立、『サイゾー』や『ギズモード・ジャパン』など数多くのメディアを立ち上げてきた。30年以上にわたってテクノロジーとメディアの交差点に立ち続けてきた彼が、今、AI駆動開発のコミュニティを立ち上げようとしている。</p>
+<div class="dialogue kobayashi">
+    <div class="dialogue-speaker">小林弘人</div>
+    <p class="dialogue-text">「AI駆動開発ですね。コードコードで開発している仲間。ただツールが違うと結構割と全然楽しみにしてなかったり、多分皆さんAIと話してる時間の方が長いんじゃないですか。僕はそうですね。なんで、たまには人間と話そうということで」</p>
+</div>
+<p>ここには逆説がある。AIと対話する時間が長くなればなるほど、人間同士の対話がより貴重になる。そしてその対話は、AIとの対話では得られない何かを求めている——同じ体験をした者同士にしか通じない「話」、共有された困惑と興奮、そして「分かってくれる人がいる」という安堵。</p>
+<hr>
+<div class="table-of-contents">
+    <h2>目次</h2>
+    <ol>
+        <li><a href="#chapter1">第一章：限界を超える——文系大学生からハッカソンジャンキーへ</a></li>
+<li><a href="#chapter2">第二章：ツールが変われば世界が変わる——スポーツクラブからローカルLLMまで</a></li>
+<li><a href="#chapter3">第三章：プロンプトレスの思想——写真だけで世界と繋がる</a></li>
+<li><a href="#chapter4">第四章：形から入れ——大人な男のオートデスク環境</a></li>
+<li><a href="#chapter5">第五章：三つの「カン」——AI時代の人間の特性</a></li>
+<li><a href="#chapter6">第六章：グルーヴを求めて——ライブコーディングの没入</a></li>
+<li><a href="#chapter7">第七章：危機から生まれた革命——泣きながらのライブコーディング</a></li>
+<li><a href="#chapter8">第八章：ノンエンジニアのおっさん説——創造性を解き放つ</a></li>
+<li><a href="#chapter9">第九章：若者を田舎へ——講評者からのメッセージ</a></li>
+    </ol>
+</div>
+
+<hr>
+
+<h2 id="chapter1">第一章：限界を超える——文系大学生からハッカソンジャンキーへ</h2>
+<div class="chapter-image">🚀</div>
+<h3>1.1 アイデアだけでは一円の価値もない</h3>
+<p>最初の登壇者は、Yoshiこと関屋吉弘。シリコンバレーでVCのインターンを経験した文系大学生だ。彼が語り始めたのは、アイデアと実行の間に横たわる深い溝についてだった。</p>
+<div class="dialogue yoshi">
+    <div class="dialogue-speaker">Yoshi</div>
+    <p class="dialogue-text">「本当に感じたのが、単にアイデアだけでは一円も価値がないっていうことですね。なんでないのかといったら、今AIが出てきて色々とできるので机上の空論イコールお金にはならないっていうことが、より如実に表れてきている」</p>
+</div>
+<p>これは厳しい真実だ。かつてアイデアには希少性があった。思いついた人と実行できる人の間には、技術という大きな壁があった。しかしAIの登場により、その壁は急速に低くなりつつある。アイデアを持つ誰もが、そのアイデアを形にする可能性を手に入れた。結果として、アイデア単体の価値は相対的に下がり、「実行」の価値が相対的に上がった。</p>
+<div class="annotation">
+    <div class="annotation-title">机上の空論とMVP</div>
+    <div class="annotation-content">
+        <p>スタートアップの世界では、アイデアの価値を検証するために「MVP（Minimum Viable Product：実用最小限の製品）」を素早く作ることが重視される。AI駆動開発は、このMVP作成の時間とコストを劇的に削減した。かつて数週間かかったプロトタイプ開発が、数時間で可能になった例も珍しくない。</p>
+    </div>
+</div>
+<p>Yoshiの物語には、痛切なリアリティがある。プロジェクトを始めようとしたが何の本質もなく、技術力もない。友人の家に居候していたが追い出され、ネットカフェ生活を経験した。そして心機一転、ハッカソンに飛び込んだ。</p>
+<div class="dialogue yoshi">
+    <div class="dialogue-speaker">Yoshi</div>
+    <p class="dialogue-text">「シリコンバレーに行くチャンスがあったのでハッカソンに飛び入りしたんですね。そしたら人生初めてのハッカソンだったんですけど、部門で入賞しまして」</p>
+</div>
+<h3>1.2 AIディレクターという新しい職能</h3>
+<p>文系であることを逆手に取り、Yoshiは「AIディレクター」という概念を提唱する。</p>
+<div class="dialogue yoshi">
+    <div class="dialogue-speaker">Yoshi</div>
+    <p class="dialogue-text">「AIを使っていて感じるのがAIディレクターになるっていうことがこの文系である自分っていうところの価値かなと思っていて。ディレクターって何なんだってところで自分は勝手に定義したんですけど、一人で上場企業ぐらいの生産性があるという状態を勝手に置いています」</p>
+</div>
+<p>これは挑発的な定義だ。「一人で上場企業レベルの生産性」——普通に考えればあり得ない話だが、彼の論理には一理ある。AIの部下がいっぱいいるわけだから、一人のパフォーマンスを一エージェントに任せたとき、エージェントがエージェントを動かし、その上にまたエージェントが乗る。この連鎖を適切に「ディレクション」できれば、確かに一人で巨大な生産性を発揮できる可能性がある。</p>
+<div class="annotation">
+    <div class="annotation-title">エージェント・オーケストレーション</div>
+    <div class="annotation-content">
+        <p>複数のAIエージェントを連携させて複雑なタスクを実行する手法。各エージェントに専門的な役割を与え、それらを統合的に管理する「オーケストレーター」が、人間またはメタAIによって担われる。Yoshiの「AIディレクター」概念は、このオーケストレーターの役割を人間が担うモデルを指している。</p>
+    </div>
+</div>
+<p>しかし、彼の実践は概念だけに留まらない。文系であるがゆえにPCスペックが限られている——この制約を、友人の助けを借りてバーチャルマシンで克服した。</p>
+<div class="dialogue yoshi">
+    <div class="dialogue-speaker">Yoshi</div>
+    <p class="dialogue-text">「スペックがちょっと終わっているという状態ですので、ちょっと友達とかに相談して、バーチャルマシンでサーバーを立ててあげて、そこでテキルスケールでSSHして開発できるようにしました。でも、どこでも開発したいということなので、スマホで移動中もSSHで開発するみたいなことまでやっていました」</p>
+</div>
+<p>スマートフォンからSSHで開発する——これは技術的には可能だが、実際にそこまでやる人は稀だ。この「どこでも開発」への執着は、ハッカソンジャンキーとしての彼の本質を表している。</p>
+<p>そして彼は、不可能だと思っていたことが不可能ではなかったと気づく。</p>
+<div class="dialogue yoshi">
+    <div class="dialogue-speaker">Yoshi</div>
+    <p class="dialogue-text">「今まではAPIサーバー作るってすげーかっこいいなと思ったんですけど、実際作ってみて、これCURLで叩いてみたら案外ちゃんと回答作ってるんですけど、これでもCURLで普通に叩けるようなものを自分で作れてしまう」</p>
+</div>
+<hr>
+<h2 id="chapter2">第二章：ツールが変われば世界が変わる——スポーツクラブからローカルLLMまで</h2>
+<div class="chapter-image">🔧</div>
+<h3>2.1 AI駆動開発との出会い</h3>
+<p>加藤元英は、本業ではデータコンサルタントとして企業向けのデータ活用支援を行っているが、趣味の園芸と、兼業で経営する愛知県のテニススクールでAI駆動開発を実践している。</p>
+<div class="dialogue kato">
+    <div class="dialogue-speaker">加藤元英</div>
+    <p class="dialogue-text">「本業としてはですね、IT企業で2006年から最初、AIの研究をやっていました。当時は第二次AI業務が終わった後だったので、AIは死語になっていて、当時はデータマイニングという言葉で研究開発をやっていました」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">AIの冬と第二次AIブーム</div>
+    <div class="annotation-content">
+        <p>AI研究の歴史には「冬の時代」と呼ばれる停滞期が複数回存在する。1980年代後半から1990年代にかけての「第二次AI冬」では、エキスパートシステムの限界が明らかになり、研究への投資が減少した。「データマイニング」という言葉は、この時期にAIという言葉を避けるために使われた経緯がある。</p>
+    </div>
+</div>
+<p>彼のAI駆動開発との出会いは、2025年7月のことだった。</p>
+<div class="dialogue kato">
+    <div class="dialogue-speaker">加藤元英</div>
+    <p class="dialogue-text">「みんなが書いてきた文章をアップロードすることができて相互にコメント残せて過去のバージョンが見れる。多分市中にもこういうサービスあるんですけどライトにこれだけできればいいので作れないかなというふうにチャレンジしたことがあり、2025年7月なので今年ですね。7月にクロードコードを使って半日ぐらいですかね、作ることができて」</p>
+</div>
+<p>半日で機能的なアプリケーションを作れた——これがきっかけとなり、より本格的な開発へと進んでいく。</p>
+<h3>2.2 自己最適化エージェントという挑戦</h3>
+<p>加藤が現在取り組んでいるのは、「自己最適化エージェントアプリ」という野心的なプロジェクトだ。</p>
+<div class="dialogue kato">
+    <div class="dialogue-speaker">加藤元英</div>
+    <p class="dialogue-text">「何かというと、例えば僕が今喋ってるPowerPointがあります。これをAIにまず生成してもらう。だけど、なかなかいいものは出来上がらないから、人間側で修正をかけます。イメージとしては、AIに出してもらってですね、修正してですね。それをもう一回投げたら、その修正方法を学んでもらって、次は同じようなことをしないように自己学習していってくれる仕組みっていうのができないかしら」</p>
+</div>
+<p>これは機械学習における「フィードバックループ」の実践的な応用だ。人間の修正をAIが学習し、次回の出力に反映させる。理論的には可能だが、実装には多くの課題がある。彼は会場に問いかけた——「もし近しいことができている方がいたら、アドバイスをいただけると嬉しい」と。</p>
+<hr>
+<h2 id="chapter3">第三章：プロンプトレスの思想——写真だけで世界と繋がる</h2>
+<div class="chapter-image">📸</div>
+<h3>3.1 AIを学ぶのではなく、AIに仕事をさせる</h3>
+<p>木寺祥友は、JBpressでAI関連の記事を連載するライターであり、日本人として初めてJavaをプログラムしたという経歴を持つ。彼が提唱するのは「プロンプトレスUI」——AIを使うために何かを学ぶ必要があるという発想自体への異議申し立てだ。</p>
+<div class="dialogue kidera">
+    <div class="dialogue-speaker">木寺祥友</div>
+    <p class="dialogue-text">「なんか皆さんにですねAIを勉強してもらうっていうのはおかしいんじゃないかというふうに思ってまして、これベストパルがプロンプトを作って写真だけを入れれば答えを出してくれるというもののシリーズを作っています」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">プロンプトエンジニアリングの限界</div>
+    <div class="annotation-content">
+        <p>大規模言語モデル（LLM）から望ましい出力を得るために入力（プロンプト）を最適化する技術。しかし、この技術には学習コストがあり、非技術者にとっては依然としてハードルとなっている。木寺のアプローチは、この学習コストをゼロにすることで、AIの恩恵を誰もが受けられるようにする試みである。</p>
+    </div>
+</div>
+<p>彼が作ったのは「スマートオーディオガイド」——写真を撮るだけで、その場所の説明を音声で聞けるカスタムGPTだ。</p>
+<div class="dialogue kidera">
+    <div class="dialogue-speaker">木寺祥友</div>
+    <p class="dialogue-text">「雷門の写真なんですけども、雷門に行って写真をパシャっと撮るんですね。そうするとイヤホンしてますから、それでこのボタンをピックと押すと、全部ガイドを送ってくる」</p>
+</div>
+<p>これは観光ガイドの民主化だ。言語の壁を越え、百か国語に対応する。彼の視点は、AIの恩恵を受けられる人と受けられない人の格差に向けられている。</p>
+<div class="dialogue kidera">
+    <div class="dialogue-speaker">木寺祥友</div>
+    <p class="dialogue-text">「海外のAI系のユーチューバー見ているとですね、なかなかこう文章を読めるとか、文章を書けるっていう人種っていうのは少ないんですよね、実際世の中の人の半分ぐらいが字が書けないとか字が読めないという方たちなんですけど、じゃあそういう人たちはAI使わなくていいのかっていうのがまたおかしくて」</p>
+</div>
+<h3>3.2 個人的な動機から普遍的なツールへ</h3>
+<p>彼がこのツールを作り始めた動機には、個人的なストーリーがある。</p>
+<div class="dialogue kidera">
+    <div class="dialogue-speaker">木寺祥友</div>
+    <p class="dialogue-text">「私の友人がですね、最近Web2.0の有名な小川さんって方が亡くなり4月に亡くなりまして、それで私も腸の病気がなくなったので、私も大腸の検査しなくちゃいけないなということで」</p>
+</div>
+<p>友人の死をきっかけに健康管理を意識し、「ホットマップ」という健康法を実践しようとした。しかし、どの食品が良いのか悪いのか判断するのは難しい。そこで、写真を撮るだけで食品の健康度を判定してくれるGPTを作った。</p>
+<p>個人的な必要性から生まれたツールが、より普遍的な問題——リテラシー格差の解消——へと接続されていく。これは優れたプロダクト開発のパターンでもある。</p>
+<hr>
+<h2 id="chapter4">第四章：形から入れ——大人な男のオートデスク環境</h2>
+<div class="chapter-image">🖥️</div>
+<h3>4.1 物理環境の設計</h3>
+<p>「しんたく」こと武は、高知を拠点にIoTものづくりを行っている。彼のアプローチは、AI駆動開発を始めるなら「形から入れ」というものだ。</p>
+<div class="dialogue shintaku">
+    <div class="dialogue-speaker">しんたく</div>
+    <p class="dialogue-text">「皆さんにお伝えしたい、AI駆動開発これから始められる、まだまだよくわかんないということですね。スキーでも何でもスポーツもあるじゃないですか。形から入るっていうことを皆さんにお伝えしたいです」</p>
+</div>
+<p>彼のオフィス環境は、複数のモニターを戦略的に配置したものだ。</p>
+<div class="dialogue shintaku">
+    <div class="dialogue-speaker">しんたく</div>
+    <p class="dialogue-text">「AI駆動開発をやってきてですね、錯覚されるんですけど、事実なんですけど、自分の複数人になったような形で様々なことをタダでできるようになります。そうした時にですね、よくあるのが画面が足りない、切り替えてたみたいな状況があるんで」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">マルチモニター環境とコグニティブロード</div>
+    <div class="annotation-content">
+        <p>複数のモニターを使用することで、タスク切り替えのコストを削減し、認知負荷を軽減できる。AI駆動開発では、コードエディタ、ターミナル、AIチャット、ドキュメントなど複数のウィンドウを同時に参照する必要があるため、物理的な作業環境の設計が生産性に直結する。</p>
+    </div>
+</div>
+<p>特に興味深いのは、「フック」機能を使った音声フィードバックの導入だ。</p>
+<div class="dialogue shintaku">
+    <div class="dialogue-speaker">しんたく</div>
+    <p class="dialogue-text">「クロードとかツールでフックって呼ばれる機能があるんですね。ここにスピーカーがあるんですけど、何々が終わったよみたいな感じで、最近なんかジェミニ2.5のTTSがかなりいい感じになってきたというところで、流暢な日本語で喋ってくれて」</p>
+</div>
+<p>AIが処理を完了したことを音声で通知する——これにより、画面を凝視し続ける必要がなくなる。視覚から聴覚へのモダリティシフトにより、認知リソースを解放できる。</p>
+<p>彼は78本ものアプリを開発したと言う。そして、8人プラス中央の「アイラ」というエージェント群を動かしている。ローカルLLMを活用し、メルカリで40万円で購入したMac（M3 Ultra、128GB）で運用している。</p>
+<hr>
+<h2 id="chapter5">第五章：三つの「カン」——AI時代の人間の特性</h2>
+<div class="chapter-image">🎯</div>
+<h3>5.1 ベルリンから来た映像作家</h3>
+<p>ババ アツシは、ベルリンを拠点に18年間活動してきた映像アーティストだ。2019年からはAIを活用した映像制作を行っており、AIに関する「ハルシネーション案件」の緊急対応を24時間以内に解決するという、ある種のゲーム感覚での仕事もしているという。</p>
+<p>彼はスライドを使わず、ホワイトボードに手書きで「カン」という文字を書いた。</p>
+<div class="dialogue baba">
+    <div class="dialogue-speaker">ババ アツシ</div>
+    <p class="dialogue-text">「AIを駆使して使っていると、いろいろ考えることはあるんですが、あ、これAIってすごくカンっていうのが重要だなってやっぱ思うんです。使えば使うほど思って、これは別に映像やろうが、デベロッパーだろうが、結構似てるところに行くと思うんですよ」</p>
+</div>
+<p>そして彼は、「カン」には三つの意味があると説いた。</p>
+<h3>5.2 観・感・勘——三つのカン</h3>
+<p><strong>第一の「観」（観点、世界観）</strong></p>
+<div class="dialogue baba">
+    <div class="dialogue-speaker">ババ アツシ</div>
+    <p class="dialogue-text">「これがいわゆる観点とか世界観とか、あんた何の話するの、これどういう方向性、ここで人間が決めるところする。これがないと進まない」</p>
+</div>
+<p>方向性を定める力。AIに何を作らせるか、どこに向かうかを決めるのは人間だ。これがなければ、どれだけ高性能なAIも漂流するだけだ。</p>
+<p><strong>第二の「感」（感性、センス）</strong></p>
+<div class="dialogue baba">
+    <div class="dialogue-speaker">ババ アツシ</div>
+    <p class="dialogue-text">「味付けの部分ですね。これをしょっぱくした方がいいのか、甘くした方がいいのか、これケースバイケース。そうやって人間がそこで選ばないと。結局、その味付けでクオリティは関わるので、そこにお金を払うか払わないかっていうのは、おそらくこのセンスをみんな買っているんじゃないですか」</p>
+</div>
+<p>これは料理の比喩で説明される。同じ材料でも、味付けによって全く異なる料理になる。AIが生成した素材をどう調理するか——そこに人間の感性が問われる。</p>
+<p><strong>第三の「勘」（直感、インスティンクト）</strong></p>
+<div class="dialogue baba">
+    <div class="dialogue-speaker">ババ アツシ</div>
+    <p class="dialogue-text">「何かやっているうちに、これちょっと変だなってふと思う瞬間とかあると思うんですよ。開発。はまりそうだと。このときの方向を修正しないと永遠に時間かかって無駄なコストが変わってしまう」</p>
+</div>
+<p>危険を察知する能力。プロジェクトが間違った方向に進んでいないか、直感的に感じ取る力。これがなければ、無駄な時間とコストを費やすことになる。</p>
+<div class="dialogue baba">
+    <div class="dialogue-speaker">ババ アツシ</div>
+    <p class="dialogue-text">「この3つのAIのカン、でも実はこれって人間の特性だと思ったんですね。これっていうのは人間しかできないということで、ゆえに私たちはAIというツールを駆使する上で、ここの部分をいわゆる重点的に意識して接すればいい」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">暗黙知とAI</div>
+    <div class="annotation-content">
+        <p>哲学者マイケル・ポランニーが提唱した「暗黙知」の概念は、言語化できない知識の重要性を示している。ババの「三つのカン」は、この暗黙知の領域に位置する。AIは明示的な知識の処理には優れているが、暗黙知の領域——つまり「なんとなく変だ」「こっちの方が良さそう」という感覚——は依然として人間の専門領域である。</p>
+    </div>
+</div>
+<h2 id="chapter6">第六章：グルーヴを求めて——ライブコーディングの没入</h2>
+<div class="chapter-image">🎵</div>
+<h3>6.1 知の編集装置としてのLLM</h3>
+<p>盛川英典は、小林弘人と共にこのイベントを企画した人物だ。彼は「What is your output?」という問いを投げかける。</p>
+<div class="dialogue morikawa">
+    <div class="dialogue-speaker">盛川英典</div>
+    <p class="dialogue-text">「何があなたのアウトプットなんだろうなっていうのをちょっと考えなきゃいけない時代になったんじゃないかなというふうに思っています。それは自分の考えなんですかとか、それはLLMを利用して導いたものなんですか」</p>
+</div>
+<p>そして彼は、LLMを「知の編集装置」として捉える。</p>
+<div class="dialogue morikawa">
+    <div class="dialogue-speaker">盛川英典</div>
+    <p class="dialogue-text">「LLMって、知の編集装置だと僕は思ってまして、僕は文章を書くのとかすごい大嫌いな人間で、国語の点数とか、もう最たるもんで、よく2とかって言ったような、よく大学まで行けたなってくらいの人間なんですけど、LLMでどんどん聞きながらやっていくと、自分が文章を書いて上手くなって編集できるような気分になってくる」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">知の編集装置</div>
+    <div class="annotation-content">
+        <p>盛川の「知の編集装置」という表現は、LLMの本質を捉えている。LLMは新しい知識を生み出すのではなく、既存の知識を組み合わせ、構造化し、表現する——つまり「編集」する。この意味で、LLMは人間の思考を補助・拡張する「知の義肢」とも言える。</p>
+    </div>
+</div>
+<h3>6.2 没頭状態としてのグルーヴ</h3>
+<p>彼がライブコーディングについて語る言葉には、独特の詩情がある。</p>
+<div class="dialogue morikawa">
+    <div class="dialogue-speaker">盛川英典</div>
+    <p class="dialogue-text">「ライブコーディングしていると、すごくのめり込んじゃって、寝るのももう忘れるくらいのめり込んじゃって、なんか思考と指が滑るように繋がって、気がつくともう没頭状態、もう本当にグルーヴな、こういう没頭してるっていう、なんかこう集中してんだか集中してないんだかよくわかんないような状態になって、なんかそれがでも心地いい」</p>
+</div>
+<p>心理学者ミハイ・チクセントミハイが「フロー」と呼んだ状態——自我が消え、活動そのものと一体化する体験。盛川はこれを「グルーヴ」と呼ぶ。音楽のグルーヴのように、コードを書く行為自体がリズムを持ち、その中に没入していく。</p>
+<div class="dialogue morikawa">
+    <div class="dialogue-speaker">盛川英典</div>
+    <p class="dialogue-text">「そこにやっぱり意識が入らないとアートにならないし、なんか、ザ・アートオブなんとかかんとか、アートオブプログラミングとか、クルーズさんの本とか、有名な本があったりとかしますけど、なんかこう、あなたの魂を入れたものをみんなに作ってほしいなっていう」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">フロー状態とプログラミング</div>
+    <div class="annotation-content">
+        <p>チクセントミハイの「フロー理論」は、最適な経験が生じる条件を説明する。明確な目標、即座のフィードバック、スキルと挑戦のバランスなどが揃ったとき、人は深い没入状態に入る。プログラミングは、これらの条件を満たしやすい活動の一つとして知られている。AI駆動開発においても、人間がAIとの対話を通じてこのフロー状態を経験できる可能性がある。</p>
+    </div>
+</div>
+<h2 id="chapter7">第七章：危機から生まれた革命——泣きながらのライブコーディング</h2>
+<div class="chapter-image">🎵</div>
+<h3>7.1 エンジニアが去った夜</h3>
+<p>平野友康の物語は、最も劇的なものだった。彼は1998年にVJソフト「motion dive」を世界中のクラブに普及させ、ウェブ制作ソフト「BiND」など数々のソフトウェアを開発してきたレジェンドだ。</p>
+<p>しかし彼が語り始めたのは、輝かしい実績ではなく、危機の瞬間だった。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「2025年3月31日ですね。僕が住んでいた糸島市、弊社の一軒家があるんですけれども、いよいよ31日午前、4月1日午前0時にストライプの課金が始まると、ああ、やっとうちにもサービス始まるねっていうふうな日に。唯一のエンジニアのA君が今日でやめたいです。さよならって言って、本当に30分話して去ってたんですね」</p>
+</div>
+<p>500人のユーザーへの課金が始まる前夜に、唯一のエンジニアが去った。サービスに必要な機能もまだない。ストライプのデバッグも済んでいない。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「おい、ちょっと待ってと。ストライプのデバッグもしてないだろうということで、あ、これ死ぬと思ったんですよね」</p>
+</div>
+<h3>7.2 ICUでのコーディング</h3>
+<p>さらに悪いことに、翌日の午前2時、仲間の一人がショックで倒れた。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「仲間の一人がショックで、血の泡吹いて倒れてたんですよ。倒れる瞬間に白目向きながらごめんなさい、ごめんなさいって言って、バタンって倒れて。あ、これ死ぬって思ったので、救急車を呼んだんですよね」</p>
+</div>
+<p>救急車を呼び、ICUの前で待っている間、彼のスマートフォンに通知が来た。「カーソルにエージェントなかなかいいよね」というニュース。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「ICUで行けるだの死ぬだのっていうのを見てる間、何もすることがないんで、カーソルでちょっとなんかエージェントになんかやってくれるのと思って」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">Cursor</div>
+    <div class="annotation-content">
+        <p>AIを統合したコードエディタ。VSCodeをベースに、GPT-4などの大規模言語モデルを組み込み、コード生成、デバッグ支援、ドキュメント作成などを自然言語で指示できる。2024年から2025年にかけて急速に普及した。</p>
+    </div>
+</div>
+<p>そして彼は、ICUの手前でコーディングを始めた。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「この日からですよ。3週間泣きながらあれこれやってたら、なんかできたんですよね。ストライプの決済とかもうまくなって。API、あ、なんか20年間ずっとエンジニアいじめ続けてたな、俺、あ、これかみたいな」</p>
+</div>
+<p>20年間ソフトウェア開発をしてきたが、自分でコードを書くことはなかった。エンジニアに指示を出す側だった。しかし今、クロードコードと対話しながら、自分でもできることを発見した。</p>
+<h3>7.3 大学生を休学させる男</h3>
+<p>危機を乗り越えた平野は、新しいプロジェクトを始めた。AIの学校を運営し、糸島や京都や東京を新幹線で往復しながら、若い世代と一緒に開発している。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「うちの社員はですね、全員19歳から22歳ぐらいまでで、全員休学生なんですね。どういうことかっていうと、うちに遊びに来なよって言って泊まれるんで、泊まっているうちに2日目ぐらいに、あ、これ大学辞めますみたいなこと言うんですよね」</p>
+</div>
+<p>彼の会社には「休学説明会」なるものがある。休学の手続きを教え、生成AIを学ぶ環境を提供する。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「大学の授業は2年後もおそらく同じことをやっているだろうと。でも今この生成AIを学べる、どっぷり24時間365日学べるのは今しかないっていうので、翌日ですね、休学届けを出しに行った」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">AIトキワ荘</div>
+    <div class="annotation-content">
+        <p>平野は「AIトキワ荘」という法人を設立したと言う。トキワ荘は、手塚治虫や藤子不二雄など多くの漫画家が若い頃に住んでいた東京のアパートで、才能が集まり互いに切磋琢磨した伝説的な場所。平野の「AIトキワ荘」構想は、AI駆動開発の若い才能が集まる場を全国・全世界に作ろうという試みである。</p>
+    </div>
+</div>
+<p>そして彼の「オフィス」は、東京ドームにあるラクーアというスパ施設だ。</p>
+<div class="dialogue hirano">
+    <div class="dialogue-speaker">平野友康</div>
+    <p class="dialogue-text">「皆さんわかると思うんですけど、バイブコーディングっていう、生成AIやってると体温めないと、1日五試合とかできないんで、最高なわけですよ。法人会員5人分入りまして、実は今日で七泊目で、2週に1回、ラクア合宿っていうのを三泊から五泊でやってます」</p>
+</div>
+<p>温浴施設でコーディング合宿——これは冗談のようだが、彼の論理には一貫性がある。長時間の集中作業には体のケアが必要だ。サウナやお風呂で体を温めながら、思考を整理する。そして仲間と議論する。</p>
+<hr>
+<h2 id="chapter8">第八章：ノンエンジニアのおっさん説——創造性を解き放つ</h2>
+<div class="chapter-image">💡</div>
+<h3>8.1 ものを作りたかったデザイナー</h3>
+<p>最後の登壇者は、タムラカイ（タムカイ）。富士通でデザイナーとして働き、7万5000人規模のパーパス言語化ワークショップ「Purpose Carving」を開発した人物だ。2025年に独立し、「AFFLATUS」という会社を立ち上げた。</p>
+<p>彼の話は、大企業のビジネスコンテストでの挫折から始まる。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「社内のビジコンとかもあるので、応募しました。ちゃんとピッチしてちゃんと通って、でもの作りたいんですよ。あの、作るの好きなのでなんですけど、僕、エンジニアじゃないのでプロダクト作れない」</p>
+</div>
+<p>ユーザーニーズは何か、ユーザーフリクションはどうか——そう問われ続けているうちに時間切れ。「これあんま儲からないね」で終わらされる。アイデアはあっても、それを形にする手段がない。</p>
+<h3>8.2 タイマーを作った瞬間</h3>
+<p>転機は、知人から「今やらんでどうする」と言われたことだった。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「会社作って、何のやることもないお前が今やらんでどうするって言われたんで、はい、わかりました。VSCodeを入れて、クロードコードを入れて、黒い画面が出てきて、タイマー作ってって言ったら、タイマーが動いたんですよね」</p>
+</div>
+<div class="annotation">
+    <div class="annotation-title">黒い画面への憧れ</div>
+    <div class="annotation-content">
+        <p>プログラマーが使うターミナル（コマンドライン）は、黒い背景に文字が並ぶ「黒い画面」として知られる。非エンジニアにとって、この黒い画面は長らく「エンジニアの聖域」として畏怖と憧れの対象だった。タムカイの「黒い画面」への言及は、その壁を越えた瞬間の感動を表している。</p>
+    </div>
+</div>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「これは僕に数年ぶりに起こった衝撃で、物が作れるじゃないか。やってる方には当たり前なんですけれど、もう全然当たり前じゃないことが始まりました」</p>
+</div>
+<h3>8.3 0から5への飛躍</h3>
+<p>タムカイは、AI駆動開発がもたらす変化を図式化する。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「エンジニアの方がこのAIを手に入れると、多分9から10になっていくところを支えるのかなと思います。ノンエンジニアのおっさんにAIが組み合わさったとして、5ぐらいまではいけた気になった。これってめちゃめちゃでかいことなんじゃないかなと思っている」</p>
+</div>
+<p>エンジニアにとってAIは「9から10」への上積み。しかしノンエンジニアにとっては「0から5」への飛躍だ。絶対値では小さくても、相対的な変化は後者の方が大きい。</p>
+<p>そして「おっさん」という言葉には、自虐と同時に強みの認識がある。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「なんでこのおっさん強いかというと、いろいろ経験してきたせいで、タスクを分解し、指示を出し、出てきたものに対してレビューができるので、今それを人にやってたら大変だったのが、AIでできるので、すげー楽になった」</p>
+</div>
+<p>経験から得た「タスク分解力」「指示力」「レビュー力」——これらはAIを使いこなす上で重要なスキルだ。若いエンジニアには技術力がある。おっさんには経験がある。AIは両者の間を橋渡しする。</p>
+<h3>8.4 創造性という宗教</h3>
+<p>タムカイは「創造性診断」というサービスを開発している。富士通で7万5000人のパーパスを言語化した経験を基に、個人の創造性を見える化しようという試みだ。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「今までだったら発明できる発散思考が創造性と言われたんですが、発散するところ弱くても収束が強ければ、それを力で発散はAI」</p>
+</div>
+<p>従来の「創造性＝発散思考」という定義を再検討し、収束思考の強さも創造性の一形態として認識する。そしてAIは、発散が苦手な人の発散を補助できる。</p>
+<p>彼の会社名「AFFLATUS」は、「創造的衝動」を意味する英単語だ。最後に彼は言った。</p>
+<div class="dialogue tamkai">
+    <div class="dialogue-speaker">タムカイ</div>
+    <p class="dialogue-text">「やっぱり意思をお泊りし続けようと、僕は創造性大好きなんですよって言ってたら、色んな人に会ってきましたし、これから先もみんなの創造性発揮していきましょう」</p>
+</div>
+<hr>
+<h2 id="chapter9">第九章：若者を田舎へ——講評者からのメッセージ</h2>
+<div class="chapter-image">🌾</div>
+<h3>9.1 データサイエンティスト協会からの視点</h3>
+<p>講評を担当したのは、データサイエンティスト協会の事務局長・佐伯諭だ。彼自身、電通でデジタルマーケティングを担当し、電通デジタルの創業期にはCDOとして組織開発に携わった経験を持つ。</p>
+<div class="dialogue saeki">
+    <div class="dialogue-speaker">佐伯諭</div>
+    <p class="dialogue-text">「年間でだいたい2万人ぐらい、新卒の2万人ぐらいの学生たちが何かしらAIでも、データサイエンスを取り組んでやってきたわけです。ここに産業界が果たして間に合ってるのかな」</p>
+</div>
+<p>毎年2万人のデータサイエンス人材が育っている。しかし、それを受け入れる産業側の準備は整っているのか。この問いは、AIブームの陰に隠れた構造的な問題を指摘している。</p>
+<h3>9.2 第一次産業・第二次産業への回帰</h3>
+<p>そして佐伯は、意外な方向性を示唆する。</p>
+<div class="dialogue saeki">
+    <div class="dialogue-speaker">佐伯諭</div>
+    <p class="dialogue-text">「第一次産業と第二次産業に若者たちを預けたいと思っています。ここの仕掛けをやっぱり地産地消っていうか、データの地産地消でもAIの地産地消でもいいんだけど、そういったことじゃなくて、もう日本の大先進国の日本って救えないんじゃないかな」</p>
+</div>
+<p>都市でスタートアップを立ち上げるのではなく、地方の第一次産業（農林水産業）や第二次産業（製造業）にAI人材を投入する。「データの地産地消」という言葉には、中央集権的なデータ活用ではなく、地域に根ざしたAI活用のビジョンがある。</p>
+<div class="dialogue saeki">
+    <div class="dialogue-speaker">佐伯諭</div>
+    <p class="dialogue-text">「こんなところでこんな深センのいいところでね、飯食ったりしている場合じゃないかもしれなくて、なんかここのパワーをぜひ皆さんの叡智をね、もう田舎の方でガンガン発揮してほしい」</p>
+</div>
+<hr>
+<h2>おわりに——伝説の夜は続く</h2>
+<p>イベントの最後、小林弘人が会場に呼びかけた。</p>
+<div class="dialogue kobayashi">
+    <div class="dialogue-speaker">小林弘人</div>
+    <p class="dialogue-text">「今日ピッチされた中で、はい、皆さん。思い出してください。集合写真家の方がいらっしゃいますね。もしかしたらこれ、伝説の夜になるかもしれないんで、撮っておきましょう」</p>
+</div>
+<p>「伝説の夜になるかもしれない」——この言葉には、彼らが感じている時代の転換点への意識が凝縮されている。</p>
+<p>1994年に『WIRED』日本版を創刊したとき、インターネットは「何かわからないもの」だった。今、AIは同じような位置にある。何かわからないが、大きな変化が起きている。その変化の最前線に、彼らは立っている。</p>
+<p>しかし今回が違うのは、彼らが「コードを書ける」ようになっていることだ。かつてインターネット革命のとき、メディアを作る人と技術を作る人は別だった。今、その境界が溶けつつある。ノンエンジニアが「黒い画面」に触れ、ものを作り始めている。</p>
+<p>平野は言った——「旅する会社」を20年前に書いた自分が、今また旅をしている。ただし今度は、20代の休学生たちと一緒に。佐伯は言った——田舎に若者を送り込みたい。タムカイは言った——創造性を解き放ちたい。</p>
+<p>名古屋で2回目が開催されることが、もう決まっている。高知からはしんたくが来いと誘っている。平野はラクーアで待っていると言った。</p>
+<p>忍者たちの夜は、まだ終わらない。</p>
+<div class="annotation">
+    <div class="annotation-title">2025年12月13日</div>
+    <div class="annotation-content">
+        
+    </div>
+</div>
+<h2>登壇者プロフィール</h2>
+<div class="chapter-image">👥</div>
+<p><strong>小林弘人（こばやし・ひろと）</strong></p>
+<p>株式会社インフォバーン代表取締役CVO。1994年『WIRED』日本版創刊、1998年インフォバーン設立。『サイゾー』『ギズモード・ジャパン』など多数のメディアを立ち上げ。著書に『新世紀メディア論』『メディア化する企業はなぜ強いのか?』など。</p>
+<p><strong>関屋吉弘（Yoshi）</strong></p>
+<p>元シリコンバレーVCインターン。文系大学生ながらハッカソンで入賞を重ね、AI駆動開発で「AIディレクター」としての活動を展開。</p>
+<p><strong>加藤元英</strong></p>
+<p>データコンサルタント。2006年からAI（当時はデータマイニング）の研究開発に従事。愛知県のテニススクールを経営し、スポーツ向けアプリの開発も手がける。</p>
+<p><strong>木寺祥友</strong></p>
+<p>JBpress AIコラムニスト。日本人として初めてJavaをプログラム。著書に『Javaを創った人々』など。「プロンプトレスUI」の概念を提唱し、写真だけで動作するカスタムGPTを多数開発。</p>
+<p><strong>しんたく（武）</strong></p>
+<p>高知県在住。IoTものづくりを手がけるバグダボを運営。集合写真家としても活動。78本のAI駆動アプリを開発。</p>
+<p><strong>ババ アツシ（ACCI BABA）</strong></p>
+<p>ベルリン在住のビジュアルアーティスト、映像作家。2007年よりドイツを拠点に活動。文化庁メディア芸術祭、Ars Electronicaなど国際的な展覧会で作品を発表。2019-2024年、慶應義塾大学SFC特別招聘教授。</p>
+<p><strong>盛川英典</strong></p>
+<p>AI駆動開発の実践者。小林弘人と共にAuto Dev Ninja Meetupを企画。ライブコーディングの「グルーヴ」を追求する。</p>
+<p><strong>平野友康</strong></p>
+<p>元デジタルステージ代表。VJソフト「motion dive」、ウェブ制作ソフト「BiND」などを開発。グッドデザイン賞金賞、文化庁メディア芸術祭優秀賞など受賞多数。現在は生成AIの学校を運営し、「AIトキワ荘」構想を推進。</p>
+<p><strong>タムラカイ（タムカイ）</strong></p>
+<p>株式会社AFFLATUS代表取締役、富士通デザインフェロー。富士通の全社変革プロジェクト「フジトラ」で7万5000人が実施したパーパス言語化ワークショップ「Purpose Carving」を開発（HRアワード2022受賞）。著書に『ラクガキノート術』など。</p>
+<p><strong>佐伯諭</strong></p>
+<p>データサイエンティスト協会事務局長兼スキル定義委員会副委員長。元電通デジタル執行役員CDO。データサイエンティスト協会の創設メンバー。</p>
+    </div>
+</body>
+</html>
