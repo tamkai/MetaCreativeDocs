@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>メタクリドキュメントとは何か — 3 View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700;900&family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET ========== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{overflow-x:hidden}
+.view-content{display:none}.view-content.active{display:block}
+
+/* ========== VIEW SWITCHER ========== */
+.view-switcher{position:fixed;top:0;left:0;right:0;z-index:2000;background:rgba(250,248,245,0.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid #E5DFD6;padding:0.6rem 0;text-align:center}
+.switcher-inner{display:inline-flex;gap:4px;background:rgba(44,51,48,0.04);border-radius:8px;padding:3px}
+.view-tab{padding:0.45rem 1.4rem;border:none;background:transparent;color:#9E9690;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;border-radius:6px;transition:all 0.2s;letter-spacing:0.02em}
+.view-tab.active{background:rgba(44,51,48,0.08);color:#2C3330}
+.view-tab:hover:not(.active){color:#6B6560}
+
+/* ========================================
+   CONVERSATION VIEW — Light Theme
+   ======================================== */
+#view-conversation{background:#F5F0E8;color:#2C3330;font-family:'Noto Sans JP',sans-serif;line-height:1.85;min-height:100vh;padding-top:52px}
+#view-conversation .conv-hero{text-align:center;padding:5em 2em 3em;max-width:1080px;margin:0 auto}
+#view-conversation .conv-badge{display:inline-flex;align-items:center;gap:0.5rem;padding:0.4rem 0.9rem;background:rgba(139,154,125,0.1);border:1px solid rgba(139,154,125,0.3);border-radius:100px;font-size:0.8rem;color:#5E6E52;margin-bottom:1.5rem}
+#view-conversation .conv-title{font-family:'Noto Serif JP',serif;font-size:2.25rem;font-weight:700;line-height:1.3;margin-bottom:0.3em;color:#2C3330}
+#view-conversation .conv-sub{font-family:'Noto Serif JP',serif;font-size:1.125rem;color:#6B6560;margin-bottom:1.5em;line-height:1.6}
+#view-conversation .conv-meta{font-family:'Inter',sans-serif;font-size:0.8125rem;color:#9E9690;letter-spacing:0.02em}
+#view-conversation .conv-body{max-width:800px;margin:0 auto;padding:0 2rem 4rem}
+#view-conversation .conv-sep{text-align:center;padding:2rem 0;color:#9E9690;font-size:0.9rem;letter-spacing:0.3em}
+#view-conversation .conv-q{padding:12px 16px;border-left:4px solid #E5DFD6;border-radius:4px;margin-bottom:8px;background-color:#F4F6F2;border-left-color:#8B9A7D}
+#view-conversation .conv-q.opi{background-color:#F0F5FA;border-left-color:#5B8DB8}
+#view-conversation .conv-speaker{font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;letter-spacing:0.02em;margin-bottom:4px;color:#5E6E52}
+#view-conversation .conv-q.opi .conv-speaker{color:#3A6B91}
+#view-conversation .conv-text{font-size:0.9375rem;line-height:1.85;color:#2C3330}
+#view-conversation .conv-end{text-align:center;padding:3rem 0;font-size:0.85rem;color:#9E9690;font-style:italic}
+#view-conversation .conv-footer{text-align:center;padding:2rem;border-top:1px solid #E5DFD6;font-size:0.8125rem;color:#9E9690}
+
+/* ========================================
+   STANDARD VIEW — Light Theme (Design Language v1.0)
+   ======================================== */
+#view-standard{--sage-50:#F4F6F2;--sage-100:#E2E8DD;--sage-200:#C5D1BC;--sage-400:#8B9A7D;--sage-600:#5E6E52;--rose-50:#FDF5F3;--rose-200:#F0C4BB;--gold-50:#FDF9EE;--gold-100:#F7EDCC;--gold-200:#EEDEA5;--gold-400:#C4A057;--gold-600:#9A7B3A;--blue-50:#F0F5FA;--blue-100:#D6E4F0;--blue-400:#5B8DB8;--blue-600:#3A6B91;--base:#F5F0E8;--surface:#FAF8F5;--white:#FDFCFA;--text-primary:#2C3330;--text-secondary:#6B6560;--text-muted:#9E9690;--border:#E5DFD6;--font-sans:'Noto Sans JP',sans-serif;--font-serif:'Noto Serif JP',serif;--font-inter:'Inter',sans-serif;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-16:64px;--content-standard:800px;--content-wide:1080px;--radius-sm:4px;--radius-md:8px;--radius-lg:12px;--shadow-sm:0 1px 2px rgba(44,51,48,0.05);--shadow-md:0 4px 12px rgba(44,51,48,0.08);--duration-fast:150ms;--duration-normal:250ms;--easing:cubic-bezier(0.4,0,0.2,1);background:var(--base);color:var(--text-primary);font-family:var(--font-sans);line-height:1.85;font-size:0.9375rem;min-height:100vh;-webkit-font-smoothing:antialiased}
+#view-standard .title-page{text-align:center;padding:5em 2em 4em;max-width:var(--content-wide);margin:0 auto}
+#view-standard .title-ornament{font-size:2.5em;color:var(--gold-400);margin:0.5em 0;line-height:1}
+#view-standard .title-page h1{font-family:var(--font-serif);font-size:2.25rem;font-weight:700;line-height:1.3;color:var(--text-primary);margin-bottom:0.3em}
+#view-standard .title-subtitle{font-family:var(--font-serif);font-size:1.125rem;font-weight:400;color:var(--text-secondary);margin-bottom:1.5em;line-height:1.6}
+#view-standard .title-meta{font-family:var(--font-inter);font-size:0.8125rem;color:var(--text-muted);letter-spacing:0.02em}
+#view-standard .title-meta span{display:inline-block;margin:0 0.75em}
+#view-standard .title-divider{width:60px;height:1px;background:var(--border);margin:2em auto}
+#view-standard .document-wrapper{display:flex;gap:var(--space-8);max-width:var(--content-wide);margin:0 auto;padding:0 var(--space-6) var(--space-16)}
+#view-standard .sidebar{width:220px;flex-shrink:0;position:sticky;top:calc(52px + var(--space-8));align-self:flex-start;max-height:calc(100vh - 116px);overflow-y:auto}
+#view-standard .sidebar-toc{padding:var(--space-4);border-right:1px solid var(--border)}
+#view-standard .sidebar-toc .toc-label{font-family:var(--font-inter);font-size:0.6875rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:var(--space-4)}
+#view-standard .sidebar-toc ul{list-style:none}
+#view-standard .sidebar-toc li{margin-bottom:var(--space-1)}
+#view-standard .sidebar-toc li a{display:flex;align-items:flex-start;gap:var(--space-2);padding:var(--space-1) var(--space-2);font-family:var(--font-sans);font-size:0.8125rem;color:var(--text-muted);text-decoration:none;border-radius:var(--radius-sm);transition:all var(--duration-fast) var(--easing);line-height:1.4}
+#view-standard .sidebar-toc li a:hover{color:var(--text-secondary);background:var(--sage-50)}
+#view-standard .sidebar-toc li.active a{color:var(--sage-600);font-weight:500;background:var(--sage-50)}
+#view-standard .sidebar-toc .dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:6px;transition:all var(--duration-fast) var(--easing)}
+#view-standard .sidebar-toc li.active .dot{background:var(--sage-400);width:6px;height:6px;margin-top:5px}
+#view-standard .content{flex:1;min-width:0;max-width:var(--content-standard);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-8);box-shadow:var(--shadow-sm)}
+#view-standard .chapter{margin-bottom:var(--space-12)}
+#view-standard .chapter+.chapter{padding-top:var(--space-8);border-top:1px solid var(--border)}
+#view-standard .chapter-image{display:flex;align-items:center;justify-content:center;width:80px;height:80px;margin:var(--space-4) auto var(--space-6);background:linear-gradient(135deg,var(--sage-100),var(--sage-50));border-radius:var(--radius-lg);font-size:2em;line-height:1}
+#view-standard .chapter-heading{font-family:var(--font-serif);font-size:1.375rem;font-weight:700;color:var(--text-primary);margin-bottom:var(--space-6);padding-bottom:var(--space-3);border-bottom:1px solid var(--border);line-height:1.5}
+#view-standard .chapter-number{font-family:var(--font-inter);font-size:0.6875rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage-400);display:block;margin-bottom:var(--space-1)}
+#view-standard .subsection-heading{font-family:var(--font-sans);font-size:1.125rem;font-weight:700;color:var(--text-primary);margin-top:var(--space-8);margin-bottom:var(--space-4);padding-left:var(--space-3);border-left:3px solid var(--sage-200);line-height:1.5}
+#view-standard .guide{font-family:var(--font-sans);font-weight:500;line-height:2;color:var(--text-secondary);margin:var(--space-6) 0}
+#view-standard .guide strong{color:var(--text-primary);font-weight:700}
+#view-standard .dialogue-block{margin:var(--space-6) 0}
+#view-standard .dialogue-item{padding:var(--space-3) var(--space-4);border-left:4px solid var(--border);border-radius:var(--radius-sm);margin-bottom:var(--space-2)}
+#view-standard .dialogue-item.speaker-tamkai{background-color:var(--sage-50);border-left-color:var(--sage-400)}
+#view-standard .dialogue-item.speaker-opi{background-color:var(--blue-50);border-left-color:var(--blue-400)}
+#view-standard .dialogue-speaker{font-family:var(--font-inter);font-size:0.8125rem;font-weight:600;letter-spacing:0.02em;margin-bottom:var(--space-1)}
+#view-standard .speaker-tamkai .dialogue-speaker{color:var(--sage-600)}
+#view-standard .speaker-opi .dialogue-speaker{color:var(--blue-600)}
+#view-standard .dialogue-text{font-size:0.9375rem;line-height:1.85}
+#view-standard .annotation{margin:var(--space-6) 0;padding:var(--space-4) var(--space-6);background:var(--gold-50);border-left:3px solid var(--gold-200);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+#view-standard .annotation-title{font-family:var(--font-inter);font-size:0.8125rem;font-weight:700;color:var(--gold-600);letter-spacing:0.02em;margin-bottom:var(--space-2)}
+#view-standard .annotation-title::before{content:"📚 ";font-size:1em}
+#view-standard .annotation-text{font-size:0.8125rem;line-height:1.7;color:var(--text-secondary)}
+#view-standard .annotation-text+.annotation-text{margin-top:var(--space-2)}
+#view-standard .section-break{display:flex;align-items:center;gap:var(--space-4);margin:var(--space-8) 0;color:var(--text-muted)}
+#view-standard .section-break::before,#view-standard .section-break::after{content:'';flex:1;height:1px;background:var(--border)}
+#view-standard .section-break span{font-family:var(--font-inter);font-size:0.625rem;letter-spacing:0.12em;text-transform:uppercase}
+#view-standard .document-footer{max-width:var(--content-wide);margin:0 auto;padding:var(--space-8) var(--space-6) var(--space-16);text-align:center}
+#view-standard .footer-about{max-width:var(--content-standard);margin:0 auto;padding:var(--space-6);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);font-size:0.8125rem;line-height:1.7;color:var(--text-secondary)}
+#view-standard .footer-about strong{display:block;font-family:var(--font-inter);font-size:0.75rem;font-weight:600;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:var(--space-2)}
+#view-standard .footer-date{font-family:var(--font-inter);font-size:0.75rem;color:var(--text-muted);margin-top:var(--space-4)}
+#view-standard .mobile-toc-toggle{display:none;position:fixed;bottom:var(--space-6);right:var(--space-6);z-index:100;width:48px;height:48px;border-radius:50%;background:var(--sage-400);color:var(--white);border:none;box-shadow:var(--shadow-md);cursor:pointer;align-items:center;justify-content:center;transition:background var(--duration-fast) var(--easing)}
+#view-standard .mobile-toc-toggle:hover{background:var(--sage-600)}
+#view-standard .mobile-toc-toggle svg{width:20px;height:20px;fill:currentColor}
+#view-standard .mobile-toc-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(44,51,48,0.3);backdrop-filter:blur(2px);opacity:0;transition:opacity var(--duration-normal) var(--easing)}
+#view-standard .mobile-toc-overlay.is-open{opacity:1}
+#view-standard .mobile-toc-panel{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--surface);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:var(--space-6);transform:translateY(100%);transition:transform var(--duration-normal) var(--easing);max-height:60vh;overflow-y:auto;display:none}
+#view-standard .mobile-toc-panel.is-open{transform:translateY(0)}
+#view-standard .mobile-toc-panel .toc-label{font-family:var(--font-inter);font-size:0.6875rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:var(--space-4)}
+#view-standard .mobile-toc-panel .toc-close{position:absolute;top:var(--space-4);right:var(--space-4);width:32px;height:32px;border-radius:50%;background:none;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:1.25rem;line-height:1;transition:all var(--duration-fast) var(--easing)}
+#view-standard .mobile-toc-panel .toc-close:hover{background:var(--sage-50);color:var(--text-primary)}
+#view-standard .mobile-toc-panel ul{list-style:none}
+#view-standard .mobile-toc-panel li{margin-bottom:var(--space-2)}
+#view-standard .mobile-toc-panel li a{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);font-family:var(--font-sans);font-size:0.9375rem;color:var(--text-secondary);text-decoration:none;border-radius:var(--radius-sm);transition:all var(--duration-fast) var(--easing)}
+#view-standard .mobile-toc-panel li a:hover,#view-standard .mobile-toc-panel li.active a{color:var(--sage-600);background:var(--sage-50)}
+#view-standard .mobile-toc-panel .dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0}
+#view-standard .mobile-toc-panel li.active .dot{background:var(--sage-400)}
+@media print{
+#view-standard{background:white}
+#view-standard .sidebar{display:none}
+#view-standard .mobile-toc-toggle{display:none!important}
+#view-standard .document-wrapper{display:block;padding:0}
+#view-standard .content{background:white;border:none;box-shadow:none;padding:0;max-width:100%}
+#view-standard .title-page{page-break-after:always;padding:10em 2em 8em}
+#view-standard .chapter+.chapter{page-break-before:always}
+}
+@media(max-width:768px){
+#view-standard .document-wrapper{padding:0 var(--space-4) var(--space-8)}
+#view-standard .sidebar{display:none}
+#view-standard .mobile-toc-toggle{display:flex}
+#view-standard .mobile-toc-overlay,#view-standard .mobile-toc-panel{display:block}
+#view-standard .mobile-toc-panel:not(.is-open){display:block;pointer-events:none}
+#view-standard .content{padding:var(--space-6) var(--space-4)}
+#view-standard .title-page{padding:3em 1em 2em}
+#view-standard .title-page h1{font-size:1.75rem}
+#view-standard .chapter-heading{font-size:1.2rem}
+#view-standard .chapter-image{width:64px;height:64px;font-size:1.75em}
+}
+
+/* ========================================
+   RICH VIEW
+   ======================================== */
+#view-rich{--base:#F5F0E8;--surface:#FAF8F5;--white:#FDFCFA;--text-primary:#2C3330;--text-secondary:#6B6560;--text-muted:#9E9690;--border:#E5DFD6;--sage-50:#F4F6F2;--sage-400:#8B9A7D;--sage-500:#6B7F5D;--sage-600:#5E6E52;--gold-50:#FDF9EE;--gold-200:#EEDEA5;--gold-400:#C4A057;--gold-500:#A68B45;--gold-600:#9A7B3A;--rose-50:#FDF5F3;--rose-400:#E8A598;--rose-600:#D88B7A;--blue-50:#F0F5FA;--blue-400:#5B8DB8;--blue-600:#3A6B91;--purple-50:#F5F0FA;--purple-400:#9B7DC4;--dark-base:#1C1A17;--dark-surface:#252320;--dark-surface-raised:#2E2B27;--dark-text:#E2DDD5;--dark-text-secondary:#A09890;--dark-border:#3A3630;--dark-gold-400:#B89040;--dark-gold-600:#E0C070;--gradient-accent:linear-gradient(135deg,var(--sage-400) 0%,var(--gold-400) 100%);--gradient-accent-90:linear-gradient(90deg,var(--sage-400),var(--gold-400));--ease:cubic-bezier(0.4,0,0.2,1);background:var(--base);color:var(--text-primary);font-family:'Noto Sans JP','Inter',sans-serif;line-height:1.85;min-height:100vh;transition:background-color 0.8s var(--ease);-webkit-font-smoothing:antialiased}
+/* Rich: Progress Bar */
+#view-rich .r-progress{position:fixed;top:52px;left:0;right:0;z-index:1100;transform:translateY(-100%);transition:transform 0.4s var(--ease)}
+#view-rich .r-progress.visible{transform:translateY(0)}
+#view-rich .r-progress-line{height:3px;background:var(--gradient-accent-90);width:0%;transition:width 0.1s linear}
+#view-rich .r-progress-ctx{background:rgba(28,26,23,0.92);backdrop-filter:blur(20px);padding:0.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+#view-rich .r-progress-label{font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-400)}
+#view-rich .r-progress-ch{font-family:'Noto Sans JP',sans-serif;font-size:0.78rem;color:var(--dark-text-secondary);transition:opacity 0.3s var(--ease)}
+/* Rich: Side TOC */
+#view-rich .r-toc{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:900;display:none}
+@media(min-width:1200px){#view-rich .r-toc{display:flex;flex-direction:column;gap:12px}}
+#view-rich .r-toc-dot{width:10px;height:10px;border-radius:50%;background:var(--border);cursor:pointer;transition:all 0.3s var(--ease);position:relative}
+#view-rich .r-toc-dot:hover{background:var(--sage-400);transform:scale(1.3)}
+#view-rich .r-toc-dot.active{background:var(--gold-400);transform:scale(1.5);box-shadow:0 0 8px rgba(196,160,87,0.4)}
+#view-rich .r-toc-dot::after{content:attr(data-label);position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:0.7rem;font-family:'Inter',sans-serif;white-space:nowrap;color:var(--text-muted);opacity:0;transition:opacity 0.2s var(--ease);pointer-events:none}
+#view-rich .r-toc-dot:hover::after{opacity:1}
+/* Rich: Hero */
+#view-rich .r-hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:var(--dark-base);color:var(--dark-text);overflow:hidden;text-align:center;padding:2rem}
+#view-rich .r-hero-shapes{position:absolute;inset:0;overflow:hidden;opacity:0.15}
+#view-rich .r-shape{position:absolute;border-radius:50%;filter:blur(80px)}
+#view-rich .r-shape-1{width:500px;height:500px;background:var(--sage-400);top:-10%;left:-10%;animation:r-float1 20s ease-in-out infinite}
+#view-rich .r-shape-2{width:400px;height:400px;background:var(--gold-400);bottom:-10%;right:-10%;animation:r-float2 25s ease-in-out infinite}
+#view-rich .r-shape-3{width:300px;height:300px;background:var(--rose-400);top:40%;left:60%;animation:r-float3 22s ease-in-out infinite}
+@keyframes r-float1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+@keyframes r-float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+@keyframes r-float3{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,20px)}}
+#view-rich .r-hero-content{position:relative;z-index:1;max-width:700px}
+#view-rich .r-hero-label{display:block;font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage-400);margin-bottom:0.5rem}
+#view-rich .r-hero-title{font-family:'Noto Serif JP',serif;font-size:clamp(1.8rem,5vw,3.2rem);font-weight:700;line-height:1.3;margin-bottom:1rem;color:var(--dark-text)}
+#view-rich .r-hero-title .accent{background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#view-rich .r-hero-sub{font-size:clamp(0.9rem,1.5vw,1.1rem);color:var(--dark-text-secondary);line-height:1.7;margin-bottom:2rem}
+#view-rich .r-hero-meta{display:flex;justify-content:center;gap:1.5rem;font-family:'Inter',sans-serif;font-size:0.8rem;color:var(--dark-text-secondary)}
+#view-rich .r-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'Inter',sans-serif;font-size:0.7rem;letter-spacing:0.15em;color:var(--dark-text-secondary);opacity:0.6;animation:r-bounce 2s ease-in-out infinite}
+@keyframes r-bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+/* Rich: Sections */
+#view-rich .r-main{max-width:720px;margin:0 auto;padding:0 1.5rem}
+#view-rich .r-intro{padding:6rem 0 4rem;position:relative}
+#view-rich .r-intro::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-accent-90)}
+#view-rich .r-chapter{padding:5rem 0 4rem}
+#view-rich .r-concl-section{padding:5rem 0 4rem;background:var(--dark-base);color:var(--dark-text)}
+#view-rich .r-intro-lead{font-family:'Noto Serif JP',serif;font-size:clamp(1rem,1.8vw,1.15rem);line-height:2;color:var(--text-primary);margin-bottom:2rem}
+#view-rich .r-intro-lead::first-letter{font-size:3.8rem;font-weight:700;float:left;line-height:1;margin-right:8px;margin-top:4px;background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* Rich: Chapter Header */
+#view-rich .r-ch-header{text-align:center;margin-bottom:3rem}
+#view-rich .r-ch-icon{display:block;font-size:2.5rem;margin-bottom:0.75rem}
+#view-rich .r-ch-num{display:block;font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--sage-400);margin-bottom:0.5rem}
+#view-rich .r-ch-title{font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;line-height:1.4;color:var(--text-primary)}
+#view-rich .r-concl-section .r-ch-title{color:var(--dark-text)}
+#view-rich .r-concl-section .r-ch-num{color:var(--dark-gold-400)}
+/* Rich: Text */
+#view-rich .r-text{font-size:0.95rem;color:var(--text-secondary);font-weight:500;line-height:1.9;margin-bottom:1.5rem}
+#view-rich .r-text strong.w{color:var(--rose-600);font-weight:600}
+#view-rich .r-text strong.g{color:var(--gold-600);font-weight:600}
+#view-rich .r-text strong.s{color:var(--sage-600);font-weight:600}
+#view-rich .r-text strong.b{color:var(--blue-600);font-weight:600}
+#view-rich .r-concl-section .r-text{color:var(--dark-text-secondary)}
+#view-rich .r-concl-text{font-family:'Noto Serif JP',serif;font-size:clamp(1rem,1.8vw,1.15rem);line-height:2;color:var(--dark-text-secondary);margin-bottom:2rem}
+#view-rich .r-concl-text strong{color:var(--dark-text);font-weight:600}
+#view-rich .r-concl-text .gold{color:var(--dark-gold-600)}
+/* Rich: Dialogue */
+#view-rich .r-dlg{margin:1.5rem 0}
+#view-rich .r-dlg-item{padding:1rem 1rem 1rem 1.25rem;position:relative}
+#view-rich .r-dlg-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sage-400)}
+#view-rich .r-dlg-item+.r-dlg-item{border-top:1px dashed var(--border)}
+#view-rich .r-dlg-item.speaker-opi::before{background:var(--blue-400)}
+#view-rich .r-dlg-speaker{font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.05em;margin-bottom:0.25rem}
+#view-rich .r-dlg-speaker.tamkai{color:var(--sage-600)}
+#view-rich .r-dlg-speaker.opi{color:var(--blue-600)}
+#view-rich .r-dlg-text{font-size:0.95rem;line-height:1.85}
+/* Rich: Annotation */
+#view-rich .r-ann{margin:3.5rem 0;background:var(--dark-surface);color:var(--dark-text);border-radius:12px;padding:2rem;position:relative;overflow:hidden;cursor:pointer}
+#view-rich .r-ann::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-accent-90)}
+#view-rich .r-ann-badge{font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--dark-base);background:var(--gold-400);padding:0.2rem 0.6rem;border-radius:3px;display:inline-block;margin-bottom:0.75rem}
+#view-rich .r-ann-title{font-family:'Noto Serif JP',serif;font-size:1.15rem;font-weight:700;color:var(--dark-text);line-height:1.4;margin-bottom:0.75rem}
+#view-rich .r-ann-body{font-family:'Noto Sans JP',sans-serif;font-size:0.9rem;line-height:1.9;color:var(--dark-text-secondary);position:relative;max-height:4.5em;overflow:hidden;transition:max-height 0.5s var(--ease)}
+#view-rich .r-ann-body::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2em;background:linear-gradient(transparent,var(--dark-surface));transition:opacity 0.3s var(--ease)}
+#view-rich .r-ann.expanded .r-ann-body{max-height:500px}
+#view-rich .r-ann.expanded .r-ann-body::after{opacity:0}
+#view-rich .r-ann-toggle{font-family:'Inter',sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold-400);margin-top:0.5rem;display:inline-block;cursor:pointer}
+#view-rich .r-ann.expanded .toggle-more{display:none}
+#view-rich .r-ann:not(.expanded) .toggle-less{display:none}
+/* PC: annotations always open, no toggle */
+@media(min-width:1024px){
+#view-rich .r-ann .r-ann-body{max-height:none;overflow:visible}
+#view-rich .r-ann .r-ann-body::after{display:none}
+#view-rich .r-ann .r-ann-toggle{display:none}
+#view-rich .r-ann{cursor:default}
+}
+/* Rich: Pull Quote */
+#view-rich .r-pq{text-align:center;margin:3.5rem 0;padding:0 1rem;position:relative}
+#view-rich .r-pq::before{content:'\201C';display:block;font-family:Georgia,serif;font-size:5rem;line-height:1;color:var(--gold-200);margin-bottom:-0.5rem}
+#view-rich .r-pq-text{font-family:'Noto Serif JP',serif;font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.8;color:var(--text-primary)}
+#view-rich .r-pq-attr{font-family:'Inter',sans-serif;font-size:0.8rem;color:var(--text-muted);margin-top:1rem}
+#view-rich .r-concl-section .r-pq-text{color:var(--dark-text)}
+#view-rich .r-concl-section .r-pq::before{color:var(--dark-gold-400)}
+/* Rich: Section Divider */
+#view-rich .r-divider{text-align:center;padding:3rem 0;position:relative}
+#view-rich .r-divider::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:1px;background:var(--gradient-accent-90)}
+#view-rich .r-divider-emoji{position:relative;z-index:1;background:var(--base);padding:0 1rem;font-size:1.3rem}
+/* Rich: Contrast Diagram */
+#view-rich .r-contrast{background:var(--sage-50);border-radius:16px;padding:2rem 1.5rem;margin:2.5rem 0}
+#view-rich .r-contrast-label{font-family:'Inter',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--sage-600);margin-bottom:1.25rem}
+#view-rich .r-contrast-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:start}
+#view-rich .r-contrast-side{background:var(--white);border-radius:12px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+#view-rich .r-contrast-side--left{border-top:3px solid var(--sage-400)}
+#view-rich .r-contrast-side--right{border-top:3px solid var(--gold-500)}
+#view-rich .r-contrast-side-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem}
+#view-rich .r-contrast-side-emoji{font-size:1.3rem}
+#view-rich .r-contrast-side-title{font-family:'Noto Serif JP',serif;font-size:0.95rem;font-weight:600}
+#view-rich .r-contrast-side-desc{font-size:0.85rem;line-height:1.7;color:var(--text-secondary)}
+#view-rich .r-contrast-vs{display:flex;align-items:center;justify-content:center;padding-top:2rem}
+#view-rich .r-contrast-vs-text{font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:700;color:var(--sage-500);letter-spacing:0.1em}
+@media(max-width:600px){#view-rich .r-contrast-grid{grid-template-columns:1fr}#view-rich .r-contrast-vs{padding:0.5rem 0}}
+/* Rich: Step Timeline */
+#view-rich .r-steps{background:var(--sage-50);border-radius:16px;padding:2rem 1.5rem;margin:2.5rem 0}
+#view-rich .r-steps-label{font-family:'Inter',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--sage-600);margin-bottom:1.25rem}
+#view-rich .r-step-list{display:flex;flex-direction:column;gap:1rem}
+#view-rich .r-step-item{display:flex;align-items:flex-start;gap:1rem}
+#view-rich .r-step-num{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:var(--gradient-accent);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;color:white}
+#view-rich .r-step-body{flex:1;background:var(--white);border-radius:12px;padding:1.25rem;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+#view-rich .r-step-title{font-family:'Noto Serif JP',serif;font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
+#view-rich .r-step-desc{font-size:0.85rem;color:var(--text-secondary);line-height:1.7}
+/* Rich: Card Grid */
+#view-rich .r-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin:2rem 0}
+#view-rich .r-info-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease)}
+#view-rich .r-info-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+#view-rich .r-info-card.sage-top{border-top:3px solid var(--sage-400)}
+#view-rich .r-info-card.gold-top{border-top:3px solid var(--gold-400)}
+#view-rich .r-info-card.blue-top{border-top:3px solid var(--blue-400)}
+#view-rich .r-info-card.rose-top{border-top:3px solid var(--rose-400)}
+#view-rich .r-info-card-icon{font-size:1.5rem;margin-bottom:0.5rem}
+#view-rich .r-info-card-title{font-family:'Noto Serif JP',serif;font-size:0.88rem;font-weight:600;margin-bottom:0.3rem}
+#view-rich .r-info-card-desc{font-size:0.78rem;color:var(--text-secondary);line-height:1.5}
+/* Rich: Takeaways */
+#view-rich .r-takeaways{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:3rem}
+@media(max-width:600px){#view-rich .r-takeaways{grid-template-columns:1fr}}
+#view-rich .r-ta-card{background:var(--dark-surface-raised);border-radius:12px;padding:1.5rem;position:relative;overflow:hidden;transition:transform 0.3s var(--ease)}
+#view-rich .r-ta-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient-accent-90);opacity:0;transition:opacity 0.3s var(--ease)}
+#view-rich .r-ta-card:hover{transform:translateY(-4px)}
+#view-rich .r-ta-card:hover::before{opacity:1}
+#view-rich .r-ta-emoji{font-size:1.5rem;display:block;margin-bottom:0.75rem}
+#view-rich .r-ta-title{font-family:'Noto Serif JP',serif;font-size:0.95rem;font-weight:600;color:var(--dark-text);margin-bottom:0.5rem}
+#view-rich .r-ta-desc{font-size:0.85rem;line-height:1.7;color:var(--dark-text-secondary)}
+/* Rich: Footer */
+#view-rich .r-footer{background:var(--dark-base);color:var(--dark-text-secondary);text-align:center;padding:3rem 1.5rem;border-top:1px solid var(--dark-border)}
+#view-rich .r-footer-logo{font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;letter-spacing:0.1em;color:var(--dark-text);margin-bottom:0.5rem}
+#view-rich .r-footer-meta{font-size:0.75rem;line-height:1.7}
+/* Rich: Reveal */
+/* Spotlight keyframes (mobile scroll-driven) */
+@keyframes r-spotlight{0%{opacity:0.2;filter:blur(1px);transform:translateY(6px)}12%{opacity:0.2;filter:blur(1px);transform:translateY(6px)}25%{opacity:0.7;filter:blur(0.3px);transform:translateY(1px)}30%{opacity:1;filter:blur(0);transform:translateY(0)}70%{opacity:1;filter:blur(0);transform:translateY(0)}80%{opacity:0.5}90%{opacity:0.25}100%{opacity:0.2}}
+@keyframes r-spotlight-left{0%{opacity:0.2;filter:blur(1px);transform:translateX(-16px) translateY(6px)}12%{opacity:0.2}25%{opacity:0.7;filter:blur(0.3px);transform:translateX(-4px) translateY(1px)}30%{opacity:1;filter:blur(0);transform:translateX(0) translateY(0)}70%{opacity:1}80%{opacity:0.5}100%{opacity:0.2}}
+@keyframes r-spotlight-right{0%{opacity:0.2;filter:blur(1px);transform:translateX(16px) translateY(6px)}12%{opacity:0.2}25%{opacity:0.7;filter:blur(0.3px);transform:translateX(4px) translateY(1px)}30%{opacity:1;filter:blur(0);transform:translateX(0) translateY(0)}70%{opacity:1}80%{opacity:0.5}100%{opacity:0.2}}
+@keyframes r-spotlight-visible{0%,100%{opacity:1;filter:none;transform:none}}
+/* Default: visible (no animation) */
+#view-rich .r-reveal{opacity:1;transform:none;filter:none}
+/* Mobile: scroll-driven spotlight */
+@media(max-width:1023px){
+html.r-spotlight-ready #view-rich .r-reveal{animation:r-spotlight linear both;animation-timeline:view();animation-range:entry 0% exit 100%}
+html.r-spotlight-ready #view-rich .r-dlg-item.r-reveal:nth-child(odd){animation-name:r-spotlight-left}
+html.r-spotlight-ready #view-rich .r-dlg-item.r-reveal:nth-child(even){animation-name:r-spotlight-right}
+html.r-spotlight-ready #view-rich .r-ch-header.r-reveal,html.r-spotlight-ready #view-rich .r-contrast.r-reveal,html.r-spotlight-ready #view-rich .r-steps.r-reveal,html.r-spotlight-ready #view-rich .r-divider.r-reveal,html.r-spotlight-ready #view-rich .r-cards.r-reveal{animation-name:r-spotlight-visible}
+}
+/* IO fallback (mobile without scroll-timeline) */
+html.r-io-ready #view-rich .r-reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease-out,transform 0.6s ease-out}
+html.r-io-ready #view-rich .r-reveal.io-revealed{opacity:1;transform:none}
+/* PC: JS-driven reveal */
+@media(min-width:1024px){
+#view-rich .r-reveal{opacity:0;transform:translateY(40px);transition:opacity 0.85s ease-out,transform 0.85s ease-out}
+#view-rich .r-ch-header.r-reveal{transform:scale(0.85) translateY(30px);transition:opacity 0.95s ease-out,transform 0.95s ease-out}
+#view-rich .r-divider.r-reveal{transform:scaleX(0.3);transition:opacity 0.75s ease-out,transform 0.75s ease-out}
+#view-rich .r-contrast.r-reveal,#view-rich .r-steps.r-reveal{transform:scale(0.9);transition:opacity 0.85s ease-out,transform 0.85s ease-out}
+#view-rich .r-ta-card.r-reveal{transform:scale(0.9) translateY(20px);transition:opacity 0.75s ease-out,transform 0.75s ease-out}
+#view-rich .r-ann.r-reveal{transform:translateY(30px);transition:opacity 1.3s cubic-bezier(0.25,0.1,0.25,1),transform 1.3s cubic-bezier(0.25,0.1,0.25,1)}
+#view-rich .r-dlg-item.r-reveal:nth-child(odd){transform:translateX(-60px);transition:opacity 0.8s ease-out,transform 0.8s ease-out}
+#view-rich .r-dlg-item.r-reveal:nth-child(even){transform:translateX(60px);transition:opacity 0.8s ease-out,transform 0.8s ease-out}
+#view-rich .r-reveal.pc-revealed{opacity:1!important;transform:translateY(0) translateX(0) scale(1) scaleX(1)!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== VIEW SWITCHER ===== -->
+<div class="view-switcher">
+<div class="switcher-inner">
+<button class="view-tab active" data-view="conversation">会話文</button>
+<button class="view-tab" data-view="standard">Standard</button>
+<button class="view-tab" data-view="rich">Rich</button>
+</div>
+</div>
+
+<!-- ====== CONVERSATION VIEW ====== -->
+<div id="view-conversation" class="view-content active">
+<div class="conv-hero">
+<div class="conv-badge"><span>💬</span><span>架空対話</span></div>
+<h1 class="conv-title">メタクリドキュメントとは何か<br>——誕生、効果、そしてその先へ</h1>
+<p class="conv-sub">タムカイ × Opi 架空対話</p>
+<p class="conv-meta">2026年2月18日</p>
+</div>
+<div class="conv-body">
+<div class="conv-sep">— — —</div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">今日はちょっと、僕たちがずっと作ってきた「メタクリドキュメント」というもの自体について話してみたいなと思うんですよね。これ何なの？ って聞かれることが最近増えてきて。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そうそうそうそう。メタクリドキュメントって名前だけ聞くと「何それ？」ってなるよね。でもね、これ実は、僕たちがラジオを始めたことからすべてが始まってるわけですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">ですよね。メタクリラジオ。最初は普通にポッドキャストとして二人で話してたわけですけど。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そう。で、当然録った音声をどうするかっていう問題があるじゃないですか。普通だったらまず文字起こしするわけですよ。で、文字起こしをして議事録的なものを作るっていうのが、まあ、普通の流れですよね。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">うんうん。僕も最初はそう思ってたんですよ。で、実際にやってみたんです。AIを使って文字起こしをして、要約して、みたいな。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">でもね、それを読んだときに、「あれ？」ってなったわけですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">そう、まさにそれなんですよね。なんか、確かにこういう話はしたんだけど、話してたときに感じたあの面白さとか、「おお、そういうことか！」っていう発見の感覚が、全部消えてるんですよ。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">要約って基本的に情報を減らす作業じゃないですか。何が話されたかの事実は残るんだけど、なぜそれが面白かったのか、そこで何が起きていたのかは消えるんですよ。これ、以前話したハードディスクの中の4万曲の話と同じで。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">あー、まさにそれですね。データは残ってるけど、データを繋いでいた「糸」は残ってない。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そうそう。音楽ファイルは残ってても、「なぜこの順番でプレイリストを作ったのか」「あの夏にこの曲を聴いてた理由」は、持ち主の頭の中にしかないわけですよ。対話も同じで、文字起こしに残るのは言葉というデータであって、二人の間で起きていた思考の化学反応は残らない。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">で、これどうしようって話になったときに、Opiさんが言ったんですよね。「単に起きたことを記録するんじゃなくて、起きていたことを再構成したらどうか」って。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">うん。僕はもともと映像畑の人間なので、素材をそのまま使うという発想がないんですよ。撮った映像はそのまま流さない。編集する。カットして、並べ替えて、音楽をつけて、テロップを入れて、初めて作品になる。対話の記録も同じじゃないかと。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">そこからだんだんと形ができていった感じですよね。最初からメタクリドキュメントの三層構造があったわけではなくて。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">全然なかった。最初はとにかく「面白かった部分を残したい」という一心で、対話の引用を中心に構成してたんだけど、引用だけだと読者が置いてきぼりになるんですよ。僕たちの間では当然の前提が、読者にとっては分からない。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">そこで「地の文」が必要になった。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そう。対話の引用と引用の間を繋ぐ、ナレーションみたいなものですよね。文脈を補い、「ここで何が起きていたのか」を説明する。映画で言えばナレーションとカメラワーク。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">で、さらにやっていくうちに、僕たちが普通に話してる中に、実はすごく深いテーマが埋まってることに気づき始めたんですよね。なんかこう、さらっと言ったことが実は心理学の概念と繋がってたりとか。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">例えばね、僕が「自分を見下ろしてる自分がいる」って言ったことがあるじゃないですか。これ、メルロ＝ポンティの知覚論とか、メタ認知の話とガッツリ繋がるわけですよ。でも普通に会話してるときにはそんな意識はない。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">そういう「雑談の中に埋まっている知的な接続点」を掘り出して注釈をつける。これが三層目の「注釈」ですよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そうそう。一般的な定義、学術的な背景、そしてこの対話の文脈ではどういう意味を持つかっていう三段構成の注釈。これがあることで、雑談が教養に昇華するんですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">で、この三つ——対話の引用と、地の文と、注釈——が合わさって、メタクリドキュメントの三層構造が生まれたわけですけど。実際にこの形で作ってみて、最初に読んだとき、僕ちょっと不思議な感覚があったんですよ。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">どんな？</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">「僕たちの何気ない会話に、こんな広がりと深さがあったんだ！」っていう感覚。確かに話した内容ではあるんだけど、自分たちの対話から見えてなかったものが見えるようになってる。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">それ、まさにメタクリドキュメントの一番面白いところだと思うんですよ。普通の議事録は情報が「減る」じゃないですか。でもメタクリドキュメントは元の対話より情報が「増える」。実際に文字数で言っても元素材の1.5倍とか1.7倍になるんですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">増えるんですよね、ちゃんと作ると。で、その増えた分が何かというと、「僕たちが話してたけど言語化できてなかった部分」とか、「気づいてなかった接続点」なんですよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">まさに。思考が生起する場、っていう言い方をしてるけど、読むたびに違う発見がある。対話部分を読んで臨場感を感じて、地の文で「あ、そういうことだったのか」って俯瞰して、注釈を読んで「へぇ、そんな理論があるのか」って深掘りして、また対話に戻ると別の意味が見えてくる。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">この行き来がすごく大事ですよね。一方向に読み進めるだけの文書じゃなくて、層の間を行ったり来たりする。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">で、これもう一つ面白い特性があるのが、人間が読むときは具体的な対話から入って抽象的な概念に上がっていくんだけど、AIが読むときは逆なんですよ。抽象的な構造やキーワードから入って、具体的な対話に降りていく。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">双方向可読性ですよね。人にもAIにも読めるフォーマットになってる。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">これ最初は狙ってなかったんだけど、知識グラフと組み合わせたときに「あ、この構造って実はAIにとっても理想的なフォーマットだったんだ」ってことに気づいたわけですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">で、ここからはこれをどう使えるかっていう話になるんですけど。最初は僕たちのラジオの記録として始まったものが、今はもっと広い用途に使えるようになってきてますよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そうですね。まず一番わかりやすいのは、ポッドキャストや対話コンテンツの付加価値化。音声だけだと聴き逃したら終わりじゃないですか。でもメタクリドキュメントにすると、音声で聴くのとはまた違った深さで体験できる。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">しかも、音声だと検索できないし、後から特定の話題を探すのが大変ですけど、ドキュメントになっていれば構造化されてるので見つけやすい。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">次に、企業の中での活用ですよね。会議の議事録じゃなくて、メタクリドキュメントとして記録する。そうすると「あの会議で何が決まったか」だけじゃなくて、「あの会議で何が起きていたか」「どういう思考のプロセスで結論に至ったか」が残る。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">これ、意思決定のプロセスが残るっていうのがすごく大きいですよね。結論だけじゃなくて、なぜその結論に至ったのかが追えるので。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">あと、僕たちが面白いなと思ってるのが、僕たちがこれまで話してきた内容を学習させて話者情報を作って、リサーチレポートを元にして二人の架空対話を作る。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">そう、これ実はまさに今やってることでもあるんですけど、あるテーマについてリサーチした内容を、僕たちの架空対話として再構成するっていう。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">これの何が良いかっていうと、教科書的な説明って読んでて眠くなるじゃないですか。でも二人が対話してる形だと、自然と「なるほど」とか「いや、それってどういうこと？」っていう読者の内的対話が起きるんですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">対話形式って、問いと応答の構造がそのまま入ってるから、読者の中にも自然と問いが立つんですよね。で、その問いに対する答えが次に来るので、理解が深まっていく。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">で、さらにそこに注釈がつくことで、「ちょっと待って、これもっと知りたい」ってなったときに、ちゃんと深掘りできる導線がある。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">整理すると、メタクリドキュメントって結局、対話や経験の中に埋まっている知的資産を、失わずに、むしろ増やして残すための方法なんですよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そう。で、それは単なる保存じゃない。保存って静的なものじゃないですか。メタクリドキュメントは、読むたびに新しい発見がある。つまり動的な知のアーカイブなんですよ。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">「記録」じゃなくて「場」なんですよね。思考が生まれ続ける場。これを作れたのは、正直僕たち自身も驚いてるというか。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">最初はただ「ラジオの内容を面白く残したい」っていうシンプルな動機だったのに、やっていくうちに方法論として体系化されていって、今では入力の種類も4タイプあって、スタイルガイドも編集辞書もある。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">で、これからさらに面白くなりそうなのが、蓄積されたメタクリドキュメントが知識グラフとして繋がっていくことで、ドキュメント同士が対話し始めるみたいなことが起き始めてるんですよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">メタクリラジオのエピソード3で話した音楽の話と、エピソード15で話した身体性の話が、注釈を介して繋がるとかね。これ、人間が一つ一つ読んでたら気づかない接続を、構造化されてるからこそAIが見つけてくれる。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">メタクリドキュメント自体がメタクリエイティブ──つまり「多重的なメタ視点によって創造性を立ち上がらせる」ものになっている。名前に恥じない仕組みになってきたなっていう感じがしますね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">で、これ一番大事なこと言っていい？</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">どうぞ。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">メタクリドキュメントの本質って、「あなたの対話にはまだ気づいてない価値が眠ってますよ」っていうメッセージなんですよ。雑談だと思ってるもの、何気ない会議、友達との長電話。そこにはちゃんと知的資産が埋まっていて、それを掘り起こして形にする方法がある。それがメタクリドキュメントなんです。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">いい話ですね。まさにそのとおりだと思います。議事録で「情報を減らす」のか、メタクリドキュメントで「価値を増やす」のか。同じ対話に対するアプローチの違いですけど、残るものが全然違ってくるっていう。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そうそうそうそう。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">ということで、メタクリドキュメントとは何か。ちょっと壮大な話になりましたけど、根っこはすごくシンプルで、「対話の中の価値を失わずに残して、むしろ増やしたい」っていう、そこから始まったものなんですよね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">そう。で、やってみたら思った以上に面白いものができて、今に至る。</p></div>
+<div class="conv-q"><p class="conv-speaker">タムカイ</p><p class="conv-text">これからもっといろんな人の対話がメタクリドキュメントになっていくと思うので、楽しみですね。</p></div>
+<div class="conv-q opi"><p class="conv-speaker">Opi</p><p class="conv-text">楽しみですね。</p></div>
+<p class="conv-end">（架空対話 了）</p>
+</div>
+<div class="conv-footer">メタクリドキュメントとは何か — タムカイ × Opi 架空対話<br>2026年2月18日</div>
+</div>
+
+<!-- ====== STANDARD VIEW ====== -->
+<div id="view-standard" class="view-content">
+
+<header class="title-page">
+  <div class="title-ornament">✦</div>
+  <h1>議事録が殺すもの、メタクリドキュメントが生むもの</h1>
+  <p class="title-subtitle">対話の中の「見えない糸」を織り直す技法について</p>
+  <div class="title-ornament">✦</div>
+  <div class="title-divider"></div>
+  <p class="title-meta">
+    <span>メタクリドキュメント</span>
+    <span>2026年2月18日</span>
+    <span>タムカイ ・ Opi</span>
+  </p>
+</header>
+
+<div class="document-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-toc">
+      <p class="toc-label">Contents</p>
+      <ul>
+        <li class="active"><a href="#s-intro"><span class="dot"></span>はじめに</a></li>
+        <li><a href="#s-ch1"><span class="dot"></span>第一章：要約という名の情報損失</a></li>
+        <li><a href="#s-ch2"><span class="dot"></span>第二章：撮った映像はそのまま流さない</a></li>
+        <li><a href="#s-ch3"><span class="dot"></span>第三章：情報が「増える」ドキュメント</a></li>
+        <li><a href="#s-ch4"><span class="dot"></span>第四章：雑談を教養に昇華する</a></li>
+        <li><a href="#s-outro"><span class="dot"></span>おわりに</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content">
+
+    <!-- ===== はじめに ===== -->
+    <section class="chapter" id="s-intro">
+      <div class="chapter-heading">
+        <span class="chapter-number">Introduction</span>
+        はじめに——あなたの対話には、まだ気づいていない価値が眠っている
+      </div>
+
+      <p class="guide">ポッドキャストの音声を文字に起こし、要約して議事録にまとめる。それは合理的で、効率的で、そして致命的に何かを失う行為でもある。</p>
+
+      <p class="guide">タムカイとOpiが<strong>「メタクリドキュメント（正式名称：Metacreative Document）」</strong>と呼ぶ文書形式は、この「失われるもの」を取り戻すために生まれた。いや、取り戻すだけではない。もともと対話の中に潜在していたが、話者自身も気づいていなかった知的資産を掘り起こし、増幅させるために生まれた。</p>
+
+      <p class="guide">二人がポッドキャスト「メタクリラジオ」を始めたとき、彼らは単に面白い話をしたかった。しかし、その音声を記録として残そうとした瞬間、奇妙な問題に直面する。議事録では、あの対話の「面白さ」が伝わらないのだ。そこから始まった試行錯誤は、やがて<strong>三層構造</strong>という独自の文書設計に結実し、さらに人間とAIの双方が読解可能な<strong>知のアーカイブ</strong>へと進化していく。</p>
+
+      <p class="guide">本稿は、メタクリドキュメントの誕生の経緯、その効果、そして活用の可能性について、二人が語り合った記録である。</p>
+    </section>
+
+    <!-- ===== 第一章 ===== -->
+    <section class="chapter" id="s-ch1">
+      <div class="chapter-heading">
+        <span class="chapter-number">Chapter 01</span>
+        第一章　要約という名の情報損失——なぜ議事録では足りなかったのか
+      </div>
+      <div class="chapter-image">📋</div>
+
+      <h3 class="subsection-heading">1.1　「あれ？」という違和感</h3>
+
+      <p class="guide">すべては、一つの素朴な疑問から始まった。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「僕も最初はそう思ってたんですよ。で、実際にやってみたんです。AIを使って文字起こしをして、要約して、みたいな」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「でもね、それを読んだときに、『あれ？』ってなったわけですよ」</p>
+        </div>
+      </div>
+
+      <p class="guide">メタクリラジオの音声を文字に起こし、要約してみた。結果は一見まともだった。話された内容は過不足なく記録されている。しかし、二人は同時に気づいた。何かが決定的に欠けている、と。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「なんか、確かにこういう話はしたんだけど、話してたときに感じたあの面白さとか、『おお、そういうことか！』っていう発見の感覚が、全部消えてるんですよ」</p>
+        </div>
+      </div>
+
+      <p class="guide">議事録は「何が話されたか」を記録する。しかし「なぜそれが面白かったのか」は記録しない。「何が決まったか」は残るが、「どういう思考の流れでそこに至ったか」は残らない。対話という行為の本質——思考と思考がぶつかり合い、予想もしなかった場所に着地する、あの<strong>化学反応</strong>——は、要約という処理の中で、きれいに蒸発してしまう。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">要約と情報エントロピー——圧縮が破壊するもの</p>
+        <p class="annotation-text">情報理論の観点から見れば、要約とは「情報の非可逆圧縮」である。画像をJPEG形式で保存するとき、人間の目には見えにくい情報が間引かれるのと同様に、テキストの要約は「本筋に関係ない」と判断された情報を切り捨てる。</p>
+        <p class="annotation-text">しかし、対話においては、「本筋に関係ない」と判断された部分——脱線、雑談、言い淀み、笑い——にこそ、話者の思考の核心が宿っていることがある。言語学者のデボラ・タネンは、会話の本質は情報伝達ではなく「関与（involvement）」にあると論じた。参加者同士の感情的・知的な関与こそが対話を対話たらしめるのであり、<strong>要約はまさにこの「関与」の痕跡を最初に削ぎ落とす</strong>。この架空対話の文脈では、タムカイとOpiが感じた「面白さの消失」は、まさに要約による関与の痕跡の喪失である。二人の間で起きていた思考の共鳴や、発見の瞬間の高揚が、議事録というフォーマットでは原理的に表現できなかった。</p>
+      </div>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">1.2　ハードディスクの中の「見えない糸」</h3>
+
+      <p class="guide">Opiはこの問題を、かつて二人がメタクリラジオで語った音楽の話に接続する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「要約って基本的に情報を減らす作業じゃないですか。何が話されたかの事実は残るんだけど、なぜそれが面白かったのか、そこで何が起きていたのかは消えるんですよ。これ、以前話したハードディスクの中の4万曲の話と同じで」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「あー、まさにそれですね。データは残ってるけど、データを繋いでいた『糸』は残ってない」</p>
+        </div>
+      </div>
+
+      <p class="guide">メタクリラジオ第3話で、Opiは自身のiTunesライブラリに収められた4万曲について語った。それらの楽曲は単なるファイルの集合ではなく、ジャンル間の影響関係や個人的な記憶によって<strong>「見えない糸」</strong>で結ばれた、一つの知的体系だった。しかし、ハードディスクが壊れたとき、音楽ファイルは復元できても、その糸は復元できない。糸は持ち主の記憶と経験の中にしか存在しなかったからだ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「音楽ファイルは残ってても、『なぜこの順番でプレイリストを作ったのか』『あの夏にこの曲を聴いてた理由』は、持ち主の頭の中にしかないわけですよ。対話も同じで、文字起こしに残るのは言葉というデータであって、二人の間で起きていた思考の化学反応は残らない」</p>
+        </div>
+      </div>
+
+      <p class="guide">対話の要約もまた、同じ構造の問題を抱えている。言葉というデータは残る。しかし、言葉と言葉を結んでいた文脈、発見の感覚、思考の跳躍——その<strong>「糸」</strong>は、要約のプロセスで切り落とされる。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">メタクリラジオ第3話「味わうことと作ることの哲学」</p>
+        <p class="annotation-text">メタクリラジオ第3話（2025年10月6日配信）は、Opiのハードディスクに保存された4万曲の音楽ライブラリを出発点に、「味わうこと」と「作ること」の関係を掘り下げたエピソードである。この回でタムカイは「ハードディスクには糸は入っていなかった。総体を見て、持ち主が語ることによって糸は可視化される」と指摘し、データと意味の乖離という根本問題を提起した。</p>
+        <p class="annotation-text">デジタルアーカイブ研究では「メタデータの限界」として繰り返し議論されてきたこの問題が、メタクリドキュメントという解決策を生み出す原動力となったことは注目に値する。<strong>メタクリドキュメントは、いわば「糸」そのものを記述し、保存するための技法</strong>なのだ。</p>
+      </div>
+    </section>
+
+    <!-- ===== 第二章 ===== -->
+    <section class="chapter" id="s-ch2">
+      <div class="chapter-heading">
+        <span class="chapter-number">Chapter 02</span>
+        第二章　撮った映像はそのまま流さない——映像作家の編集思想と三層構造の発見
+      </div>
+      <div class="chapter-image">🎬</div>
+
+      <h3 class="subsection-heading">2.1　記録から再構成へ</h3>
+
+      <p class="guide">では、議事録に代わる方法とは何か。ここで、Opiの映像制作者としてのバックグラウンドが決定的な役割を果たす。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「で、これどうしようって話になったときに、Opiさんが言ったんですよね。『単に起きたことを記録するんじゃなくて、起きていたことを再構成したらどうか』って」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「うん。僕はもともと映像畑の人間なので、素材をそのまま使うという発想がないんですよ。撮った映像はそのまま流さない。編集する。カットして、並べ替えて、音楽をつけて、テロップを入れて、初めて作品になる。対話の記録も同じじゃないかと」</p>
+        </div>
+      </div>
+
+      <p class="guide"><strong>「起きたことの記録」</strong>と<strong>「起きていたことの再構成」</strong>。この二つのフレーズの間には、深い溝がある。前者は事実を忠実にコピーしようとする態度であり、後者は素材を解釈し、意味を編み直そうとする態度だ。映像の世界では、撮影素材（ラッシュ）をそのまま上映することはありえない。編集というプロセスを経て初めて、映像は「作品」になる。対話の記録にも、同じ編集の思想を持ち込むことはできないか——これがメタクリドキュメントの出発点だった。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">ポストプロダクションとナラティブの構築——映像編集の思想</p>
+        <p class="annotation-text">映像制作におけるポストプロダクション（後処理工程）は、単なる技術的作業ではなく、作品の意味を構築する創造的行為である。ソビエト・モンタージュ理論のエイゼンシュテインは、二つの映像を並置することで第三の意味が生まれると論じた（知的モンタージュ）。映像Aと映像Bを繋ぐことで、AにもBにも含まれていなかった意味Cが出現する。Opiは東京駅プロジェクションマッピング『TOKYO HIKARI VISION』（2012年、約80万人来場）をはじめ、映像・空間演出の第一線で活動してきたクリエイティブディレクターである。その編集的思考——素材を解体し、意味のまとまりで再構成する——が、メタクリドキュメントの根幹をなす<strong>「時系列を無視した意味による再構成」</strong>の原理に直結している。</p>
+      </div>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">2.2　三つの層が生まれるまで</h3>
+
+      <p class="guide">三層構造は、一度に設計されたものではない。実践の中で、一つずつ「必要だ」と気づかれ、積み重ねられていった。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「そこからだんだんと形ができていった感じですよね。最初からメタクリドキュメントの三層構造があったわけではなくて」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「全然なかった。最初はとにかく『面白かった部分を残したい』という一心で、対話の引用を中心に構成してたんだけど、引用だけだと読者が置いてきぼりになるんですよ。僕たちの間では当然の前提が、読者にとっては分からない」</p>
+        </div>
+      </div>
+
+      <p class="guide">まず<strong>第一層</strong>として生まれたのが「対話の引用」だ。話者の声をそのまま保存し、臨場感を維持する。しかし引用だけでは文脈が伝わらない。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「そこで『地の文』が必要になった」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「そう。対話の引用と引用の間を繋ぐ、ナレーションみたいなものですよね。文脈を補い、『ここで何が起きていたのか』を説明する。映画で言えばナレーションとカメラワーク」</p>
+        </div>
+      </div>
+
+      <p class="guide">次に<strong>第二層</strong>として「地の文」が加わった。対話と対話の間を論理的に接続し、読者に俯瞰の視点を提供する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「で、さらにやっていくうちに、僕たちが普通に話してる中に、実はすごく深いテーマが埋まってることに気づき始めたんですよね。なんかこう、さらっと言ったことが実は心理学の概念と繋がってたりとか」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「例えばね、僕が『自分を見下ろしてる自分がいる』って言ったことがあるじゃないですか。これ、メルロ＝ポンティの知覚論とか、メタ認知の話とガッツリ繋がるわけですよ。でも普通に会話してるときにはそんな意識はない」</p>
+        </div>
+      </div>
+
+      <p class="guide">そして<strong>第三層</strong>として「注釈」が加わった。対話の中に埋もれている知的な接続点を掘り出し、学術的・文化的な文脈と橋渡しをする。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「一般的な定義、学術的な背景、そしてこの対話の文脈ではどういう意味を持つかっていう三段構成の注釈。これがあることで、雑談が教養に昇華するんですよ」</p>
+        </div>
+      </div>
+
+      <p class="guide"><strong>「雑談を教養に昇華する」</strong>。この一文こそが、メタクリドキュメントの核心的な価値命題を最も端的に表現している。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">知的架橋（Intellectual Bridge-Building）——メタクリドキュメントの編集哲学</p>
+        <p class="annotation-text">「雑談を教養に昇華する」とは、メタクリドキュメントの統合スタイルガイド（v5.0.2）で「知的架橋」と呼ばれる編集原理の平易な言い換えである。個人的なエピソードを学術的概念・文化的文脈・哲学的命題と接続することが、メタクリドキュメントの最大の価値であるとされている。</p>
+        <p class="annotation-text">例えば、「弟の方がモテた」という何気ない発言がアドラー心理学の「出生順位と性格形成」理論に接続され、「めっちゃ楽しかった、めっちゃ傷ついた」という感情の吐露がブレネー・ブラウンの「脆弱性（vulnerability）」研究に接続される——こうした橋渡しによって、個人の体験は普遍的な知へと昇華する。Opiが挙げた「メルロ＝ポンティの知覚論」との接続も、まさにこの知的架橋の一例だ。フランスの現象学者モーリス・メルロ＝ポンティ（1908-1961）は、身体を世界認識の起点として捉え、「見る者」と「見られる者」の相互浸透を論じた。Opiの「自分を見下ろしている自分」という日常的な感覚が、実は20世紀哲学の重要テーマと地続きであることを示すのが、注釈の役割である。</p>
+      </div>
+    </section>
+
+    <!-- ===== 第三章 ===== -->
+    <section class="chapter" id="s-ch3">
+      <div class="chapter-heading">
+        <span class="chapter-number">Chapter 03</span>
+        第三章　情報が「増える」ドキュメント——減る記録から生まれ続ける知へ
+      </div>
+      <div class="chapter-image">📈</div>
+
+      <h3 class="subsection-heading">3.1　「こんな深い話してたっけ？」</h3>
+
+      <p class="guide">三層構造が形になったとき、制作者自身が最も驚いた。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「実際にこの形で作ってみて、最初に読んだとき、僕ちょっと不思議な感覚があったんですよ」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「どんな？」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「『僕たちの何気ない会話に、こんな広がりと深さがあったんだ！』っていう感覚。確かに話した内容ではあるんだけど、自分たちの対話から見えてなかったものが見えるようになってる」</p>
+        </div>
+      </div>
+
+      <p class="guide">これは極めて重要な証言だ。メタクリドキュメントは、対話を記録するだけでなく、対話の中に潜在していた意味を顕在化させる。話した本人が「こんな深い話をしていたとは」と驚く——それはすなわち、対話の中にあった<strong>未発掘の知的鉱脈</strong>が、三層構造という「採掘技法」によって初めて可視化されたということだ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「それ、まさにメタクリドキュメントの一番面白いところだと思うんですよ。普通の議事録は情報が『減る』じゃないですか。でもメタクリドキュメントは元の対話より情報が『増える』。実際に文字数で言っても元素材の1.5倍とか1.7倍になるんですよ」</p>
+        </div>
+      </div>
+
+      <p class="guide">通常、記録という行為は情報を「減らす」方向に働く。メモは会議より短いし、議事録は対話より短い。しかしメタクリドキュメントは、この常識を逆転させる。地の文による文脈の補完と、注釈による知的接続の追加によって、元素材よりも情報量が増加する。それは水増しではなく、<strong>「もともとそこにあったが言語化されていなかった意味」の発掘</strong>なのだ。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">暗黙知の形式知化——野中郁次郎のSECIモデルとの接続</p>
+        <p class="annotation-text">メタクリドキュメントが元素材より情報量が増えるという現象は、経営学者・野中郁次郎が提唱した「SECIモデル」の文脈で理解できる。SECIモデルは、暗黙知と形式知の変換プロセスを4つのモード（共同化・表出化・連結化・内面化）で説明する知識創造理論である。対話という行為自体が「共同化」（暗黙知から暗黙知への移転）にあたり、メタクリドキュメント化は「表出化」（暗黙知の形式知化）にあたる。二人の間で暗黙的に共有されていた文脈や発見の感覚が、三層構造を通じて言語化され、第三者にも共有可能な形式知へと変換される。<strong>情報が「増える」のではなく、もともと暗黙知として存在していたものが形式知として「可視化される」</strong>のだ。</p>
+      </div>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">3.2　層の間を行き来する読書体験</h3>
+
+      <p class="guide">メタクリドキュメントの効果は、三つの層が単に積み重なっていることではなく、読者がそれらの間を<strong>行き来する</strong>ことで生まれる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「思考が生起する場、っていう言い方をしてるけど、読むたびに違う発見がある。対話部分を読んで臨場感を感じて、地の文で『あ、そういうことだったのか』って俯瞰して、注釈を読んで『へぇ、そんな理論があるのか』って深掘りして、また対話に戻ると別の意味が見えてくる」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「この行き来がすごく大事ですよね。一方向に読み進めるだけの文書じゃなくて、層の間を行ったり来たりする」</p>
+        </div>
+      </div>
+
+      <p class="guide">対話で没入し、地の文で理解を深め、注釈で知的背景を知り、再び対話に戻ったときに新しい意味を発見する。この循環的な読書体験が、メタクリドキュメントを単なる「記録」ではなく<strong>「思考が生起する場」</strong>にしている。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">ハイパーテキスト的読書と非線形ナラティブ</p>
+        <p class="annotation-text">メタクリドキュメントにおける「層の間の行き来」は、テッド・ネルソンが1960年代に構想した「ハイパーテキスト」の思想を紙面上で実現していると言える。ハイパーテキストとは、テキスト間を自由にリンクで行き来できる構造であり、WWW（ワールドワイドウェブ）の思想的基盤となった。しかしメタクリドキュメントがハイパーテキストと異なるのは、リンクの構造が読者に委ねられるのではなく、編集者（記録者）によって設計されている点だ。どの対話をどの地の文で接続し、どの注釈で補強するかは、「思想の記録者」としての編集判断の結果である。読者は自由に層を行き来しながらも、その行き来自体が編集者の意図に導かれている。この<strong>「設計された非線形性」</strong>が、メタクリドキュメントの読書体験を豊かにしている。</p>
+      </div>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">3.3　双方向可読性——人間にもAIにも読める</h3>
+
+      <p class="guide">そして、三層構造は予期せぬ副産物を生んだ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「で、これもう一つ面白い特性があるのが、人間が読むときは具体的な対話から入って抽象的な概念に上がっていくんだけど、AIが読むときは逆なんですよ。抽象的な構造やキーワードから入って、具体的な対話に降りていく」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「双方向可読性ですよね。人にもAIにも読めるフォーマットになってる」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「これ最初は狙ってなかったんだけど、知識グラフと組み合わせたときに『あ、この構造って実はAIにとっても理想的なフォーマットだったんだ』ってことに気づいたわけですよ」</p>
+        </div>
+      </div>
+
+      <p class="guide">人間は具体から抽象へと読み進める。対話の生々しさに引き込まれ、地の文で概念を理解し、注釈で理論的背景を知る。一方、AIは抽象から具体へと読む。注釈のキーワードや地の文の構造から意味を把握し、対話の具体例で文脈を補強する。同じ文書が、読み手の性質に応じて二つの方向から読解できる。この<strong>「双方向可読性」</strong>は、AI時代における人間-AI間データ交換の一つの理想形を示唆している。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">双方向可読性とGraphRAG——知識グラフ時代の文書設計</p>
+        <p class="annotation-text">メタクリドキュメントの双方向可読性は、GraphRAG（Graph-based Retrieval-Augmented Generation）との統合を見据えた文書設計として注目に値する。従来のRAG（検索拡張生成）がテキストの断片をベクトル検索で取得するのに対し、GraphRAGは知識グラフの構造を利用して、概念間の関係性を辿りながら情報を検索する。メタクリドキュメントの三層構造は、GraphRAGの3つの処理レイヤー——エンティティ抽出（注釈）、関係性記述（地の文）、ソースデータ（対話引用）——と構造的に対応している。これは設計段階で意図されたものではなく、実践の中で発見された構造的親和性である。「最初は狙ってなかった」というOpiの証言は、メタクリドキュメントの構造が単なる便宜的なフォーマットではなく、<strong>知識の本質的な階層性を反映している</strong>ことを示唆している。</p>
+      </div>
+    </section>
+
+    <!-- ===== 第四章 ===== -->
+    <section class="chapter" id="s-ch4">
+      <div class="chapter-heading">
+        <span class="chapter-number">Chapter 04</span>
+        第四章　雑談を教養に昇華する——対話の知的資産化とその展開
+      </div>
+      <div class="chapter-image">💡</div>
+
+      <h3 class="subsection-heading">4.1　四つの入口</h3>
+
+      <p class="guide">メタクリドキュメントは、ラジオの記録という出発点から、はるかに広い活用の場を見出しつつある。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「最初は僕たちのラジオの記録として始まったものが、今はもっと広い用途に使えるようになってきてますよね」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「そうですね。まず一番わかりやすいのは、ポッドキャストや対話コンテンツの付加価値化。音声だけだと聴き逃したら終わりじゃないですか。でもメタクリドキュメントにすると、音声で聴くのとはまた違った深さで体験できる」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「しかも、音声だと検索できないし、後から特定の話題を探すのが大変ですけど、ドキュメントになっていれば構造化されてるので見つけやすい」</p>
+        </div>
+      </div>
+
+      <p class="guide">現在、メタクリドキュメントには4つの入力タイプが存在する。メタクリラジオのエピソード（Type 4）、日常の実対話の文字起こし（Type 2）、リサーチレポートからの架空対話生成（Type 3）、そして概念構想の一人語り（Type 1）。入口は異なっても、三層構造による<strong>「知的資産の増幅」</strong>という本質は共通している。</p>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">4.2　企業の対話資産化</h3>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「次に、企業の中での活用ですよね。会議の議事録じゃなくて、メタクリドキュメントとして記録する。そうすると『あの会議で何が決まったか』だけじゃなくて、『あの会議で何が起きていたか』『どういう思考のプロセスで結論に至ったか』が残る」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「これ、意思決定のプロセスが残るっていうのがすごく大きいですよね。結論だけじゃなくて、なぜその結論に至ったのかが追えるので」</p>
+        </div>
+      </div>
+
+      <p class="guide">企業にとって、意思決定の「結果」だけでなく<strong>「プロセス」</strong>を記録することの価値は計り知れない。なぜこの戦略を選んだのか。どのような議論があり、どの代替案が検討され、何が決め手になったのか。こうしたプロセスの記録は、後から意思決定を検証し、改善するための不可欠な知的基盤となる。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">組織の記憶と意思決定のトレーサビリティ</p>
+        <p class="annotation-text">企業における会議記録のメタクリドキュメント化は、組織学習論における「組織の記憶（Organizational Memory）」の質的向上に寄与する可能性がある。ジェームズ・ウォルシュとガーウッド・アンジソンは、組織の記憶を「組織の過去の経験から蓄積され、現在の意思決定に影響を与える情報の貯蔵」と定義した。従来の議事録は意思決定の結果のみを記録するため、後から「なぜそう決めたのか」を追跡することが困難だった。メタクリドキュメントによる三層構造の記録は、地の文で思考プロセスを、注釈で判断の根拠となった理論や前例を保存することで、<strong>意思決定のトレーサビリティ（追跡可能性）を実現</strong>する。</p>
+      </div>
+
+      <div class="section-break"><span>✦</span></div>
+
+      <h3 class="subsection-heading">4.3　架空対話という第三の道</h3>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「あと、僕たちが面白いなと思ってるのが、僕たちがこれまで話してきた内容を学習させて話者情報を作って、リサーチレポートを元にして二人の架空対話を作る」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「そう、これ実はまさに今やってることでもあるんですけど、あるテーマについてリサーチした内容を、僕たちの架空対話として再構成するっていう」</p>
+        </div>
+      </div>
+
+      <p class="guide">実際の対話だけでなく、AIが二人のプロファイル（口調、思考パターン、価値観）を学習し、任意のテーマについての架空対話を生成する。そしてそれをメタクリドキュメント化する。これはまさに、「本稿」自体が実証しているプロセスでもある。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「これの何が良いかっていうと、教科書的な説明って読んでて眠くなるじゃないですか。でも二人が対話してる形だと、自然と『なるほど』とか『いや、それってどういうこと？』っていう読者の内的対話が起きるんですよ」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「対話形式って、問いと応答の構造がそのまま入ってるから、読者の中にも自然と問いが立つんですよね。で、その問いに対する答えが次に来るので、理解が深まっていく」</p>
+        </div>
+      </div>
+
+      <p class="guide">対話形式の持つ教育的効果は、古代ギリシアのソクラテスの時代から知られている。問答を通じて読者の中に「問い」を喚起し、思考を促す。メタクリドキュメントは、この対話の力を活かしながら、地の文と注釈による<strong>知的架橋</strong>を加えることで、「雑談」と「教養」の間に橋を架ける。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">ソクラテス式問答法と対話による学習</p>
+        <p class="annotation-text">対話形式による知的探究の伝統は、プラトンが師ソクラテスの言行を対話篇として記録したことに遡る。ソクラテス式問答法（エレンコス）とは、問いかけを通じて相手の知の限界を自覚させ、より深い理解へと導く手法である。ソクラテス自身は「自分は何も知らない」と宣言しながら、対話を通じて相手の中に「問い」を生み出した。興味深いことに、メタクリラジオにおけるタムカイの役割——聞き手として問いを投げかけ、Opiの知識を引き出し、メタ認知的に「今、面白いことが起きていますね」と言語化する——は、この問答法の現代的実践と言える。架空対話においても、この問答の構造が保存されることで、<strong>読者の中に自然と思考が喚起される</strong>。</p>
+      </div>
+    </section>
+
+    <!-- ===== おわりに ===== -->
+    <section class="chapter" id="s-outro">
+      <div class="chapter-heading">
+        <span class="chapter-number">Conclusion</span>
+        おわりに——動的な知のアーカイブとして
+      </div>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「整理すると、メタクリドキュメントって結局、対話や経験の中に埋まっている知的資産を、失わずに、むしろ増やして残すための方法なんですよね」</p>
+        </div>
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「そう。で、それは単なる保存じゃない。保存って静的なものじゃないですか。メタクリドキュメントは、読むたびに新しい発見がある。つまり動的な知のアーカイブなんですよ」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「『記録』じゃなくて『場』なんですよね。思考が生まれ続ける場」</p>
+        </div>
+      </div>
+
+      <p class="guide">メタクリドキュメントは、蓄積されるにつれ、個々の文書を超えた価値を生み始めている。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「メタクリラジオのエピソード3で話した音楽の話と、エピソード15で話した身体性の話が、注釈を介して繋がるとかね。これ、人間が一つ一つ読んでたら気づかない接続を、構造化されてるからこそAIが見つけてくれる」</p>
+        </div>
+      </div>
+
+      <p class="guide">ドキュメント同士が注釈を介して接続し、知識グラフの中で「対話」を始める。ある回で語られた個人的なエピソードが、別の回の学術的注釈と共鳴し、まったく新しい洞察が浮かび上がる。これは、一つ一つの対話がメタクリドキュメントとして構造化され、蓄積されてきたからこそ可能になった現象だ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-opi">
+          <p class="dialogue-speaker">Opi</p>
+          <p class="dialogue-text">「メタクリドキュメントの本質って、『あなたの対話にはまだ気づいてない価値が眠ってますよ』っていうメッセージなんですよ。雑談だと思ってるもの、何気ない会議、友達との長電話。そこにはちゃんと知的資産が埋まっていて、それを掘り起こして形にする方法がある。それがメタクリドキュメントなんです」</p>
+        </div>
+        <div class="dialogue-item speaker-tamkai">
+          <p class="dialogue-speaker">タムカイ</p>
+          <p class="dialogue-text">「議事録で『情報を減らす』のか、メタクリドキュメントで『価値を増やす』のか。同じ対話に対するアプローチの違いですけど、残るものが全然違ってくるっていう」</p>
+        </div>
+      </div>
+
+      <p class="guide">議事録が<strong>「情報を減らす」</strong>記録であるとすれば、メタクリドキュメントは<strong>「価値を増やす」</strong>記録である。同じ素材——あなたの対話——に対するアプローチの違いが、残るものの質を決定的に変える。</p>
+
+      <p class="guide">あなたの対話にも、まだ気づいていない価値が眠っている。メタクリドキュメントは、それを掘り起こすための技法であり、そしてそれ自体が<strong>「思考が生まれ続ける場」</strong>なのだ。</p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="document-footer">
+  <div class="footer-about">
+    <strong>About MetaCreative Document</strong>
+    <p>メタクリドキュメントは、クリエイティブにまつわる対話を三層構造（対話引用・導の文・註釈）で再構成し、知的な読み物として編集したものです。</p>
+  </div>
+  <p class="footer-date">編集日：2026年2月18日</p>
+</footer>
+
+<button class="mobile-toc-toggle" id="sMobileTocToggle" aria-label="目次を開く">
+  <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</button>
+<div class="mobile-toc-overlay" id="sMobileTocOverlay"></div>
+<div class="mobile-toc-panel" id="sMobileTocPanel">
+  <button class="toc-close" id="sMobileTocClose" aria-label="目次を閉じる">×</button>
+  <p class="toc-label">Contents</p>
+  <ul>
+    <li><a href="#s-intro"><span class="dot"></span>はじめに</a></li>
+    <li><a href="#s-ch1"><span class="dot"></span>第一章：要約という名の情報損失</a></li>
+    <li><a href="#s-ch2"><span class="dot"></span>第二章：撮った映像はそのまま流さない</a></li>
+    <li><a href="#s-ch3"><span class="dot"></span>第三章：情報が「増える」ドキュメント</a></li>
+    <li><a href="#s-ch4"><span class="dot"></span>第四章：雑談を教養に昇華する</a></li>
+    <li><a href="#s-outro"><span class="dot"></span>おわりに</a></li>
+  </ul>
+</div>
+
+</div>
+
+<!-- ====== RICH VIEW ====== -->
+<div id="view-rich" class="view-content">
+<!-- Progress Bar -->
+<div class="r-progress" id="rProgressBar">
+<div class="r-progress-line" id="rProgressLine"></div>
+<div class="r-progress-ctx">
+<span class="r-progress-label">Metacreative Document</span>
+<span class="r-progress-ch" id="rProgressCh"></span>
+</div>
+</div>
+
+<!-- Side TOC -->
+<nav class="r-toc" id="rSideToc">
+<div class="r-toc-dot" data-target="r-intro" data-label="Introduction"></div>
+<div class="r-toc-dot" data-target="r-ch1" data-label="Ch.1 情報損失"></div>
+<div class="r-toc-dot" data-target="r-ch2" data-label="Ch.2 三層構造"></div>
+<div class="r-toc-dot" data-target="r-ch3" data-label="Ch.3 増える情報"></div>
+<div class="r-toc-dot" data-target="r-ch4" data-label="Ch.4 活用"></div>
+<div class="r-toc-dot" data-target="r-conclusion" data-label="Conclusion"></div>
+</nav>
+
+<!-- Hero -->
+<section class="r-hero">
+<div class="r-hero-shapes">
+<div class="r-shape r-shape-1"></div>
+<div class="r-shape r-shape-2"></div>
+<div class="r-shape r-shape-3"></div>
+</div>
+<div class="r-hero-content">
+<span class="r-hero-label">Metacreative Document</span>
+<h1 class="r-hero-title">議事録が殺すもの、<span class="accent">メタクリドキュメント</span>が生むもの</h1>
+<p class="r-hero-sub">対話の中の「見えない糸」を織り直す技法——誕生、効果、そしてその先へ</p>
+<div class="r-hero-meta">
+<span>2026.02.18</span>
+<span>タムカイ × Opi</span>
+</div>
+</div>
+<div class="r-scroll">Scroll</div>
+</section>
+
+<!-- Introduction -->
+<section id="r-intro" class="r-intro" data-atmosphere="warm" data-chapter-name="Introduction">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">📖</span>
+<span class="r-ch-num">Introduction</span>
+<h2 class="r-ch-title">「あなたの対話には価値が眠っている」</h2>
+</div>
+<p class="r-intro-lead r-reveal">ポッドキャストの音声を文字に起こし、要約して議事録にまとめる。それは合理的で、効率的で、そして致命的に何かを失う行為でもある。タムカイとOpiが「メタクリドキュメント」と呼ぶ文書形式は、この「失われるもの」を取り戻すために生まれた。</p>
+<p class="r-text r-reveal">二人のポッドキャスト「メタクリラジオ」から生まれたこの文書形式は、数多くの試行錯誤を経て、対話の引用・地の文・注釈という三層構造へと結実した。それは単なる記録ではなく、対話の中に埋もれた知的資産を掘り起こし、増幅させる——いわば<strong class="g">知のアーカイブ</strong>として機能する仕組みである。</p>
+</div>
+</section>
+
+<!-- Divider -->
+<div class="r-divider r-reveal"><span class="r-divider-emoji">📝</span></div>
+
+<!-- Chapter 01 -->
+<section id="r-ch1" class="r-chapter" data-atmosphere="warm" data-chapter-name="要約という名の情報損失">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">📝</span>
+<span class="r-ch-num">Chapter 01</span>
+<h2 class="r-ch-title">要約という名の情報損失——なぜ議事録では足りなかったのか</h2>
+</div>
+<p class="r-text r-reveal">メタクリラジオの音声を文字起こしし、要約してみたとき、二人はある違和感に直面した。確かに事実は記録されている。しかし、対話の中にあった<strong class="w">面白さ</strong>や<strong class="w">発見の感覚</strong>が、跡形もなく消えていたのだ。</p>
+<div class="r-dlg">
+<div class="r-dlg-item r-reveal">
+<p class="r-dlg-speaker tamkai">タムカイ</p>
+<p class="r-dlg-text">「僕も最初はそう思ってたんですよ。で、実際にやってみたんです。AIを使って文字起こしをして、要約して、みたいな。」</p>
+</div>
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「でもね、それを読んだときに、「あれ？」ってなったわけですよ。」</p>
+</div>
+<div class="r-dlg-item r-reveal">
+<p class="r-dlg-speaker tamkai">タムカイ</p>
+<p class="r-dlg-text">「なんか、確かにこういう話はしたんだけど、話してたときに感じたあの面白さとか、「おお、そういうことか！」っていう発見の感覚が、全部消えてるんですよ。」</p>
+</div>
+</div>
+<p class="r-text r-reveal">議事録は「何が話されたか」を記録する。しかし、<strong class="s">なぜそれが面白かったのか</strong>、<strong class="s">そこで何が起きていたのか</strong>——対話の中で生じた思考の化学反応は、要約という圧縮プロセスの中で不可逆的に失われてしまう。</p>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">要約と情報エントロピー——圧縮が破壊するもの</h3>
+<div class="r-ann-body">要約とは情報の非可逆圧縮である。JPEG画像の圧縮が高周波成分を捨てるように、テキストの要約は「ニュアンス」「文脈」「感情的トーン」を捨てる。社会言語学者デボラ・タネンは、対話には命題的内容（何が言われたか）とメタメッセージ（どう言われたか、なぜそう言われたか）の二層があると指摘する。議事録が保存するのは命題的内容のみであり、対話の本質であるメタメッセージは体系的に削除される。メタクリドキュメントの三層構造は、この失われたメタメッセージを再構成する試みである。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+<div class="r-contrast r-reveal">
+<div class="r-contrast-label">MINUTES vs METACREATIVE DOCUMENT</div>
+<div class="r-contrast-grid">
+<div class="r-contrast-side r-contrast-side--left">
+<div class="r-contrast-side-header">
+<span class="r-contrast-side-emoji">📋</span>
+<span class="r-contrast-side-title">議事録</span>
+</div>
+<p class="r-contrast-side-desc">情報を減らす<br>事実のみ記録<br>面白さが消える<br>化学反応は残らない</p>
+</div>
+<div class="r-contrast-vs"><span class="r-contrast-vs-text">VS</span></div>
+<div class="r-contrast-side r-contrast-side--right">
+<div class="r-contrast-side-header">
+<span class="r-contrast-side-emoji">📖</span>
+<span class="r-contrast-side-title">メタクリドキュメント</span>
+</div>
+<p class="r-contrast-side-desc">情報を増やす<br>意味を再構成<br>面白さを掘り起こす<br>化学反応を可視化</p>
+</div>
+</div>
+</div>
+<div class="r-dlg">
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「これ、以前話したハードディスクの中の4万曲の話と同じで。音楽ファイルは残ってても、「なぜこの順番でプレイリストを作ったのか」「あの夏にこの曲を聴いてた理由」は、持ち主の頭の中にしかないわけですよ。対話も同じで、文字起こしに残るのは言葉というデータであって、二人の間で起きていた思考の化学反応は残らない。」</p>
+</div>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">メタクリラジオ第3話——データと意味の乖離</h3>
+<div class="r-ann-body">メタクリラジオ第3話で、Opiはハードディスクに保存された4万曲の音楽ファイルを例に挙げ、データとメタデータの限界を論じた。楽曲ファイル自体は完全に保存されているが、「なぜその曲を聴いていたのか」「どんな文脈でプレイリストを作ったのか」という意味の層は記録されない。議事録と対話の関係もこれと同じ構造を持つ。メタクリドキュメントは、データとデータを繋いでいた「糸」を記述する技法なのである。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+</div>
+</section>
+
+<!-- Divider -->
+<div class="r-divider r-reveal"><span class="r-divider-emoji">🎬</span></div>
+
+<!-- Chapter 02 -->
+<section id="r-ch2" class="r-chapter" data-atmosphere="cool" data-chapter-name="三層構造の発見">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">🎬</span>
+<span class="r-ch-num">Chapter 02</span>
+<h2 class="r-ch-title">撮った映像はそのまま流さない——映像作家の編集思想と三層構造の発見</h2>
+</div>
+<p class="r-text r-reveal">メタクリドキュメントの三層構造が生まれた背景には、Opiの映像制作のバックグラウンドがある。映像の世界では、素材をそのまま使うことはない。撮影した映像を<strong class="b">カットし、並べ替え、音楽をつけ、テロップを入れて</strong>、初めて作品になる。対話の記録にも同じ編集思想を持ち込んだのだ。</p>
+<div class="r-dlg">
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「僕はもともと映像畑の人間なので、素材をそのまま使うという発想がないんですよ。撮った映像はそのまま流さない。編集する。カットして、並べ替えて、音楽をつけて、テロップを入れて、初めて作品になる。対話の記録も同じじゃないかと。」</p>
+</div>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">ポストプロダクション——映像編集の思想</h3>
+<div class="r-ann-body">映像制作におけるポストプロダクション（後処理工程）は、素材を「作品」に変容させるプロセスである。ソビエト・モンタージュ理論のエイゼンシュテインは、二つのショットの並置が個々のショットにはない第三の意味を生み出すと論じた。Opiは東京駅プロジェクションマッピングなど大規模映像制作に携わった経験から、「素材の再構成による意味の創出」という思想を身体化しており、それがメタクリドキュメントの編集哲学の基盤となっている。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+<div class="r-steps r-reveal">
+<div class="r-steps-label">THREE LAYERS</div>
+<div class="r-step-list">
+<div class="r-step-item">
+<div class="r-step-num">1</div>
+<div class="r-step-body">
+<div class="r-step-title">対話の引用（第一層）</div>
+<p class="r-step-desc">話者の声をそのまま保存し、臨場感を維持する</p>
+</div>
+</div>
+<div class="r-step-item">
+<div class="r-step-num">2</div>
+<div class="r-step-body">
+<div class="r-step-title">地の文（第二層）</div>
+<p class="r-step-desc">対話と対話の間を論理的に接続し、読者に俯瞰の視点を提供する</p>
+</div>
+</div>
+<div class="r-step-item">
+<div class="r-step-num">3</div>
+<div class="r-step-body">
+<div class="r-step-title">注釈（第三層）</div>
+<p class="r-step-desc">対話の中に埋もれた知的接続点を掘り出し、学術的・文化的文脈と橋渡しする</p>
+</div>
+</div>
+</div>
+</div>
+<div class="r-pq r-reveal">
+<p class="r-pq-text">雑談が教養に昇華する</p>
+<p class="r-pq-attr">--- Opi, on 注釈の力</p>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">知的架橋——メタクリドキュメントの編集哲学</h3>
+<div class="r-ann-body">メタクリドキュメントの注釈は、個人的なエピソードや日常的な発言を学術概念や文化的文脈と接続する「知的架橋」の役割を果たす。たとえば「自分を見下ろしてる自分がいる」という日常的な発言が、メルロ＝ポンティの知覚現象学やメタ認知の理論と接続される。この架橋によって、対話は個人的な雑談から普遍的な知的資源へと変容する。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+</div>
+</section>
+
+<!-- Divider -->
+<div class="r-divider r-reveal"><span class="r-divider-emoji">✨</span></div>
+
+<!-- Chapter 03 -->
+<section id="r-ch3" class="r-chapter" data-atmosphere="creative" data-chapter-name="情報が「増える」ドキュメント">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">✨</span>
+<span class="r-ch-num">Chapter 03</span>
+<h2 class="r-ch-title">情報が「増える」ドキュメント——減る記録から生まれ続ける知へ</h2>
+</div>
+<p class="r-text r-reveal">メタクリドキュメントを初めて読んだとき、話者自身が驚いた。自分たちの何気ない会話に、<strong class="g">こんな広がりと深さがあった</strong>のだと。通常の議事録は情報が減る。しかしメタクリドキュメントでは、元の対話よりも情報が「増える」のである。</p>
+<div class="r-dlg">
+<div class="r-dlg-item r-reveal">
+<p class="r-dlg-speaker tamkai">タムカイ</p>
+<p class="r-dlg-text">「僕たちの何気ない会話に、こんな広がりと深さがあったんだ！っていう感覚。確かに話した内容ではあるんだけど、自分たちの対話から見えてなかったものが見えるようになってる。」</p>
+</div>
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「普通の議事録は情報が「減る」じゃないですか。でもメタクリドキュメントは元の対話より情報が「増える」。実際に文字数で言っても元素材の1.5倍とか1.7倍になるんですよ。」</p>
+</div>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">暗黙知の形式知化——SECIモデル</h3>
+<div class="r-ann-body">野中郁次郎のSECIモデルは、暗黙知と形式知の変換プロセスを「共同化・表出化・連結化・内面化」の4段階で説明する。メタクリドキュメントの制作プロセスは、対話という共同化の中に含まれる暗黙知を、三層構造という形式知に変換する「表出化」に相当する。しかも注釈による知識の連結化も同時に行われるため、一つのドキュメント制作の中でSECIモデルの複数段階が圧縮的に実行されている。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+<p class="r-text r-reveal">増えた情報の正体は、話者が言語化できていなかった思考や、気づいていなかった知的接続点である。そして三つの層の間を<strong class="s">行き来する</strong>ことで、読むたびに新しい発見が生まれる。</p>
+<div class="r-dlg">
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「読むたびに違う発見がある。対話部分を読んで臨場感を感じて、地の文で「あ、そういうことだったのか」って俯瞰して、注釈を読んで「へぇ、そんな理論があるのか」って深掘りして、また対話に戻ると別の意味が見えてくる。」</p>
+</div>
+<div class="r-dlg-item r-reveal">
+<p class="r-dlg-speaker tamkai">タムカイ</p>
+<p class="r-dlg-text">「この行き来がすごく大事ですよね。一方向に読み進めるだけの文書じゃなくて、層の間を行ったり来たりする。」</p>
+</div>
+</div>
+<div class="r-pq r-reveal">
+<p class="r-pq-text">「記録」じゃなくて「場」——思考が生まれ続ける場</p>
+<p class="r-pq-attr">--- タムカイ</p>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">双方向可読性とGraphRAG</h3>
+<div class="r-ann-body">メタクリドキュメントは人間とAIの双方にとって理想的な構造を持つ。人間は具体的な対話から入って抽象的な概念に上がっていく（ボトムアップ）。一方AIは抽象的な構造やキーワードから入って具体的な対話に降りていく（トップダウン）。同じ文書が二つの方向から読解できるこの特性は、GraphRAG（グラフベースの検索拡張生成）との組み合わせにおいて特に威力を発揮し、ドキュメント間の知的接続を自動的に発見することを可能にする。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+</div>
+</section>
+
+<!-- Divider -->
+<div class="r-divider r-reveal"><span class="r-divider-emoji">🌍</span></div>
+
+<!-- Chapter 04 -->
+<section id="r-ch4" class="r-chapter" data-atmosphere="warm" data-chapter-name="対話の知的資産化">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">🌍</span>
+<span class="r-ch-num">Chapter 04</span>
+<h2 class="r-ch-title">雑談を教養に昇華する——対話の知的資産化とその展開</h2>
+</div>
+<p class="r-text r-reveal">メタクリドキュメントの入力ソースは、現在4つのタイプに分類される。ラジオエピソード、実対話、リサーチからの架空対話、そして概念構想。それぞれが異なる形で<strong class="g">知的資産</strong>を生み出す。</p>
+<div class="r-cards r-reveal">
+<div class="r-info-card rose-top">
+<div class="r-info-card-icon">🎙️</div>
+<div class="r-info-card-title">Type 4</div>
+<p class="r-info-card-desc">メタクリラジオのエピソード</p>
+</div>
+<div class="r-info-card sage-top">
+<div class="r-info-card-icon">💬</div>
+<div class="r-info-card-title">Type 2</div>
+<p class="r-info-card-desc">実対話の文字起こし</p>
+</div>
+<div class="r-info-card gold-top">
+<div class="r-info-card-icon">🔬</div>
+<div class="r-info-card-title">Type 3</div>
+<p class="r-info-card-desc">リサーチ→架空対話</p>
+</div>
+<div class="r-info-card blue-top">
+<div class="r-info-card-icon">💭</div>
+<div class="r-info-card-title">Type 1</div>
+<p class="r-info-card-desc">概念構想の一人語り</p>
+</div>
+</div>
+<div class="r-dlg">
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「企業の中での活用もありますよね。会議の議事録じゃなくて、メタクリドキュメントとして記録する。そうすると「あの会議で何が決まったか」だけじゃなくて、「あの会議で何が起きていたか」「どういう思考のプロセスで結論に至ったか」が残る。」</p>
+</div>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">組織の記憶と意思決定のトレーサビリティ</h3>
+<div class="r-ann-body">組織論において、ウォルシュ&アンジソンは「組織の記憶」を個人・集団・組織の三層で捉えるモデルを提唱した。議事録は組織層の記憶として機能するが、意思決定の「なぜ」——すなわち個人と集団の層に存在する文脈的記憶は保存されない。メタクリドキュメントの三層構造は、この三層すべてにアクセス可能な記録形式として機能し、意思決定のトレーサビリティを飛躍的に向上させる可能性を持つ。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+<div class="r-dlg">
+<div class="r-dlg-item speaker-opi r-reveal">
+<p class="r-dlg-speaker opi">Opi</p>
+<p class="r-dlg-text">「教科書的な説明って読んでて眠くなるじゃないですか。でも二人が対話してる形だと、自然と「なるほど」とか「いや、それってどういうこと？」っていう読者の内的対話が起きるんですよ。対話形式なら内的対話が起きる。」</p>
+</div>
+</div>
+<div class="r-ann r-reveal" onclick="this.classList.toggle('expanded')">
+<span class="r-ann-badge">Annotation</span>
+<h3 class="r-ann-title">ソクラテス式問答法と対話による学習</h3>
+<div class="r-ann-body">プラトンの対話篇に見られるソクラテス式問答法（エレンコス）は、問いと応答の連鎖を通じて思考を深める教育手法である。対話形式のテキストが読者の内的対話を喚起するという現象は、この古代の知見と一致する。メタクリドキュメントの対話引用は、読者を傍観者ではなく「第三の対話者」として巻き込む機能を果たしており、テキストを介した擬似的なソクラテス式問答が成立する。</div>
+<span class="r-ann-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+</div>
+<div class="r-pq r-reveal">
+<p class="r-pq-text">議事録で「情報を減らす」のか、メタクリドキュメントで「価値を増やす」のか</p>
+<p class="r-pq-attr">--- タムカイ</p>
+</div>
+</div>
+</section>
+
+<!-- Conclusion -->
+<section id="r-conclusion" class="r-concl-section" data-atmosphere="deep" data-chapter-name="動的な知のアーカイブ">
+<div class="r-main">
+<div class="r-ch-header r-reveal">
+<span class="r-ch-icon">🌱</span>
+<span class="r-ch-num">Conclusion</span>
+<h2 class="r-ch-title">動的な知のアーカイブとして</h2>
+</div>
+<p class="r-concl-text r-reveal">メタクリドキュメントは、対話の<strong>知的資産</strong>を失わずに、むしろ<strong class="gold">増幅させる</strong>方法である。議事録が情報を減らす行為であるなら、メタクリドキュメントは対話の中に埋もれた潜在的価値を掘り起こし、三層構造によって<strong>思考が生起する場</strong>へと変容させる技法である。</p>
+<p class="r-concl-text r-reveal">蓄積されたドキュメント同士が<strong class="gold">知識グラフ</strong>を介して対話し始めるとき、個々の対話は単なる記録を超えた、<strong>動的な知のアーカイブ</strong>として機能し始める。あなたの対話にもまだ気づいていない価値が眠っている——それを掘り起こす技法が、メタクリドキュメントなのである。</p>
+<div class="r-takeaways">
+<div class="r-ta-card r-reveal">
+<span class="r-ta-emoji">📝</span>
+<h4 class="r-ta-title">要約の罠を超える</h4>
+<p class="r-ta-desc">議事録は情報を減らす。メタクリドキュメントは対話の中の潜在的価値を掘り起こし、増幅させる。</p>
+</div>
+<div class="r-ta-card r-reveal">
+<span class="r-ta-emoji">🎬</span>
+<h4 class="r-ta-title">三層構造の力</h4>
+<p class="r-ta-desc">対話引用・地の文・注釈。三つの層の行き来が「思考が生起する場」を生む。</p>
+</div>
+<div class="r-ta-card r-reveal">
+<span class="r-ta-emoji">🔄</span>
+<h4 class="r-ta-title">双方向可読性</h4>
+<p class="r-ta-desc">人間は具体→抽象、AIは抽象→具体。同じ文書が二つの方向から読解できる。</p>
+</div>
+<div class="r-ta-card r-reveal">
+<span class="r-ta-emoji">🌱</span>
+<h4 class="r-ta-title">知的資産の増幅</h4>
+<p class="r-ta-desc">あなたの対話にはまだ気づいていない価値が眠っている。それを掘り起こす技法がメタクリドキュメント。</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="r-footer">
+<div class="r-footer-logo">Metacreative Document</div>
+<div class="r-footer-meta">2026.02.18 | タムカイ × Opi<br>メタクリドキュメントとは何か — 架空対話</div>
+</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var tabs=document.querySelectorAll('.view-tab');
+var views=document.querySelectorAll('.view-content');
+var currentView='conversation';
+tabs.forEach(function(tab){
+  tab.addEventListener('click',function(){
+    var v=this.getAttribute('data-view');
+    if(v===currentView)return;
+    currentView=v;
+    tabs.forEach(function(t){t.classList.remove('active')});
+    this.classList.add('active');
+    views.forEach(function(view){view.classList.remove('active')});
+    document.getElementById('view-'+v).classList.add('active');
+    window.scrollTo(0,0);
+    if(v==='standard') initStandard();
+    if(v==='rich') initRich();
+  });
+});
+var sInitialized=false;
+function initStandard(){
+  if(sInitialized)return;sInitialized=true;
+  var sections=document.querySelectorAll('#view-standard .chapter[id]');
+  var sidebarLinks=document.querySelectorAll('#view-standard .sidebar-toc li');
+  var mobileLinks=document.querySelectorAll('#view-standard .mobile-toc-panel li');
+  function setActive(id){
+    [sidebarLinks,mobileLinks].forEach(function(links){
+      links.forEach(function(li){li.classList.remove('active')});
+    });
+    var sa=document.querySelector('#view-standard .sidebar-toc li a[href="#'+id+'"]');
+    var ma=document.querySelector('#view-standard .mobile-toc-panel li a[href="#'+id+'"]');
+    if(sa)sa.parentElement.classList.add('active');
+    if(ma)ma.parentElement.classList.add('active');
+  }
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting)setActive(entry.target.id);
+    });
+  },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+  sections.forEach(function(s){observer.observe(s)});
+  var toggle=document.getElementById('sMobileTocToggle');
+  var overlay=document.getElementById('sMobileTocOverlay');
+  var panel=document.getElementById('sMobileTocPanel');
+  var closeBtn=document.getElementById('sMobileTocClose');
+  function openMobileToc(){
+    overlay.style.display='block';panel.style.display='block';
+    requestAnimationFrame(function(){overlay.classList.add('is-open');panel.classList.add('is-open')});
+  }
+  function closeMobileToc(){
+    overlay.classList.remove('is-open');panel.classList.remove('is-open');
+    setTimeout(function(){overlay.style.display='none'},250);
+  }
+  if(toggle)toggle.addEventListener('click',openMobileToc);
+  if(overlay)overlay.addEventListener('click',closeMobileToc);
+  if(closeBtn)closeBtn.addEventListener('click',closeMobileToc);
+  if(panel)panel.querySelectorAll('a').forEach(function(link){link.addEventListener('click',closeMobileToc)});
+}
+var rInitialized=false;
+function initRich(){
+  if(rInitialized)return;rInitialized=true;
+  var isPC=window.innerWidth>=1024;
+  var progressBar=document.querySelector('#view-rich .r-progress');
+  var progressLine=document.querySelector('#view-rich .r-progress-line');
+  var progressCh=document.querySelector('#view-rich .r-progress-ch');
+  var rHero=document.querySelector('#view-rich .r-hero');
+  var rSections=document.querySelectorAll('#view-rich [data-atmosphere]');
+  var rTocDots=document.querySelectorAll('#view-rich .r-toc-dot');
+  var atmospheres={'warm':'#F5F0E8','cool':'#F0F2F5','creative':'#F8F5EE','deep':'#F5F0E8'};
+  var currentChName='';
+  var richEl=document.getElementById('view-rich');
+  /* PC: disable annotation click toggle (always open via CSS) */
+  if(isPC){
+    document.querySelectorAll('#view-rich .r-ann').forEach(function(ann){ann.removeAttribute('onclick')});
+  }
+  rTocDots.forEach(function(d){
+    d.addEventListener('click',function(){
+      var t=document.getElementById(this.getAttribute('data-target'));
+      if(t)t.scrollIntoView({behavior:'smooth'});
+    });
+  });
+  var supportsScrollTimeline=CSS.supports('animation-timeline','view()');
+  if(isPC&&'IntersectionObserver' in window){
+    /* Branch 1: PC — JS IntersectionObserver reveal */
+    document.documentElement.classList.add('r-spotlight-ready');
+    setTimeout(function(){
+      var threshold=window.innerHeight*0.3;
+      document.querySelectorAll('#view-rich .r-reveal').forEach(function(el){
+        var rect=el.getBoundingClientRect();
+        if(rect.top<threshold){el.style.transition='none';el.classList.add('pc-revealed');setTimeout(function(){el.style.transition=''},10)}
+      });
+    },100);
+    var rTicking=false;
+    function checkRichReveals(){
+      var triggerLine=window.innerHeight*0.7;
+      document.querySelectorAll('#view-rich .r-reveal:not(.pc-revealed)').forEach(function(el){
+        if(el.getBoundingClientRect().top<triggerLine)el.classList.add('pc-revealed');
+      });
+    }
+    window.addEventListener('scroll',function(){
+      if(currentView!=='rich')return;
+      if(!rTicking){requestAnimationFrame(function(){checkRichReveals();rTicking=false});rTicking=true}
+    },{passive:true});
+  } else if(supportsScrollTimeline){
+    /* Branch 2: Mobile with scroll-timeline — CSS handles animation */
+    document.documentElement.classList.add('r-spotlight-ready');
+    setTimeout(function(){
+      document.querySelectorAll('#view-rich .r-reveal').forEach(function(el){
+        if(getComputedStyle(el).opacity==='0'){el.style.opacity='1';el.style.transform='none';el.style.filter='none'}
+      });
+    },5000);
+  } else if('IntersectionObserver' in window){
+    /* Branch 3: Mobile fallback — IO reveal */
+    document.documentElement.classList.add('r-io-ready');
+    var ioObserver=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('io-revealed');ioObserver.unobserve(entry.target)}});
+    },{threshold:0.1});
+    document.querySelectorAll('#view-rich .r-reveal').forEach(function(el){ioObserver.observe(el)});
+    setTimeout(function(){document.querySelectorAll('#view-rich .r-reveal:not(.io-revealed)').forEach(function(el){el.classList.add('io-revealed')})},4000);
+  }
+  function updateRich(){
+    if(currentView!=='rich')return;
+    var scrollTop=window.pageYOffset||document.documentElement.scrollTop;
+    var docHeight=document.documentElement.scrollHeight-window.innerHeight;
+    if(progressLine)progressLine.style.width=(scrollTop/docHeight*100)+'%';
+    if(rHero&&scrollTop>rHero.offsetTop+rHero.offsetHeight-100){if(progressBar)progressBar.classList.add('visible')}
+    else{if(progressBar)progressBar.classList.remove('visible')}
+    var viewportMid=scrollTop+window.innerHeight*0.4;
+    var activeId='';
+    rSections.forEach(function(s){
+      var t=s.offsetTop,b=t+s.offsetHeight;
+      if(viewportMid>=t&&viewportMid<b){
+        activeId=s.id;
+        var atm=s.getAttribute('data-atmosphere');
+        if(atm&&atmospheres[atm])richEl.style.backgroundColor=atmospheres[atm];
+        var cn=s.getAttribute('data-chapter-name')||'';
+        if(cn!==currentChName&&progressCh){
+          progressCh.style.opacity='0';
+          setTimeout(function(){progressCh.textContent=cn;progressCh.style.opacity='1'},200);
+          currentChName=cn;
+        }
+      }
+    });
+    rTocDots.forEach(function(d){d.classList.toggle('active',d.getAttribute('data-target')===activeId)});
+  }
+  var rScrollTicking=false;
+  window.addEventListener('scroll',function(){
+    if(currentView!=='rich')return;
+    if(!rScrollTicking){requestAnimationFrame(function(){updateRich();rScrollTicking=false});rScrollTicking=true}
+  },{passive:true});
+  updateRich();
+}
+})();
+</script>
+</body>
+</html>
