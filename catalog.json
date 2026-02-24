@@ -1,0 +1,72 @@
+{
+  "documents": [
+    {
+      "id": "R_20251208_ep12-bricolage",
+      "title": "Ep.12 ブリコラージュ — 楽屋が一番面白い",
+      "date": "2025-12-08",
+      "type": "radio",
+      "tags": ["メタクリラジオ", "創造性"],
+      "formats": {
+        "standard": "d/R_20251208_ep12-bricolage_s.html",
+        "rich": "showcase/R_20251208_ep12-bricolage_r.html"
+      },
+      "protected": false
+    },
+    {
+      "id": "R_20260202_ep19-travel",
+      "title": "Ep.19 僕らが旅に出る理由",
+      "date": "2026-02-02",
+      "type": "radio",
+      "tags": ["メタクリラジオ", "旅"],
+      "formats": {
+        "rich": "showcase/R_20260202_ep19-travel_r.html"
+      },
+      "protected": false
+    },
+    {
+      "id": "V_20250127_protopia",
+      "title": "プロトピア — ユートピアでもディストピアでもない未来",
+      "date": "2025-01-27",
+      "type": "virtual",
+      "tags": ["未来", "TechGALA"],
+      "formats": {
+        "standard": "d/V_20250127_protopia_s.html",
+        "rich": "showcase/V_20250127_protopia_r.html"
+      },
+      "protected": false
+    },
+    {
+      "id": "T_20260206_boundary-paradox",
+      "title": "越境のパラドックス",
+      "date": "2026-02-06",
+      "type": "transcript",
+      "tags": ["経産省", "越境"],
+      "formats": {
+        "rich": "showcase/T_20260206_boundary-paradox_r.html"
+      },
+      "protected": true
+    },
+    {
+      "id": "T_20260130_business-creativity-money",
+      "title": "事業と創造性とお金の壁",
+      "date": "2026-01-30",
+      "type": "transcript",
+      "tags": ["事業開発"],
+      "formats": {
+        "standard": "d/T_20260130_business-creativity-money_s.html"
+      },
+      "protected": false
+    },
+    {
+      "id": "T_20260220_pencil-sharpener",
+      "title": "鉛筆削りを作る",
+      "date": "2026-02-20",
+      "type": "transcript",
+      "tags": ["ワークショップ"],
+      "formats": {
+        "standard": "d/T_20260220_pencil-sharpener_s.html"
+      },
+      "protected": false
+    }
+  ]
+}

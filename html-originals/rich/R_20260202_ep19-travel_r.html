@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>僕らが旅に出る理由 — Metacreative Radio Ep.19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RICH HTML — Ep.19 僕らが旅に出る理由
+   CSS copied from rich-boilerplate.html (source of truth)
+   ============================================================ */
+
+:root {
+  --base: #F5F0E8; --surface: #FAF8F5; --white: #FDFCFA;
+  --text-primary: #2C3330; --text-secondary: #6B6560; --text-muted: #9E9690; --border: #E5DFD6;
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+  --sage-400: #8B9A7D; --sage-500: #6B7F5D; --sage-600: #5E6E52;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+  --gold-400: #C4A057; --gold-500: #A68B45; --gold-600: #9A7B3A;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+  --rose-400: #E8A598; --rose-600: #D88B7A;
+  --blue-50: #F0F5FA; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+  --purple-50: #F5F0FA; --purple-400: #9B7DC4; --purple-600: #7B5DA4;
+  --red-50: #FDF2F2; --red-400: #E07070; --red-600: #C05050;
+  --amber-50: #FFF8E1; --amber-400: #D4A030; --amber-600: #B08020;
+  --teal-50: #E8F5F3; --teal-400: #4DA89A; --teal-600: #2D8878;
+  --dark-base: #1C1A17; --dark-surface: #252320; --dark-surface-raised: #2E2B27;
+  --dark-text: #E2DDD5; --dark-text-secondary: #A09890; --dark-border: #3A3630;
+  --dark-gold-400: #B89040; --dark-gold-600: #E0C070;
+  --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+  --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  background-color: var(--base); color: var(--text-primary);
+  line-height: 1.85; transition: background-color 0.8s var(--ease);
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+  transform: translateY(-100%); transition: transform 0.4s var(--ease);
+}
+.progress-bar.visible { transform: translateY(0); }
+.progress-line { height: 3px; background: var(--gradient-accent-90); width: 0%; transition: width 0.1s linear; }
+.progress-context {
+  background: rgba(28, 26, 23, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+}
+.progress-label { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400); }
+.progress-chapter { font-family: 'Noto Sans JP', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); transition: opacity 0.3s var(--ease); }
+
+.side-toc { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900; display: none; }
+@media (min-width: 1200px) { .side-toc { display: flex; flex-direction: column; gap: 12px; } }
+.toc-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s var(--ease); position: relative; }
+.toc-dot:hover { background: var(--sage-400); transform: scale(1.3); }
+.toc-dot.active { background: var(--gold-400); transform: scale(1.5); box-shadow: 0 0 8px rgba(196, 160, 87, 0.4); }
+.toc-dot::after { content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-family: 'Inter', sans-serif; white-space: nowrap; color: var(--text-muted); opacity: 0; transition: opacity 0.2s var(--ease); pointer-events: none; }
+.toc-dot:hover::after { opacity: 1; }
+
+.hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--dark-base); color: var(--dark-text); overflow: hidden; text-align: center; padding: 2rem; }
+.hero-shapes { position: absolute; inset: 0; overflow: hidden; opacity: 0.15; }
+.shape { position: absolute; border-radius: 50%; filter: blur(80px); }
+.shape-1 { width: 500px; height: 500px; background: var(--sage-400); top: -10%; left: -10%; animation: float1 20s ease-in-out infinite; }
+.shape-2 { width: 400px; height: 400px; background: var(--gold-400); bottom: -10%; right: -10%; animation: float2 25s ease-in-out infinite; }
+.shape-3 { width: 300px; height: 300px; background: var(--rose-400); top: 40%; left: 60%; animation: float3 22s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -40px); } }
+@keyframes float3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+.hero-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.hero-episode { display: block; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 220, 0.5); margin-bottom: 1.5rem; }
+.hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: var(--dark-text); }
+.hero-title .accent { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--dark-text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.hero-mini-player { max-width: 320px; margin: 0 auto 1.5rem; }
+.hero-mini-player iframe { border-radius: 12px; }
+.hero-meta { display: flex; justify-content: center; gap: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--dark-text-secondary); opacity: 0.6; animation: scrollBounce 2s ease-in-out infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+.main-content { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
+
+.intro-section { padding: 6rem 0 4rem; position: relative; }
+.intro-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.chapter-section { padding: 5rem 0 4rem; }
+.conclusion-section { padding: 5rem 0 4rem; background: var(--dark-base); color: var(--dark-text); position: relative; }
+.conclusion-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+
+.intro-lead { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--text-primary); margin-bottom: 2rem; }
+.intro-lead::first-letter { font-size: 3.8rem; font-weight: 700; float: left; line-height: 1; margin-right: 8px; margin-top: 4px; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.chapter-header { text-align: center; margin-bottom: 3rem; }
+.chapter-icon { display: block; font-size: 2.5rem; margin-bottom: 0.75rem; }
+.chapter-number { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.chapter-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.chapter-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem; }
+.conclusion-section .chapter-title { color: var(--dark-text); }
+.conclusion-section .chapter-number { color: var(--dark-gold-400); }
+
+.guide-text { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.9; margin-bottom: 1.5rem; }
+.guide-text strong.hl-warm { color: var(--rose-600); font-weight: 600; }
+.guide-text strong.hl-gold { color: var(--gold-600); font-weight: 600; }
+.guide-text strong.hl-sage { color: var(--sage-600); font-weight: 600; }
+.guide-text strong.hl-blue { color: var(--blue-600); font-weight: 600; }
+.guide-text strong.hl-purple { color: var(--purple-600); font-weight: 600; }
+.body-text { font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+.conclusion-section .guide-text { color: var(--dark-text-secondary); }
+.conclusion-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--dark-text-secondary); margin-bottom: 2rem; }
+.conclusion-text strong { color: var(--dark-text); font-weight: 600; }
+.conclusion-text .gold { color: var(--dark-gold-600); }
+
+.dialogue-block { margin: 1.5rem 0; }
+.dialogue-block-radio { background: var(--white); border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05); margin: 2rem 0 4rem; }
+.dialogue-item { padding: 1rem 1rem 1rem 1.25rem; position: relative; font-style: normal; }
+.dialogue-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--sage-400); }
+.dialogue-item + .dialogue-item { border-top: 1px dashed var(--border); }
+.dialogue-speaker { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.dialogue-text { font-size: 0.95rem; line-height: 1.85; font-style: normal; }
+.dialogue-block-radio .dialogue-text { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; line-height: 1.9; }
+.dialogue-item.speaker-tamkai::before { background: var(--sage-400); }
+.dialogue-speaker.tamkai { color: var(--sage-600); }
+.dialogue-item.speaker-opi::before { background: var(--blue-400); }
+.dialogue-speaker.opi { color: var(--blue-600); }
+
+.annotation { margin: 4rem 0; background: var(--dark-surface); color: var(--dark-text); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; cursor: pointer; }
+.annotation::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.annotation-badge { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dark-base); background: var(--gold-400); padding: 0.2rem 0.6rem; border-radius: 3px; display: inline-block; margin-bottom: 0.75rem; }
+.annotation-title { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700; color: var(--dark-text); line-height: 1.4; margin-bottom: 0.75rem; }
+.annotation-body { font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; line-height: 1.9; color: var(--dark-text-secondary); position: relative; max-height: 4.5em; overflow: hidden; transition: max-height 0.5s var(--ease); }
+.annotation-body::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2em; background: linear-gradient(transparent, var(--dark-surface)); transition: opacity 0.3s var(--ease); }
+.annotation-body p + p { margin-top: 0.75rem; }
+html:not(.reveal-ready) .annotation-body { max-height: none; }
+html:not(.reveal-ready) .annotation-body::after { display: none; }
+html:not(.reveal-ready) .annotation-toggle { display: none; }
+.annotation.expanded .annotation-body { max-height: 500px; }
+.annotation.expanded .annotation-body::after { opacity: 0; }
+.annotation-toggle { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-400); margin-top: 0.5rem; display: inline-block; cursor: pointer; }
+.annotation.expanded .annotation-toggle .toggle-more { display: none; }
+.annotation:not(.expanded) .annotation-toggle .toggle-less { display: none; }
+
+.pull-quote { text-align: center; margin: 4rem 0; padding: 0 1rem; position: relative; }
+.pull-quote::before { content: '\201C'; display: block; font-family: Georgia, serif; font-size: 5rem; line-height: 1; color: var(--gold-200); margin-bottom: -0.5rem; }
+.pull-quote-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8; color: var(--text-primary); font-style: normal; }
+.pull-quote-attribution { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+.conclusion-section .pull-quote-text { color: var(--dark-text); }
+.conclusion-section .pull-quote::before { color: var(--dark-gold-400); }
+
+.highlight-box { background: var(--gold-50); border-left: 4px solid var(--gold-400); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 0.75rem; align-items: flex-start; }
+.highlight-box-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.highlight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); }
+
+.section-divider { text-align: center; padding: 3rem 0; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 1px; background: var(--gradient-accent-90); }
+.divider-emoji { position: relative; z-index: 1; background: var(--base); padding: 0 1rem; font-size: 1.3rem; }
+
+.concept-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.concept-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.concept-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.concept-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); min-width: 90px; }
+.concept-step-emoji { font-size: 1.5rem; }
+.concept-step-label { font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-primary); }
+.concept-arrow { font-size: 1.2rem; color: var(--sage-400); font-weight: 700; }
+@media (max-width: 600px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); } }
+
+.contrast-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.contrast-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.contrast-side { background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.contrast-side--left { border-top: 3px solid var(--sage-400); }
+.contrast-side--right { border-top: 3px solid var(--gold-500); }
+.contrast-side-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.contrast-side-emoji { font-size: 1.3rem; }
+.contrast-side-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; }
+.contrast-side-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+.contrast-vs { display: flex; align-items: center; justify-content: center; padding-top: 2rem; }
+.contrast-vs-text { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--sage-500); letter-spacing: 0.1em; }
+@media (max-width: 600px) { .contrast-grid { grid-template-columns: 1fr; } .contrast-vs { padding: 0.5rem 0; } }
+
+.split-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.split-visual-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .split-grid { grid-template-columns: 1fr; } }
+.split-side { background: var(--white); border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.split-side-icon { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid; }
+.split-side-icon.warm { background: var(--rose-50); border-color: var(--rose-400); }
+.split-side-icon.cool { background: var(--blue-50); border-color: var(--blue-400); }
+.split-side-title { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.split-side-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.split-effects { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.split-effect { padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.split-effect.warm-bg { background: var(--rose-50); color: var(--rose-600); }
+.split-effect.cool-bg { background: var(--blue-50); color: var(--blue-600); }
+.split-conclusion { margin-top: 1.25rem; padding: 1rem 1.5rem; border-radius: 12px; background: linear-gradient(135deg, var(--rose-50), var(--blue-50)); border: 1px solid var(--border); text-align: center; font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--gold-600); }
+
+.takeaways-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+@media (max-width: 600px) { .takeaways-grid { grid-template-columns: 1fr; } }
+.takeaway-card { background: var(--dark-surface-raised); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; transition: transform 0.3s var(--ease); }
+.takeaway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); opacity: 0; transition: opacity 0.3s var(--ease); }
+.takeaway-card:hover { transform: translateY(-4px); }
+.takeaway-card:hover::before { opacity: 1; }
+.takeaway-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.takeaway-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+.takeaway-desc { font-size: 0.85rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+.spotify-section { background: var(--dark-base); padding: 3rem 0 4rem; }
+.spotify-label { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dark-gold-600); text-align: center; margin-bottom: 1.5rem; }
+.spotify-player { max-width: 400px; margin: 0 auto; }
+.spotify-player iframe { border-radius: 12px; }
+
+.footer { background: var(--dark-base); color: var(--dark-text-secondary); text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--dark-border); }
+.footer-logo { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; color: var(--dark-text); margin-bottom: 0.5rem; }
+.footer-meta { font-size: 0.75rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+.reveal { opacity: 1; transform: none; filter: none; }
+@media (min-width: 1024px) {
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .chapter-header.reveal { transform: scale(0.85) translateY(30px); transition: opacity 0.95s ease-out, transform 0.95s ease-out; }
+  .section-divider.reveal { transform: scaleX(0.3); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .concept-diagram.reveal, .contrast-diagram.reveal, .split-visual.reveal, .checklist-visual.reveal, .step-timeline.reveal { transform: scale(0.9); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .takeaway-card.reveal { transform: scale(0.9) translateY(20px); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .annotation.reveal { transform: translateY(30px); transition: opacity 1.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .dialogue-item.reveal:nth-child(odd) { transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .dialogue-item.reveal:nth-child(even) { transform: translateX(60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .reveal.pc-revealed { opacity: 1 !important; transform: translateY(0) translateX(0) scale(1) scaleX(1) !important; }
+  html.pc-reveal-ready .guide-text.reveal + .dialogue-block .dialogue-item.reveal { transition-delay: 0.2s; }
+  html.pc-reveal-ready .dialogue-block + .guide-text.reveal { transition-delay: 0.18s; }
+}
+@keyframes spotlight { 0% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 12% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateY(0); } 70% { opacity: 1; filter: blur(0); transform: translateY(0); } 80% { opacity: 0.5; } 90% { opacity: 0.25; } 100% { opacity: 0.2; } }
+@keyframes spotlight-left { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(-16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(-4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-right { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-always-visible { 0%, 100% { opacity: 1; filter: none; transform: none; } }
+@media (max-width: 1023px) {
+  html.spotlight-ready .reveal { animation: spotlight linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(odd) { animation-name: spotlight-left; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(even) { animation-name: spotlight-right; }
+  html.spotlight-ready .chapter-header.reveal, html.spotlight-ready .concept-diagram.reveal, html.spotlight-ready .contrast-diagram.reveal, html.spotlight-ready .split-visual.reveal, html.spotlight-ready .checklist-visual.reveal, html.spotlight-ready .step-timeline.reveal, html.spotlight-ready .section-divider.reveal { animation-name: spotlight-always-visible; }
+}
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+html.reveal-ready .reveal.io-revealed { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .main-content { padding: 0 1.25rem; }
+  .hero { padding: 1.5rem; }
+  .intro-section { padding: 4rem 0 3rem; }
+  .chapter-section { padding: 4rem 0 3rem; }
+  .conclusion-section { padding: 4rem 0 3rem; }
+  .annotation { padding: 1.5rem; }
+  .progress-context { padding: 0.5rem 1rem; }
+  .progress-label { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .progress-chapter { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PROGRESS BAR ===== -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-line" id="progressLine"></div>
+  <div class="progress-context">
+    <span class="progress-label">Ep.19</span>
+    <span class="progress-chapter" id="progressChapter"></span>
+  </div>
+</div>
+
+<!-- ===== SIDE TOC ===== -->
+<nav class="side-toc" id="sideToc">
+  <div class="toc-dot" data-target="intro" data-label="Introduction"></div>
+  <div class="toc-dot" data-target="chapter1" data-label="Ch.1 なんとかなる力の冒険"></div>
+  <div class="toc-dot" data-target="chapter2" data-label="Ch.2 プリプロダクション"></div>
+  <div class="toc-dot" data-target="chapter3" data-label="Ch.3 レゴブロックの旅行術"></div>
+  <div class="toc-dot" data-target="chapter4" data-label="Ch.4 プロトピアと腹時計"></div>
+  <div class="toc-dot" data-target="conclusion" data-label="Conclusion"></div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="hero">
+  <div class="hero-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="hero-content">
+    <span class="hero-label">Metacreative Radio</span>
+    <span class="hero-episode">Episode 19</span>
+    <h1 class="hero-title">僕らが旅に出る<span class="accent">理由</span></h1>
+    <p class="hero-subtitle">25年前のパリ北駅の冒険、映像制作者の時間感覚、ワカンダの未来学者——名古屋への旅がほどく、旅の始まりと終わりの問い</p>
+    <div class="hero-mini-player">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/4LGR7doGcyPM6rtEJCzH3o?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    <div class="hero-meta"><span>2026.02.02</span><span>Tamkai & Opi</span></div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span></div>
+</header>
+
+<!-- ===== INTRODUCTION ===== -->
+<section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🗺️</span>
+      <span class="chapter-number">Introduction</span>
+      <h2 class="chapter-title">「行くよね」から始まる旅</h2>
+    </div>
+
+    <p class="intro-lead reveal">旅には二種類ある。「行こう」と自分で決めて出発する旅と、「行くよね？」と誰かに言われて気づけば出発している旅。タムカイの旅は、ほぼ後者である。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「僕らが旅に出る理由について話そうよ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「心変わりはね、何かのせいなんで。あまり乗り気じゃなかったんですよ、マジで。名古屋マジかいっつって」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「やるんだ！が第一印象。行くよねって言われたら、お、行きますよねっつって」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">冒頭のやりとりには小沢健二「僕らが旅に出る理由」（1994年）の歌詞が織り込まれている。一聴すると本当に乗り気でなかったように聞こえるが、歌詞を知っている者にはニヤリとさせるハイコンテクストな掛け合い。ここに重要な転換がある——「行こう」ではなく「行くよね」という問いかけに「行きますよね」と応じる構造。旅の始まりは自発性ではなく、<strong class="hl-gold">他者からの呼びかけに対する応答</strong>として立ち上がっている。</p>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">AI Dev NINJA</h4>
+      <div class="annotation-body">
+        <p>AI駆動開発の実践者が集まるコミュニティイベント。インフォバーンの小林弘人氏が発起人で、「十分に発達した科学技術は忍術のようだ」という着想から命名された。vol.1は2025年12月に東京、vol.2が名古屋のテックガーラ（TECH GALA）のサイドイベントとして2026年1月に実施。参加者は20代から60代、ハードウェアエンジニアからイラン出身の起業家まで多彩。二人はここで「メタクリスペース」——AIが呼ばれるまで黙っている設計思想のチャットアプリ——を紹介する掛け合いピッチに挑んだ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="highlight-box reveal">
+      <span class="highlight-box-icon">🧭</span>
+      <p>名古屋への旅を起点に、このエピソードは驚くべき広がりを見せる。25年前のパリでの冒険、映像制作における「プリプロダクション」の概念、レゴブロック的な旅行計画、車内でのDJ権、ワカンダの未来学者が語る「プロトピア」——。その底流には一つの問いが流れている。<strong>旅はいつ始まり、いつ終わるのか。そして、旅の「余韻」とは何か</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">✈️</span></div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="なんとかなる力の冒険">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌍</span>
+      <span class="chapter-number">Chapter 01</span>
+      <h2 class="chapter-title">なんとかなる力の冒険</h2>
+      <p class="chapter-subtitle">パリ北駅から始まった旅</p>
+    </div>
+
+    <p class="guide-text reveal">タムカイの旅への姿勢を理解するには、まず「家」への感覚を知る必要がある。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「よくある、帰ってきてお母さんが言う、やっぱりうちが一番ねっていう感覚。あれが割とあるかもしれないな」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「旅をしょっちゅうしてさ、タムカイさんの中のいろんなツールが旅に最適化されてたら、気にならなくなるのかな」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">整ったモニター環境、手を伸ばせば調味料が揃うキッチン。環境を整え、その中で最大限のパフォーマンスを出す——デザイナーとしてのタムカイの本質が見え隠れする。旅は、その<strong class="hl-warm">最適化された環境を「崩す」行為</strong>であり、だからこそ抵抗がある。</p>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">環境最適化と創造性のパラドックス</h4>
+      <div class="annotation-body">
+        <p>環境心理学では、人間のパフォーマンスは環境の予測可能性と強く相関する。整った環境は認知負荷を下げ、本来の課題への集中を可能にする。しかしEp.16でタムカイ自身が語った「映画館でしか映画を観られない」という告白が示すように、彼は環境の力でモードを制御する人間でもある。崩れた環境の中でこそ「ブリコラージュ」——手持ちの材料でなんとかする創造性——が発揮されるのもまた事実だ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🚂</span></div>
+
+    <p class="guide-text reveal">しかし、このインドア志向の人間には25年前のパリでの冒険譚がある。大学4年で恩師がオランダに渡り、4週間の渡欧を決行。先生の家で過ごすうち「お前、このまま家にいるのか」と言われ、TGV（フランス高速鉄道）のチケットだけ取ってパリへ。パリ北駅に降り立ち、「さあ、どうしよう」から旅が始まった。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「お前は日本人かチャイニーズか韓国かどれかって言われて、ジャパニーズだっつって。ホテルはあるのかって言われて、ないんだけどっつって。うちの家がユースホステルやってるから泊まりに来ていいよって言われて」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「先生に電話して、今こういうおばちゃんに声かけられたんですけど大丈夫ですかねって言ったら、わかんねえって言われて。ガチャンって切って」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「もう完全になんかの勧誘じゃないですか」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">「1回聞く」——これはタムカイの思考のプロトコルだ。判断を他者に委ねたいのではなく、他者の反応という<strong class="hl-blue">「入力」を得てから自分の判断を起動させる</strong>。パリでも、現在のAI開発でも、同じパターンが繰り返されている。</p>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">🛡️ Risk Management Layers</p>
+      <div class="concept-flow">
+        <div class="concept-step"><span class="concept-step-emoji">🚉</span><span class="concept-step-label">駅まで行く</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">📞</span><span class="concept-step-label">電話をかける</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">👤</span><span class="concept-step-label">迎えの人を確認</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🚶</span><span class="concept-step-label">徒歩ならOK</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🏠</span><span class="concept-step-label">ユースホステル</span></div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">各段階に「ここで危険を感じたら帰ろう」という撤退ラインが設定されている。結果、韓国人バックパッカーと仲良くなり、翌日セーヌ川の観光クルーズに行くほどの友情が生まれた。</p>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🎨</span></div>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「なんとかする力があるから、なんとかするところに自分を放り込んでいこうってするよりは、なんか起こった後でなんとか面白くしようって思うタイプ。お題ありきなのかもしれない」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「状況対応型の創造性みたいなもので駆動している。観客がいるからお笑いができるというか」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal"><strong class="hl-gold">「状況対応型の創造性」</strong>——初期衝動で何かを表現するタイプではなく、状況に対する「応答」として創造が始まる。パリでも名古屋でも、他者からの呼びかけがなければ旅は始まらない。しかし、始まってしまえば全力で「なんとかする」。</p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">お題ありきなのかもしれない——観客がいるからお笑いができる</p>
+      <p class="pull-quote-attribution">--- Tamkai, on situational creativity</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🎬</span></div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="プリプロダクション">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎥</span>
+      <span class="chapter-number">Chapter 02</span>
+      <h2 class="chapter-title">旅はプリプロダクションから始まる</h2>
+      <p class="chapter-subtitle">映像制作者の時間感覚</p>
+    </div>
+
+    <p class="guide-text reveal">Opiの旅観は、タムカイとは根本的に異なる。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「僕は旅の起点がね、行こうって思った日から、もう旅が始まってるんですよ。名古屋に行った時も、多分その旅は去年の12月からもう始まってる」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「グラデーションになっている人と、その瞬間からになる人がいるのだろうな。僕は直前のここっていうところからが旅で、ここっていうところで終わる。余韻はあるけど一部ではない」</p>
+      </div>
+    </div>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">🗺️ Two Ways of Travel</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">📍</span>
+            <span class="contrast-side-title">タムカイ型</span>
+          </div>
+          <p class="contrast-side-desc">「直前〜直後」——旅は明確な始点と終点を持つ。余韻はあるが旅の一部ではない。日常と旅はくっきり分かれる。</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🌊</span>
+            <span class="contrast-side-title">Opi型</span>
+          </div>
+          <p class="contrast-side-desc">「グラデーション」——計画の段階からすでに旅。日常に溶け込み、混ざり合う。しおりを作るのも旅の一部。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">予期的快楽（Anticipatory Pleasure）</h4>
+      <div class="annotation-body">
+        <p>心理学では、未来の楽しい出来事を想像すること自体が快楽をもたらすことが知られている。「人が予定を立てている時が一番幸福度が高い」——Opiがかつてエックスでプチバズしたこの話題は、予期的快楽の研究に基づいている。旅の計画を立てている段階がすでに旅の一部であるならば、旅の持続時間は物理的な移動期間よりもはるかに長くなる。幸福の総量は、「何をしたか」だけでなく「いつから楽しみ始めたか」にも依存しているのかもしれない。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="section-divider reveal"><span class="divider-emoji">💡</span></div>
+
+    <p class="guide-text reveal">そしてOpiは、自分の旅の感覚の起源に思い至った。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「いや、俺、今話して思ったんだけど、これ映像をやってるからだわ。プリプロやってる時にまだ撮ってないけど、作ってるか作ってないかでいうと、もう作ってるわけじゃない」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「多くの人にとっての旅っていうのは、僕らの映像で言うと、撮影部分なんだよね。僕らその後さらにポストプロダクションもあるから」</p>
+      </div>
+    </div>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">🎬 Production Framework</p>
+      <div class="concept-flow">
+        <div class="concept-step"><span class="concept-step-emoji">📝</span><span class="concept-step-label">プリプロダクション<br>準備・計画</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🎥</span><span class="concept-step-label">プロダクション<br>撮影 = 旅本番</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🎞️</span><span class="concept-step-label">ポストプロダクション<br>編集 = 余韻</span></div>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">プリプロダクション / ポストプロダクション</h4>
+      <div class="annotation-body">
+        <p>映像制作の三つのフェーズ。プリプロダクション（pre-production）は企画・脚本・キャスティング・ロケハン。プロダクション（production）は実際の撮影。ポストプロダクション（post-production）は編集・CG・音響・カラーグレーディング。Opiはネイキッド（NAKED Inc.）で長年映像制作に携わり、このフレームワークが身体化している。旅をこの三段構造で捉える視点は、単なる比喩ではなく、映像制作者としての認知構造そのものが日常に滲み出たものだ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">ここで二人の関係性の構造が見えてくる。Opiが旅の<strong class="hl-gold">「プリプロダクション」を担当</strong>し、タムカイが「撮影現場」でアドリブを入れる演者として機能する。メタクリラジオの収録構造がそのまま旅にも再現されている。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「脚本は細かく書きます。でも現場で全部変えちゃう。全部1回頭に入れてから、まっさらにして演技に臨むみたいなのは近いかもしれない」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">準備と即興は対立するものではない。準備が十分であるほど即興の質が上がるという逆説——ジャズのスタンダード演奏がコード進行を完全に把握した上で自由に泳ぐように、Opiの旅もまた綿密な準備の上に自由が花開く。</p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">全部1回頭に入れてから、まっさらにして演技に臨む</p>
+      <p class="pull-quote-attribution">--- Opi, on planning and improvisation</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🧱</span></div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="レゴブロックの旅行術">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎵</span>
+      <span class="chapter-number">Chapter 03</span>
+      <h2 class="chapter-title">レゴブロックの旅行術</h2>
+      <p class="chapter-subtitle">名古屋で起きたこと</p>
+    </div>
+
+    <p class="guide-text reveal">名古屋旅行でタムカイは「生まれて初めてチェックポイント型の予定を立てた」と語った。AIで予定表を作り、チェックポイントをバラバラの状態で認識した上で、組み上げは即興——。この発見をレゴブロックに喩えて整理した。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「徒手空拳だとそれが何かもわからない、完全にこれを作りますっていう今売ってるレゴみたいに1番の工程でこれとこれを組み合わせてっていうのもある。今回はバラバラのレゴブロックの何のパーツがあるかは理解してる状態で、組み上げるのは即興でやる」</p>
+      </div>
+    </div>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">🧱 Planning Paradigms</p>
+      <div class="concept-flow">
+        <div class="concept-step"><span class="concept-step-emoji">🤷</span><span class="concept-step-label">徒手空拳<br>パーツ不明</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">📋</span><span class="concept-step-label">完全設計図<br>順番通り</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🧱</span><span class="concept-step-label">レゴ型<br>パーツ認識 + 即興</span></div>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">モジュラーな計画——レゴブロック・パラダイム</h4>
+      <div class="annotation-body">
+        <p>タムカイが提示した「レゴブロック的計画」は、アジャイル開発の「スプリント」に近い。固定的なウォーターフォール型でも完全な無計画でもなく、構成要素を把握した上で現場の状況に応じて組み合わせ方を変える。さらに興味深いのは「時系列の箱に入れておく」という整理法——カテゴリ別ではなく時間軸で分類することでモジュール間の入れ替えが容易になる。これはレゴの「袋番号」と同じ発想だ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「予定通りにはやらなかったけど、コンテンツはちゃんと消化した。俺の中でやらなかったって感覚はないんだよね」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">Opiの作ったしおりも、結果的にはこの構造だった。タムカイが名物料理から離れたがっていたにもかかわらず、振り返ると「ちゃんと食ってる」。順序は変わっても、<strong class="hl-sage">要素は網羅されている</strong>。</p>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🎧</span></div>
+
+    <p class="guide-text reveal">名古屋への車中で、もう一つの発見があった。Opiが助手席のタムカイにBluetoothの接続権を渡した——DJ権の譲渡である。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「もともとすごい好きなんだと思います。助手席に乗って、相手との話題も取り込みながら、次の曲、次の曲ってつないでいったり。古くは友達の誕生日にテーマコンピCDとか作ってたタイプなんで」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「最初の方は普通にBGMだったのに、だんだんフォアグラウンドに上がってきて。プロが俺の選曲に対してコメントをしている、怖いってなりました笑」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「自分だけしかわからないだろうと思ってかけたら、意外とわかってくれる人がいたみたいなのあるじゃん」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">DJ権——音楽的コミュニケーションと自己開示</h4>
+      <div class="annotation-body">
+        <p>「DJ権」は単に「好きな曲をかける権利」ではない。選曲はそれ自体がコミュニケーションであり、自分の内面——趣味、記憶、感情——を音楽を介して相手に開示する行為だ。タムカイが「友達の誕生日にテーマコンピCDを作っていた」という過去は、グラフィックレコーディングや「迷ったら変な方」の精神と同じ根を持つ——他者への応答としての表現である。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🌐</span></div>
+
+    <p class="guide-text reveal">AI Dev NINJAでの掛け合いピッチは、18回のラジオ収録で培われた二人の掛け合いがそのまま壇上に移植されたものだった。「ピッチの内容じゃなくて掛け合いが面白かったです」という反応——コンテンツの質と伝達の質は別の次元にある。テックガーラではさらに、<strong class="hl-purple">モニカ・ビエルスカイト</strong>が強烈な印象を残した。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「面白かったですねって言ってるのは、内容を聞いてすぐ理解できたからじゃなくて、いつもの僕らのドキュメント変換方法を使うことで、わかった気がする部分が増えて面白かった」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">メタクリドキュメントの手法——対話を文書化し、注釈を付けて理解を深める——が、講演の理解にも転用されている。道具は、それを作った目的を超えて使われるものだ。</p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">自分だけしかわからないだろうと思ってかけたら、意外とわかってくれる人がいた</p>
+      <p class="pull-quote-attribution">--- Opi, on DJ and connection</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🌱</span></div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="プロトピアと腹時計">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">⏰</span>
+      <span class="chapter-number">Chapter 04</span>
+      <h2 class="chapter-title">プロトピアと腹時計</h2>
+      <p class="chapter-subtitle">時間をめぐる問い</p>
+    </div>
+
+    <p class="guide-text reveal">モニカの講演で二人が特に印象を受けたのが「プロトピア」という概念だった。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「悪い方がディストピア、いい方がユートピアで、今までどうしてもその二つに分かれて。何も思ってない自分とかは、どっちなんだろうって黙るか。何かをしたとしても、どっちかに呼ばれてしまう」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「プロトピア——その時の状況に合わせたりしながら、未来を作り続けていく姿勢みたいなもの」</p>
+      </div>
+    </div>
+
+    <div class="split-visual reveal">
+      <p class="split-visual-label">🌍 Three Visions of the Future</p>
+      <div class="split-grid">
+        <div class="split-side">
+          <div class="split-side-icon warm">✨</div>
+          <div class="split-side-title">ユートピア</div>
+          <div class="split-side-subtitle">理想の完成形</div>
+          <div class="split-effects">
+            <div class="split-effect warm-bg">🎯 到達すべきゴール</div>
+            <div class="split-effect warm-bg">⚠️ 現実との乖離が無力感を生む</div>
+          </div>
+        </div>
+        <div class="split-side">
+          <div class="split-side-icon cool">🌑</div>
+          <div class="split-side-title">ディストピア</div>
+          <div class="split-side-subtitle">最悪の未来像</div>
+          <div class="split-effects">
+            <div class="split-effect cool-bg">😰 恐怖で駆動する警告</div>
+            <div class="split-effect cool-bg">⚠️ 分断と諦めを生む</div>
+          </div>
+        </div>
+      </div>
+      <div class="split-conclusion">🌱 プロトピア——「少しずつ良くなっていく」プロセスとしての未来。完成ではなく、作り続ける姿勢。</div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">モニカ・ビエルスカイトとプロトピア</h4>
+      <div class="annotation-body">
+        <p>モニカ・ビエルスカイトは、ナイキ初代「Futurist in Residence」であり、『ブラックパンサー：ワカンダ・フォーエバー』のフューチャリスト・コンサルタントも務めた人物だ。旧ソ連リトアニア生まれ、90カ国以上を旅し、現在は南アフリカを拠点に活動する。「プロトピア」はケヴィン・ケリーが提唱した概念を発展させたもので、「少しずつ良くなっていく」プロセスとしての未来像。「AIはチェンジメーカーではなく増幅器」「ノスタルジーは毒」「Design FORではなくDesign WITH」と説いた。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🕰️</span></div>
+
+    <p class="guide-text reveal">プロトピアの議論は、やがて<strong class="hl-gold">「時間」</strong>という根源的な問いへとたどり着いた。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「腹時計って、時計っていう概念が生まれるまでは腹時計って呼ばれてなかったわけですよね。腹の虫の方だったんですかね」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「名前の中に新たな概念が入ってるやつって、もともとどういうものだったんだろう」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">この問いは、エピソード内の「ポンヌフ＝新橋」「台湾まぜそば≠台湾」と通底している。名前は、それが名付けられた時代の<strong class="hl-blue">認知構造を映し込んでいる</strong>。「腹時計」は「時計」なしには命名されない。同様に「デジタルツイン」は「ツイン」なしには、「AI」は「知能（Intelligence）」なしには命名されない。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「タイムというよりも、状態。ステートとかそういう感じ。その状態の変化っていうのが結構今後面白いのかもね」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">AIにとっての「時間」は連続的な流れではなく、離散的な状態の遷移として理解されるべきなのかもしれない。人間が「時間が経つ」と感じるものの正体は、実は「状態が変化した」ことの認知なのだ。</p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">腹時計って、時計っていう概念が生まれるまでは腹時計って呼ばれてなかった</p>
+      <p class="pull-quote-attribution">--- Tamkai, on naming and cognition</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="名古屋の余韻">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌙</span>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="chapter-title">名古屋の余韻</h2>
+    </div>
+
+    <p class="conclusion-text reveal"><strong>名古屋に行く前の僕らと、名古屋に行った後の僕らは違う</strong>——タムカイはそう語った。旅は状態を変える。日常のプロトコルに対するノイズが、二人の関係性に新しい「状態」をもたらしていた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「ノスタルジーというか、自分史の掘り起こしみたいでしたね。中学生のタムカイさんは、俺が大学生の時にこういうものを聞いてキュンキュンしてたんだなって、つまびらかに見られているような気持ちになって、楽しかったですよ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「つながってなかった人生の時間軸みたいなのが、少しつながるみたいな」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">音楽による時間軸の同期</h4>
+      <div class="annotation-body">
+        <p>音楽は、聴くだけでその曲を聴いていた時代の感覚を呼び起こす強力なトリガーである。二人の間には約5歳の年齢差があり、同じ曲でも「聴いていた時期の自分」は異なる。タムカイが中学生として聴いていた曲を、Opiは大学生として聴いていた。その「ズレ」を音楽を介して共有する行為は、二人の時間軸を物理的に並べて見比べる作業に等しい。4時間のDJは、音楽を介した自己開示と時間軸の同期という、予期せぬ親密さをもたらした。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="conclusion-text reveal">「僕らが旅に出る理由」——結局、二人は「理由」を明確にはしなかった。旅に出る理由は、旅に出た後にしかわからない。プリプロダクションの段階で見えていたのは、「行くよね」「行きますよね」という応答だけだった。そしてそれで十分なのだろう。旅の理由は、旅の<strong>余韻</strong>の中にこそ生まれる。<span class="gold">プロトピア的に——少しずつ、状態が変わりながら。</span></p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">これが名古屋の余韻ですよ</p>
+      <p class="pull-quote-attribution">--- Tamkai</p>
+    </div>
+
+    <div class="takeaways-grid">
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🗺️</span>
+        <h4 class="takeaway-title">状況対応型の創造性</h4>
+        <p class="takeaway-desc">お題ありきで始まり、なんとかする力で彩る。タムカイの旅も仕事も、他者の呼びかけへの応答として立ち上がる。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🎬</span>
+        <h4 class="takeaway-title">旅はプリプロダクション</h4>
+        <p class="takeaway-desc">計画は旅の一部。映像制作者の時間感覚が、日常の中にも旅を見出す。予期的快楽が幸福の総量を増やす。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🧱</span>
+        <h4 class="takeaway-title">レゴブロック型計画</h4>
+        <p class="takeaway-desc">パーツを認識した上で即興で組み立てる。固定的な設計図でも無計画でもない、第三の旅行術。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🌱</span>
+        <h4 class="takeaway-title">プロトピアの姿勢</h4>
+        <p class="takeaway-desc">ユートピアでもディストピアでもなく、少しずつ良くなっていくプロセスとしての未来。作り続ける姿勢。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPOTIFY ===== -->
+<section class="spotify-section">
+  <div class="main-content">
+    <p class="spotify-label reveal">Listen on Spotify</p>
+    <div class="spotify-player reveal">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/4LGR7doGcyPM6rtEJCzH3o?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p class="footer-logo">Metacreative Radio</p>
+  <p class="footer-meta">Episode 19 | 2026.02.02 | Tamkai & Opi<br>Metacreative Document</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+  'use strict';
+
+  var supportsScrollTimeline = CSS.supports('animation-timeline', 'view()');
+  var isPC = window.innerWidth >= 1024;
+
+  if (isPC && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('spotlight-ready', 'pc-reveal-ready');
+    initPCReveal();
+  } else if (supportsScrollTimeline) {
+    document.documentElement.classList.add('spotlight-ready');
+    setTimeout(function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; }
+      });
+    }, 5000);
+  } else if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('reveal-ready');
+    initIOFallback();
+  }
+
+  function initPCReveal() {
+    setTimeout(function() {
+      var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+      var threshold = window.innerHeight * 0.3;
+      reveals.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < threshold) {
+          el.style.transition = 'none';
+          el.classList.add('pc-revealed');
+          setTimeout(function() { el.style.transition = ''; }, 10);
+        }
+      });
+      document.querySelectorAll('.dialogue-block').forEach(function(block) {
+        var items = block.querySelectorAll('.dialogue-item.reveal:not(.pc-revealed)');
+        items.forEach(function(item, i) { item.style.transitionDelay = Math.min(i * 80, 300) + 'ms'; });
+      });
+    }, 100);
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) { requestAnimationFrame(function() { checkReveals(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+  }
+
+  function checkReveals() {
+    var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+    var triggerLine = window.innerHeight * 0.7;
+    reveals.forEach(function(el) { if (el.getBoundingClientRect().top < triggerLine) el.classList.add('pc-revealed'); });
+  }
+
+  function initIOFallback() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('io-revealed'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal:not(.io-revealed)').forEach(function(el) { el.classList.add('io-revealed'); }); }, 4000);
+  }
+
+  var progressBar = document.getElementById('progressBar');
+  var progressLine = document.getElementById('progressLine');
+  var progressChapter = document.getElementById('progressChapter');
+  var heroEl = document.getElementById('hero');
+  var currentChapterName = '';
+  var sections = document.querySelectorAll('[data-atmosphere]');
+  var tocDots = document.querySelectorAll('.toc-dot');
+  var atmospheres = { 'warm': '#F5F0E8', 'cool': '#F0F2F5', 'creative': '#F8F5EE', 'deep': '#F5F0E8' };
+
+  function updateAll() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressLine.style.width = (scrollTop / docHeight * 100) + '%';
+    if (scrollTop > heroEl.offsetTop + heroEl.offsetHeight - 100) progressBar.classList.add('visible');
+    else progressBar.classList.remove('visible');
+
+    var viewportMid = scrollTop + window.innerHeight * 0.4;
+    var activeId = '';
+    sections.forEach(function(s) {
+      var t = s.offsetTop, b = t + s.offsetHeight;
+      if (viewportMid >= t && viewportMid < b) {
+        activeId = s.id;
+        var atm = s.getAttribute('data-atmosphere');
+        if (atm && atmospheres[atm]) document.body.style.backgroundColor = atmospheres[atm];
+        var cn = s.getAttribute('data-chapter-name') || '';
+        if (cn !== currentChapterName) {
+          progressChapter.style.opacity = '0';
+          setTimeout(function() { progressChapter.textContent = cn; progressChapter.style.opacity = '1'; }, 200);
+          currentChapterName = cn;
+        }
+      }
+    });
+    tocDots.forEach(function(d) { d.classList.toggle('active', d.getAttribute('data-target') === activeId); });
+  }
+
+  tocDots.forEach(function(d) {
+    d.addEventListener('click', function() {
+      var t = document.getElementById(this.getAttribute('data-target'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.annotation').forEach(function(ann) {
+    ann.addEventListener('click', function() { this.classList.toggle('expanded'); });
+  });
+
+  var scrollTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(function() { updateAll(); scrollTicking = false; }); scrollTicking = true; }
+  }, { passive: true });
+  updateAll();
+})();
+</script>
+</body>
+</html>

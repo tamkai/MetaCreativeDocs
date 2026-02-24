@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寄せ集めの創造性——ブリコラージュの哲学 | メタクリラジオ Ep.12</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS CUSTOM PROPERTIES
+    ======================================== */
+    :root {
+      /* Light "Atelier Morning" */
+      --base: #F5F0E8;
+      --surface: #FAF8F5;
+      --white: #FDFCFA;
+      --text-primary: #2C3330;
+      --text-secondary: #6B6560;
+      --text-muted: #9E9690;
+      --border: #E5DFD6;
+
+      /* Core Colors */
+      --sage-50: #F4F6F2;
+      --sage-100: #E2E8DD;
+      --sage-200: #C5D1BC;
+      --sage-400: #8B9A7D;
+      --sage-600: #5E6E52;
+      --gold-50: #FDF9EE;
+      --gold-100: #F7EDCC;
+      --gold-200: #EEDEA5;
+      --gold-400: #C4A057;
+      --gold-600: #9A7B3A;
+      --rose-50: #FDF5F3;
+      --rose-100: #F8E4DF;
+      --rose-200: #F0C4BB;
+      --rose-400: #E8A598;
+      --rose-600: #D88B7A;
+      --blue-50: #F0F5FA;
+      --blue-400: #5B8DB8;
+      --blue-600: #3A6B91;
+
+      /* Dark "Study Night" */
+      --dark-base: #1C1A17;
+      --dark-surface: #252320;
+      --dark-surface-raised: #2E2B27;
+      --dark-text: #E2DDD5;
+      --dark-text-secondary: #A09890;
+      --dark-border: #3A3630;
+      --dark-gold-400: #B89040;
+      --dark-gold-600: #E0C070;
+
+      /* Gradients */
+      --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+      --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+
+      /* Timing */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ========================================
+       RESET & BASE
+    ======================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--base);
+      color: var(--text-primary);
+      line-height: 2;
+      overflow-x: hidden;
+      transition: background-color 0.8s var(--ease);
+    }
+
+    img { max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ========================================
+       PROGRESS BAR + CHAPTER CONTEXT
+    ======================================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1100;
+      transform: translateY(-100%);
+      transition: transform 0.4s var(--ease);
+    }
+
+    .progress-bar.visible {
+      transform: translateY(0);
+    }
+
+    .progress-line {
+      height: 3px;
+      background: var(--gradient-accent-90);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .progress-context {
+      background: rgba(28, 26, 23, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .progress-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-400);
+    }
+
+    .progress-chapter {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      color: var(--dark-text-secondary);
+      transition: opacity 0.3s var(--ease);
+    }
+
+    /* ========================================
+       SIDE TOC (DOT NAV)
+    ======================================== */
+    .side-toc {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: none;
+    }
+
+    @media (min-width: 1200px) {
+      .side-toc { display: flex; flex-direction: column; gap: 1.2rem; }
+    }
+
+    .toc-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s var(--ease);
+    }
+
+    .toc-dot.active {
+      border-color: var(--gold-400);
+      background: var(--gold-400);
+      transform: scale(1.3);
+    }
+
+    .toc-dot-label {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--surface);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(44, 51, 48, 0.1);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s var(--ease);
+    }
+
+    .toc-dot:hover .toc-dot-label {
+      opacity: 1;
+    }
+
+    /* ========================================
+       HERO SECTION
+    ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: var(--dark-base);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background:
+        radial-gradient(ellipse at 25% 35%, rgba(196, 160, 87, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 65%, rgba(139, 154, 125, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(196, 160, 87, 0.15) 0%, transparent 60%);
+      animation: heroGlow 18s ease-in-out infinite;
+    }
+
+    .hero-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.08;
+      animation: floatShape 20s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      top: 12%;
+      left: 8%;
+      width: 180px;
+      height: 180px;
+      border: 2px solid var(--gold-400);
+      border-radius: 50%;
+    }
+
+    .shape-2 {
+      top: 55%;
+      right: 12%;
+      width: 120px;
+      height: 120px;
+      border: 2px solid var(--sage-400);
+      transform: rotate(45deg);
+      animation-delay: -6s;
+    }
+
+    .shape-3 {
+      bottom: 18%;
+      left: 18%;
+      width: 90px;
+      height: 90px;
+      border: 2px solid var(--gold-400);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation-delay: -11s;
+    }
+
+    @keyframes floatShape {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-15px) rotate(3deg); }
+      75% { transform: translateY(15px) rotate(-3deg); }
+    }
+
+    @keyframes heroGlow {
+      0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+      33% { transform: translate(5%, -5%) rotate(120deg); }
+      66% { transform: translate(-5%, 5%) rotate(240deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    .hero-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-400);
+      margin-bottom: 0.75rem;
+      display: block;
+      animation: fadeInUp 0.8s var(--ease) both;
+    }
+
+    .hero-episode {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(232, 228, 220, 0.5);
+      margin-bottom: 1.5rem;
+      display: block;
+      animation: fadeInUp 0.8s var(--ease) 0.05s both;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: var(--dark-text);
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s var(--ease) 0.1s both;
+    }
+
+    .hero-title .accent {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--dark-text-secondary);
+      font-weight: 400;
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.9;
+      animation: fadeInUp 0.8s var(--ease) 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      color: rgba(232, 228, 220, 0.4);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      animation: fadeInUp 0.8s var(--ease) 0.3s both;
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hero-meta span::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: var(--gold-400);
+      border-radius: 50%;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 2;
+    }
+
+    .scroll-indicator span {
+      color: rgba(232, 228, 220, 0.4);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .scroll-indicator::after {
+      content: '\2193';
+      font-size: 1.2rem;
+      color: var(--gold-400);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================
+       REVEAL ANIMATION SYSTEM
+    ======================================== */
+    /* Fallback: if JS fails or IntersectionObserver is unavailable,
+       show all content after 2s via the .reveal-ready class on <html>.
+       Without .reveal-ready, everything is visible by default. */
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+
+    html.reveal-ready .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    html.reveal-ready .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0) translateX(0);
+    }
+
+    /* Dialogue items slide in alternately from left/right */
+    html.reveal-ready .dialogue-item.reveal {
+      transform: translateX(-30px);
+      opacity: 0;
+    }
+
+    html.reveal-ready .dialogue-item.reveal:nth-child(even) {
+      transform: translateX(30px);
+    }
+
+    html.reveal-ready .dialogue-item.reveal.revealed {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ========================================
+       MAIN LAYOUT
+    ======================================== */
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ========================================
+       SECTION DIVIDER
+    ======================================== */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem 0;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 120px;
+      height: 2px;
+      background: var(--gradient-accent-90);
+      border-radius: 1px;
+    }
+
+    .section-divider .divider-emoji {
+      font-size: 1.3rem;
+    }
+
+    /* ========================================
+       CHAPTER SECTIONS
+    ======================================== */
+    .chapter-section {
+      padding: 5rem 0 3rem;
+      position: relative;
+      transition: background-color 0.8s var(--ease);
+    }
+
+    .chapter-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .chapter-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .chapter-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold-600);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .chapter-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .chapter-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--gradient-accent);
+      margin: 1rem auto 0;
+      border-radius: 2px;
+    }
+
+    .chapter-subtitle {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+    }
+
+    /* ========================================
+       INTRODUCTION
+    ======================================== */
+    .intro-section {
+      padding: 5rem 0 3rem;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .intro-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent-90);
+    }
+
+    .intro-lead {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.2rem;
+      line-height: 2.2;
+      color: var(--text-primary);
+      margin-bottom: 2rem;
+    }
+
+    .intro-lead::first-letter {
+      font-size: 3.8rem;
+      float: left;
+      line-height: 1;
+      margin-right: 0.4rem;
+      margin-top: 0.15rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    /* ========================================
+       GUIDE TEXT (Body)
+    ======================================== */
+    .guide-text {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .body-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ========================================
+       DIALOGUE EXCHANGE
+    ======================================== */
+    .dialogue-block {
+      margin: 2rem 0;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05);
+    }
+
+    .dialogue-item {
+      padding: 1rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .dialogue-item:not(:last-child) {
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .dialogue-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      bottom: 0.75rem;
+      width: 4px;
+      border-radius: 2px;
+    }
+
+    .dialogue-item.speaker-tamkai::before {
+      background: var(--sage-400);
+    }
+
+    .dialogue-item.speaker-opi::before {
+      background: var(--blue-400);
+    }
+
+    .dialogue-speaker {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .dialogue-speaker.tamkai {
+      color: var(--sage-600);
+    }
+
+    .dialogue-speaker.opi {
+      color: var(--blue-600);
+    }
+
+    .dialogue-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-primary);
+      font-style: normal;
+    }
+
+    /* ========================================
+       PULL QUOTE
+    ======================================== */
+    .pull-quote {
+      margin: 3rem 0;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      font-family: Georgia, serif;
+      font-size: 5rem;
+      color: var(--gold-200);
+      position: absolute;
+      top: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      line-height: 1;
+    }
+
+    .pull-quote-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-width: 700px;
+      margin: 0 auto;
+      padding-top: 1rem;
+    }
+
+    .pull-quote-attribution {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ========================================
+       ANNOTATION BLOCK
+    ======================================== */
+    .annotation {
+      margin: 2.5rem 0;
+      background: var(--dark-surface);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .annotation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent-90);
+    }
+
+    .annotation-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .annotation-badge {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dark-base);
+      background: var(--gold-400);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+    }
+
+    .annotation-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark-text);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .annotation-body {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: var(--dark-text-secondary);
+      position: relative;
+      max-height: 4.5em;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+    }
+
+    .annotation-body::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2em;
+      background: linear-gradient(transparent, var(--dark-surface));
+      transition: opacity 0.3s var(--ease);
+    }
+
+    /* Fallback: without JS (.reveal-ready), show annotations fully expanded */
+    html:not(.reveal-ready) .annotation-body {
+      max-height: none;
+    }
+    html:not(.reveal-ready) .annotation-body::after {
+      display: none;
+    }
+    html:not(.reveal-ready) .annotation-toggle {
+      display: none;
+    }
+
+    .annotation.expanded .annotation-body {
+      max-height: 500px;
+    }
+
+    .annotation.expanded .annotation-body::after {
+      opacity: 0;
+    }
+
+    .annotation-toggle {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-400);
+      margin-top: 0.5rem;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .annotation.expanded .annotation-toggle .toggle-more {
+      display: none;
+    }
+
+    .annotation:not(.expanded) .annotation-toggle .toggle-less {
+      display: none;
+    }
+
+    /* ========================================
+       HIGHLIGHT BOX
+    ======================================== */
+    .highlight-box {
+      background: var(--gold-50);
+      border: 1px solid var(--gold-100);
+      border-left: 4px solid var(--gold-400);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .highlight-box-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 0.2rem;
+    }
+
+    .highlight-box p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--text-primary);
+    }
+
+    /* ========================================
+       CONCEPT DIAGRAM
+    ======================================== */
+    .concept-diagram {
+      margin: 3rem 0;
+      padding: 2.5rem 2rem;
+      background: var(--sage-50);
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .concept-diagram-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sage-600);
+      margin-bottom: 1.5rem;
+    }
+
+    .concept-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 1rem;
+    }
+
+    .concept-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1rem;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05);
+      min-width: 80px;
+    }
+
+    .concept-step-emoji {
+      font-size: 1.8rem;
+    }
+
+    .concept-step-label {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .concept-arrow {
+      font-size: 1.3rem;
+      color: var(--sage-400);
+      flex-shrink: 0;
+    }
+
+    /* ========================================
+       KEY TAKEAWAYS GRID
+    ======================================== */
+    .takeaways-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 600px) {
+      .takeaways-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .takeaway-card {
+      background: var(--dark-surface-raised);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .takeaway-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent-90);
+      transform: scaleX(0);
+      transition: transform 0.3s var(--ease);
+    }
+
+    .takeaway-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .takeaway-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .takeaway-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .takeaway-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark-text);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .takeaway-desc {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.85rem;
+      color: var(--dark-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       CONCLUSION (DARK)
+    ======================================== */
+    .conclusion-section {
+      background: var(--dark-base);
+      padding: 5rem 0 4rem;
+      position: relative;
+    }
+
+    .conclusion-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent-90);
+    }
+
+    .conclusion-section .chapter-number {
+      color: var(--dark-gold-600);
+    }
+
+    .conclusion-section .chapter-title {
+      color: var(--dark-text);
+    }
+
+    .conclusion-section .chapter-title::after {
+      background: var(--gradient-accent);
+    }
+
+    .conclusion-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.1rem;
+      line-height: 2.2;
+      color: var(--dark-text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .conclusion-text strong {
+      color: var(--dark-text);
+      font-weight: 700;
+    }
+
+    .conclusion-text .gold {
+      color: var(--dark-gold-600);
+    }
+
+    /* ========================================
+       FOOTER
+    ======================================== */
+    .footer {
+      background: var(--dark-surface);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dark-text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-meta {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(160, 152, 144, 0.6);
+      line-height: 1.8;
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+    @media (max-width: 768px) {
+      .hero-content {
+        padding: 1.5rem;
+      }
+
+      .main-content {
+        padding: 0 1.25rem;
+      }
+
+      .chapter-section {
+        padding: 3.5rem 0 2rem;
+      }
+
+      .intro-section {
+        padding: 3.5rem 0 2rem;
+      }
+
+      .dialogue-block {
+        padding: 1.25rem 1.25rem;
+      }
+
+      .annotation {
+        padding: 1.5rem;
+      }
+
+      .pull-quote {
+        padding: 2rem 1rem;
+      }
+
+      .concept-flow {
+        gap: 0.3rem;
+      }
+
+      .concept-step {
+        min-width: 65px;
+        padding: 0.5rem 0.6rem;
+      }
+
+      .concept-step-emoji {
+        font-size: 1.4rem;
+      }
+
+      .concept-step-label {
+        font-size: 0.65rem;
+      }
+
+      .concept-arrow {
+        font-size: 1rem;
+      }
+
+      .progress-context {
+        padding: 0.5rem 1rem;
+      }
+
+      .progress-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+      }
+
+      .progress-chapter {
+        font-size: 0.7rem;
+      }
+
+      .conclusion-section {
+        padding: 3.5rem 0 3rem;
+      }
+
+      .section-divider {
+        padding: 2rem 0;
+      }
+
+      .highlight-box {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       PROGRESS BAR + CHAPTER CONTEXT
+  ========================================== -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-line" id="progressLine"></div>
+    <div class="progress-context">
+      <span class="progress-label">Ep.12</span>
+      <span class="progress-chapter" id="progressChapter">Introduction</span>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SIDE DOT TOC
+  ========================================== -->
+  <nav class="side-toc" id="sideToc">
+    <div class="toc-dot" data-target="intro">
+      <span class="toc-dot-label">Introduction</span>
+    </div>
+    <div class="toc-dot" data-target="chapter1">
+      <span class="toc-dot-label">台所のブリコルール</span>
+    </div>
+    <div class="toc-dot" data-target="chapter2">
+      <span class="toc-dot-label">「無い」から始まる</span>
+    </div>
+    <div class="toc-dot" data-target="chapter3">
+      <span class="toc-dot-label">できるようになるから面白くなる</span>
+    </div>
+    <div class="toc-dot" data-target="chapter4">
+      <span class="toc-dot-label">自分を外に出す</span>
+    </div>
+    <div class="toc-dot" data-target="conclusion">
+      <span class="toc-dot-label">Conclusion</span>
+    </div>
+  </nav>
+
+  <!-- ==========================================
+       HERO
+  ========================================== -->
+  <header class="hero" id="hero">
+    <div class="hero-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-label">Metacreative Radio</span>
+      <span class="hero-episode">Episode 12</span>
+      <h1 class="hero-title"><span class="accent">寄せ集め</span>の創造性</h1>
+      <p class="hero-subtitle">冷蔵庫も宇宙船も、「無い」からはじまる<br>ブリコラージュの哲学</p>
+      <div class="hero-meta">
+        <span>2025.12.08</span>
+        <span>Tamkai & Opi</span>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       INTRODUCTION
+  ========================================== -->
+  <section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#128172;</span>
+        <span class="chapter-number">Introduction</span>
+        <h2 class="chapter-title">楽屋が一番面白い問題</h2>
+      </div>
+
+      <p class="intro-lead reveal">クリエイティブの現場には「公然の秘密」がある。控室の雑談、収録前のプリトーク、打ち上げの二次会――ステージ上よりも濃密な会話が、いつもそこで交わされている。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「楽屋が一番面白くなるもんだよね。登壇するときの楽屋と登壇した後の楽屋が一番濃い話が。ここも話したかったんだけどちょっとそれ外に出せないんだよねみたいなのが登壇者同士であるじゃないですか」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「そうだから結局、明日僕も講演しますけど、一番熱い内容はそこにはないんですよね」</p>
+        </div>
+      </div>
+
+      <p class="guide-text reveal">なぜ「本番」より「準備」の方が面白いのか。なぜ「完成品」より「制作過程」に魅力を感じるのか。本エピソードは、プリトークの雑談から始まり、料理、宇宙船、ソ連の地下音楽、そして「本を作ろう」という提案へと展開していく。一見脈絡のない話題の連鎖だが、その底流には一つのテーマが流れている。</p>
+
+      <p class="guide-text reveal"><strong>ブリコラージュ</strong>――「手元にあるもので何とかする」という創造の形式である。</p>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">ブリコラージュ（bricolage）</h4>
+        <div class="annotation-body">
+          <p>フランスの文化人類学者レヴィ＝ストロースが『野生の思考』（1962年）で提唱した概念。「手元にある材料や道具を使って、その場で何かを作り上げる」思考様式を指す。設計図に基づく計画的な「エンジニアリング」と対比される。現代ではイノベーション論やデザイン思考でも再評価されている重要な概念だ。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-emoji">&#127859;</span></div>
+
+  <!-- ==========================================
+       CHAPTER 1: 台所のブリコルール
+  ========================================== -->
+  <section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="台所のブリコルール">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#127373;</span>
+        <span class="chapter-number">Chapter 01</span>
+        <h2 class="chapter-title">台所のブリコルール</h2>
+        <p class="chapter-subtitle">料理という創造性の実験場</p>
+      </div>
+
+      <p class="guide-text reveal">対話は唐突に料理の話へ転じる。チャーハン、ペペロンチーノ、スパイスカレー――材料が少ないほど技術と判断が試される料理に、なぜ人は惹かれるのか。その直感はブリコラージュの本質を突いている。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「料理の話しようよ。本当になんでさ、夫の方で料理やってる人は、チャーハンとペペロンチーノを極めたくなっちゃうんだろうね」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「材料が少なければ少ないほど、何かが試されてる気になる感はあるので、多分それなんじゃないかなって」</p>
+        </div>
+      </div>
+
+      <div class="highlight-box reveal">
+        <span class="highlight-box-icon">&#128161;</span>
+        <p>材料のシンプルさは「制約」であり、その完成度を決めるのは材料の質ではなく、火加減、タイミング、手の動き――つまり<strong>技術と判断</strong>である。</p>
+      </div>
+
+      <p class="guide-text reveal">両者に共通する料理へのアプローチが浮かび上がった。それは、複数のレシピを比較して「構成をつかむ」方法論だ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「レシピめっちゃいっぱいあるじゃないですか。どれにするかを悩んで決めるよりも、一旦全部ぶわっと見て、共通点はここだなとか」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「10個ぐらいレシピ見て、これはこの人のオリジナルだな、これは基本線だなみたいなのを分解してから基本線だけ覚えて、あと脇道はいろいろやっていいみたいな」</p>
+        </div>
+      </div>
+
+      <div class="concept-diagram reveal">
+        <p class="concept-diagram-label">Bricolage Process</p>
+        <div class="concept-flow">
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128213;</span>
+            <span class="concept-step-label">10のレシピ</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128269;</span>
+            <span class="concept-step-label">構成を分解</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128161;</span>
+            <span class="concept-step-label">スキーマ抽出</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#127373;</span>
+            <span class="concept-step-label">自分の料理</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">スキーマとしてのレシピ理解</h4>
+        <div class="annotation-body">
+          <p>認知心理学において「スキーマ」とは、経験を通じて形成される知識の枠組みを指す。レシピを10個見て「構成をつかむ」行為は、個別レシピの記憶ではなく、背後にあるスキーマの抽出作業だ。スキーマを獲得すると、手元の材料で「自分のハンバーグ」を創造できる。再現から創造への転換である。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+
+      <p class="guide-text reveal">タムカイは料理への動機を内省的に語った。一人のときは極めて簡素な食事で済ませるが、家族がいるときは違う。「誰かがいてくれること、そこに対して何かやりたいっていう欲求」――贈与としての料理が、創造性を駆動する。</p>
+
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-emoji">&#128640;</span></div>
+
+  <!-- ==========================================
+       CHAPTER 2: 「無い」から始まる
+  ========================================== -->
+  <section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="「無い」から始まる">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#128640;</span>
+        <span class="chapter-number">Chapter 02</span>
+        <h2 class="chapter-title">「無い」から始まる</h2>
+        <p class="chapter-subtitle">欠乏が生む創造性</p>
+      </div>
+
+      <p class="guide-text reveal">対話は料理から一気に宇宙へ飛躍する。Opiが持ち出したのは、映画『アポロ13』の有名なエピソード。1970年、酸素タンクの爆発で生命の危機に瀕した3人の宇宙飛行士。司令船のフィルターは四角、着陸船のは丸――形状が違うため接続できない。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「一番キューンってくるのは、マニュアルの表紙、厚紙でできてるのを切って丸くして、ダクトテープを巻いて。マニュアルを工作の道具に使うっていうのがすごいキューンってくるんですよ。だって今マニュアルにない作業をしてるからみたいな」</p>
+        </div>
+      </div>
+
+      <div class="pull-quote reveal">
+        <p class="pull-quote-text">マニュアルにない作業をするために、<br>マニュアルを材料にする</p>
+        <p class="pull-quote-attribution">--- Opi, on Apollo 13</p>
+      </div>
+
+      <p class="guide-text reveal">この逆説がブリコラージュの本質を体現している。マニュアルは「読むもの」「従うもの」だが、極限状況では「厚紙である」という物質的特性だけが意味を持つ。本来の用途から物事を解放する能力――それこそがブリコルールの核心だ。</p>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">機能的固着（functional fixedness）の克服</h4>
+        <div class="annotation-body">
+          <p>認知科学で「機能的固着」とは、物体をその典型的な機能でしか捉えられなくなるバイアスを指す。カール・ドゥンカーの「ロウソク問題」（1945年）で実証された。アポロ13の技術者たちはこの固着を打破し、マニュアルを「情報の媒体」から「構造材」へと再定義した。ダクトテープ、ホース、段ボール――宇宙船内のありあわせが、3人の命を救った。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+
+      <div class="section-divider"><span class="divider-emoji">&#129460;</span></div>
+
+      <p class="guide-text reveal">もう一つの「欠乏から生まれた創造性」――冷戦時代ソ連の地下音楽シーン。西側の音楽が禁止された世界で、人々は廃棄されたレントゲン写真でレコードを作った。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「レントゲンのフィルムをレコード盤に使えるんじゃない？ってゴミ捨て場から買っ払ってきて、タバコで真ん中に穴開けて、蓄音機を逆再生して無理やり溝掘って、チャック・ベリーとかストーンズを刻んでて」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「レントゲン写真の骨とかって死の象徴みたいな感じじゃない。一方で音楽がそこから流れてくるっていうエピソードがキューンってしちゃって」</p>
+        </div>
+      </div>
+
+      <p class="guide-text reveal">死の象徴である骨と、生の歓びである音楽。禁止と自由。公式と地下。これらの対立が一枚のレントゲン写真の上で出会う。累計100万枚が売れたという。「ない」から生まれたものが、巨大な文化運動になった。</p>
+
+      <p class="guide-text reveal">さらにタムカイ自身の原体験が語られた。テレビのない家で育ち、ラジカセでテレビの音声だけを聴いて『仮面ノリダー』を頭の中で作り上げた少年時代。数ヶ月後にコロコロコミックで初めて本物を見て「顔が全部出てる！」と驚いたという。映像の欠如が、かえって想像力を駆動した原体験だ。</p>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">ボーンミュージック（Bone Music）</h4>
+        <div class="annotation-body">
+          <p>1940-60年代のソ連で、廃棄されたX線写真を使って作られた海賊版レコード。「リブス（肋骨）」とも呼ばれた。フィルムを丸く切り抜き、タバコの火で中央に穴を開け、改造蓄音機で溝を刻む。音質は悪く数回で摩耗したが、禁じられた音楽への渇望がこの即興的技術を生み出した。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-emoji">&#128260;</span></div>
+
+  <!-- ==========================================
+       CHAPTER 3: できるようになるから面白くなる
+  ========================================== -->
+  <section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="できるようになるから面白くなる">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#128260;</span>
+        <span class="chapter-number">Chapter 03</span>
+        <h2 class="chapter-title">できるようになるから面白くなる</h2>
+        <p class="chapter-subtitle">創造性のフィードバックループ</p>
+      </div>
+
+      <p class="guide-text reveal">対話は「なぜ創造的行為は楽しいのか」という問いへと深まる。Opiは料理を例に、上達と楽しさの正のループを論じた。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「できるようになるから面白くなるっていうのもあるじゃない。美味しいものができた、食べてうまい、幸せだ、また作ろうっていう正のループが回ると、どんどん人はうまくなっていくし」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「テニスの面白さが分かるのって、ある程度ちゃんとボールが打てて、ラリーが続いて、好きな方向に打てるようになると初めて楽しくなってくる。やっぱりそこまでいく人が少ないわけじゃないですか」</p>
+        </div>
+      </div>
+
+      <div class="highlight-box reveal">
+        <span class="highlight-box-icon">&#128260;</span>
+        <p>創造的行為の「本当の面白さ」は最初から与えられるものではない。一定の技術的閾値を超えて初めて、フロー体験の可能性が開ける。この閾値を超えられるかが、持続的関与を左右する。</p>
+      </div>
+
+      <p class="guide-text reveal">タムカイは自身の料理との出会いを振り返った。家庭科の授業で味噌汁を覚え、家で作ったら母親が「めちゃめちゃ喜んでくれた」。成功体験とポジティブなフィードバック――この組み合わせが最初の扉を開いた。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「大人になるとやったことは減点法になる瞬間、お仕事でも多いじゃないですか。できてないの方に指摘を日々され。毎日の小さなアウトプットに関してはここ穴あるよとかってずっと言われ続けて、楽しくはないわなと思って」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「Opiさんの『タムカイさん、今はAIでしょ！』みたいなぶん投げがあったり。僕もできた時に『どうですかねOpiさん』って言ったら、『そうだよ』ってその一言でパーンって上がったものもあるので」</p>
+        </div>
+      </div>
+
+      <div class="concept-diagram reveal">
+        <p class="concept-diagram-label">Feedback Loop</p>
+        <div class="concept-flow">
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#10024;</span>
+            <span class="concept-step-label">きっかけ</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128170;</span>
+            <span class="concept-step-label">やってみる</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128172;</span>
+            <span class="concept-step-label">フィードバック</span>
+          </div>
+          <span class="concept-arrow">&rarr;</span>
+          <div class="concept-step">
+            <span class="concept-step-emoji">&#128640;</span>
+            <span class="concept-step-label">加速</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">自己効力感と創造性</h4>
+        <div class="annotation-body">
+          <p>心理学者バンデューラが提唱した「自己効力感」は、課題を遂行できるという自己への信頼を指す。成功体験は自己効力感を高め、より挑戦的な取り組みを促す。逆に失敗体験は回避行動を強化する。子ども時代の全肯定と大人の減点法――この対比が創造性の育成環境の重要性を物語る。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"><span class="divider-emoji">&#128214;</span></div>
+
+  <!-- ==========================================
+       CHAPTER 4: 自分を外に出す
+  ========================================== -->
+  <section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="自分を外に出す">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#128214;</span>
+        <span class="chapter-number">Chapter 04</span>
+        <h2 class="chapter-title">自分を外に出す</h2>
+        <p class="chapter-subtitle">本を作るプロジェクト</p>
+      </div>
+
+      <p class="guide-text reveal">対話の終盤、Opiは唐突にこう切り出した。AI時代に300周ぐらい思考を回した末にたどり着いたのは、プラモデルとミニコミという極めてアナログな創造活動だった。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「多くの人は仕事でのアウトプットはもちろんあるけど、純粋にこれ俺っていうアウトプットってないじゃないですか」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「自分の中にあるものが外側に出て客観的なものになるっていう、自分の外在化みたいな。そういう経験がある人とない人と、相当これは差があるよねって思っていて」</p>
+        </div>
+      </div>
+
+      <div class="pull-quote reveal">
+        <p class="pull-quote-text">純粋にこれ俺、というアウトプットを<br>持っているかどうか</p>
+        <p class="pull-quote-attribution">--- Opi</p>
+      </div>
+
+      <p class="guide-text reveal">Opiは自身のオリジナルレシピを本にして、息子の成人式に渡したいと語った。タムカイは「アナログの本でなければならない」と主張する。手に取れること、印刷すること、お金を払うこと――そのコミットメントが創造物への真剣さを引き出す。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「30部は作るってなると、30部分の5000円は払わなきゃなってなった瞬間に、3回ぐらい絶対文章書き直すもんなと思って。人に渡すってなった瞬間に変わりそうな気がする」</p>
+        </div>
+      </div>
+
+      <p class="guide-text reveal">そしてOpiは、「本を作るワークショップ」の構想を披露する。10人で参加して、互いの本を交換する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item reveal speaker-opi">
+          <p class="dialogue-speaker opi">Opi</p>
+          <p class="dialogue-text">「ワークショップやってさ、10人で参加して、参加のご褒美として9冊人の本をもらえるって言ったらめっちゃ面白くない」</p>
+        </div>
+        <div class="dialogue-item reveal speaker-tamkai">
+          <p class="dialogue-speaker tamkai">Tamkai</p>
+          <p class="dialogue-text">「マジ自分で本気でやった後にその9冊、全然違う価値になりますからね。自分のもそうですけど」</p>
+        </div>
+      </div>
+
+      <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+        <span class="annotation-badge">Annotation</span>
+        <h4 class="annotation-title">コミットメントと創造の質</h4>
+        <div class="annotation-body">
+          <p>行動経済学において、事前にリソース（時間、金銭、評判）を投入する「コミットメント」は意思決定の質を高める要因として知られる。デジタルデータはいつでも修正・削除でき、コミットメントが欠如しやすい。印刷し、製本し、人に渡す――その不可逆性が、創造物に重みを与える。</p>
+        </div>
+        <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+      </div>
+
+      <div class="highlight-box reveal">
+        <span class="highlight-box-icon">&#128220;</span>
+        <p>デジタルのままなら「なんとなく」で済ませられる。しかし、30部の本を作り、人に手渡すと決めた瞬間、<strong>「3回は書き直す」</strong>覚悟が生まれる。コミットメントが創造の質を変える。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       CONCLUSION (DARK)
+  ========================================== -->
+  <section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="Conclusion">
+    <div class="main-content">
+      <div class="chapter-header reveal">
+        <span class="chapter-icon">&#10024;</span>
+        <span class="chapter-number">Conclusion</span>
+        <h2 class="chapter-title">あなたも、ブリコルールである</h2>
+      </div>
+
+      <p class="conclusion-text reveal">料理、アポロ13、ソ連の地下音楽、テレビのない少年時代、プラモデル、本作り――一見バラバラな話題の底流には一つの思想が流れている。</p>
+
+      <p class="conclusion-text reveal"><strong class="gold">「無い」から始まる創造性。</strong></p>
+
+      <p class="conclusion-text reveal">材料が足りないから工夫する。情報が足りないから想像する。選択肢が少ないから本質に迫る。この「欠乏」がブリコラージュという創造の形式を駆動する。そして、その創造物を「外に出す」こと――印刷し、製本し、人に渡すこと――が、創造者自身を変容させる。</p>
+
+      <p class="conclusion-text reveal">冷蔵庫のありあわせで料理を作る人も、宇宙船の中でマニュアルを切り刻む技術者も、レントゲン写真にロックンロールを刻むソ連の若者も、音声だけでテレビ番組を想像する少年も――<strong>彼らはみな、ブリコルールである。</strong></p>
+
+      <p class="conclusion-text reveal" style="text-align: center; font-size: 1.3rem; color: var(--dark-gold-600); margin-top: 2rem; font-weight: 500;">そして、あなたも。</p>
+
+      <!-- Key Takeaways -->
+      <div style="margin-top: 3rem;">
+        <p class="reveal" style="font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dark-gold-600); text-align: center; margin-bottom: 1.5rem;">Key Takeaways</p>
+
+        <div class="takeaways-grid">
+          <div class="takeaway-card reveal">
+            <span class="takeaway-emoji">&#127373;</span>
+            <h4 class="takeaway-title">制約が創造を駆動する</h4>
+            <p class="takeaway-desc">材料が少ないほど、技術と判断が試される。チャーハンもペペロンチーノも、シンプルさが創造の深度を生む。</p>
+          </div>
+          <div class="takeaway-card reveal">
+            <span class="takeaway-emoji">&#128640;</span>
+            <h4 class="takeaway-title">マニュアルを材料にする</h4>
+            <p class="takeaway-desc">「本来の用途」から物事を解放する思考。機能的固着を超えた瞬間に、ブリコラージュが始まる。</p>
+          </div>
+          <div class="takeaway-card reveal">
+            <span class="takeaway-emoji">&#128260;</span>
+            <h4 class="takeaway-title">上達のループ</h4>
+            <p class="takeaway-desc">成功体験、挑戦、フィードバック。この正のスパイラルが「本当の面白さ」への閾値を超えさせる。</p>
+          </div>
+          <div class="takeaway-card reveal">
+            <span class="takeaway-emoji">&#128214;</span>
+            <h4 class="takeaway-title">外在化の力</h4>
+            <p class="takeaway-desc">「純粋にこれ俺」を形にするコミットメント。印刷し、人に渡す不可逆性が、創造の質を変える。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       FOOTER
+  ========================================== -->
+  <footer class="footer">
+    <p class="footer-logo">Metacreative Radio</p>
+    <p class="footer-meta">Episode 12 | 2025.12.08 | Tamkai & Opi<br>Metacreative Document</p>
+  </footer>
+
+  <!-- ==========================================
+       JAVASCRIPT
+  ========================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // ---- SCROLL-BASED CONTENT REVEAL ----
+      // Fallback: if IntersectionObserver is not supported, show everything
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal').forEach(function(el) {
+          el.classList.add('revealed');
+        });
+      } else {
+        // Enable reveal animations only when IO is available
+        document.documentElement.classList.add('reveal-ready');
+
+        // Safety timeout: if elements are still hidden after 4s, force-show them
+        setTimeout(function() {
+          document.querySelectorAll('.reveal:not(.revealed)').forEach(function(el) {
+            el.classList.add('revealed');
+          });
+        }, 4000);
+
+        var revealElements = document.querySelectorAll('.reveal');
+
+        var revealObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              // Stagger delay: count preceding .reveal siblings
+              var el = entry.target;
+              var parent = el.parentElement;
+              var delay = 0;
+              if (parent) {
+                var children = parent.children;
+                var revealIndex = 0;
+                for (var i = 0; i < children.length; i++) {
+                  if (children[i] === el) { delay = revealIndex * 80; break; }
+                  if (children[i].classList.contains('reveal')) { revealIndex++; }
+                }
+              }
+              setTimeout(function() {
+                el.classList.add('revealed');
+              }, delay);
+              revealObserver.unobserve(el);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(function(el) {
+          revealObserver.observe(el);
+        });
+      }
+
+      // ---- PROGRESS BAR + CHAPTER CONTEXT ----
+      var progressBar = document.getElementById('progressBar');
+      var progressLine = document.getElementById('progressLine');
+      var progressChapterEl = document.getElementById('progressChapter');
+      var heroEl = document.getElementById('hero');
+
+      function updateProgress() {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressLine.style.width = Math.min(progress, 100) + '%';
+
+        var heroBottom = heroEl.offsetTop + heroEl.offsetHeight;
+        if (scrollTop > heroBottom - 100) {
+          progressBar.classList.add('visible');
+        } else {
+          progressBar.classList.remove('visible');
+        }
+      }
+
+      // ---- ATMOSPHERE SHIFT ----
+      var sections = document.querySelectorAll('[data-atmosphere]');
+      var atmospheres = {
+        'warm':     '#F5F0E8',
+        'cool':     '#F0F2F5',
+        'creative': '#F8F5EE',
+        'deep':     '#F5F0E8'
+      };
+
+      var currentChapterName = '';
+
+      function updateAtmosphere() {
+        var scrollCenter = window.scrollY + window.innerHeight * 0.4;
+        var activeSection = null;
+
+        for (var i = 0; i < sections.length; i++) {
+          var section = sections[i];
+          var rect = section.getBoundingClientRect();
+          var sectionTop = window.scrollY + rect.top;
+          var sectionBottom = sectionTop + section.offsetHeight;
+
+          if (scrollCenter >= sectionTop && scrollCenter < sectionBottom) {
+            activeSection = section;
+            break;
+          }
+        }
+
+        if (activeSection) {
+          var atm = activeSection.getAttribute('data-atmosphere');
+          if (atm && atmospheres[atm]) {
+            document.body.style.backgroundColor = atmospheres[atm];
+          }
+
+          var chapterName = activeSection.getAttribute('data-chapter-name') || '';
+          if (chapterName !== currentChapterName) {
+            currentChapterName = chapterName;
+            progressChapterEl.style.opacity = '0';
+            setTimeout(function() {
+              progressChapterEl.textContent = currentChapterName;
+              progressChapterEl.style.opacity = '1';
+            }, 200);
+          }
+        }
+      }
+
+      // ---- SIDE TOC ACTIVE TRACKING ----
+      var tocDots = document.querySelectorAll('.toc-dot');
+      var sectionIds = [];
+      for (var i = 0; i < tocDots.length; i++) {
+        sectionIds.push(tocDots[i].getAttribute('data-target'));
+      }
+
+      function updateTocDots() {
+        var scrollCenter = window.scrollY + window.innerHeight * 0.4;
+        var activeId = null;
+
+        for (var j = 0; j < sectionIds.length; j++) {
+          var section = document.getElementById(sectionIds[j]);
+          if (section) {
+            var rect = section.getBoundingClientRect();
+            var sectionTop = window.scrollY + rect.top;
+            var sectionBottom = sectionTop + section.offsetHeight;
+            if (scrollCenter >= sectionTop && scrollCenter < sectionBottom) {
+              activeId = sectionIds[j];
+              break;
+            }
+          }
+        }
+
+        for (var k = 0; k < tocDots.length; k++) {
+          if (tocDots[k].getAttribute('data-target') === activeId) {
+            tocDots[k].classList.add('active');
+          } else {
+            tocDots[k].classList.remove('active');
+          }
+        }
+      }
+
+      // TOC dot click
+      for (var d = 0; d < tocDots.length; d++) {
+        tocDots[d].addEventListener('click', function() {
+          var targetId = this.getAttribute('data-target');
+          var target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      // ---- ANNOTATION PROGRESSIVE REVEAL ----
+      var annotations = document.querySelectorAll('.annotation');
+      var annotationObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+            entry.target.classList.add('expanded');
+          }
+        });
+      }, { threshold: [0.6] });
+
+      for (var a = 0; a < annotations.length; a++) {
+        annotationObserver.observe(annotations[a]);
+      }
+
+      // ---- UNIFIED SCROLL HANDLER ----
+      var ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            updateProgress();
+            updateAtmosphere();
+            updateTocDots();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Initial
+      updateProgress();
+      updateAtmosphere();
+      updateTocDots();
+
+    })();
+  </script>
+</body>
+</html>

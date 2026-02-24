@@ -1,0 +1,2562 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>プロトピア——技術万能主義を超えて、生命と共に未来を彫り出す</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink: #BF527D;
+      --blue: #2082A6;
+      --teal: #3FA286;
+      --dark: #1a1a2e;
+      --darker: #0f0f1a;
+      --light: #f8f9fa;
+      --text: #2d3436;
+      --text-light: #636e72;
+      --gradient-main: linear-gradient(135deg, var(--pink) 0%, var(--blue) 50%, var(--teal) 100%);
+      --gradient-soft: linear-gradient(135deg, rgba(191,82,125,0.08) 0%, rgba(32,130,166,0.08) 50%, rgba(63,162,134,0.08) 100%);
+      --gradient-accent: linear-gradient(90deg, var(--pink), var(--blue), var(--teal));
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.9;
+      font-size: 16px;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       HERO SECTION
+    ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: var(--darker);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(191,82,125,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(32,130,166,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(63,162,134,0.3) 0%, transparent 60%);
+      animation: heroGlow 15s ease-in-out infinite;
+    }
+
+    /* Floating shapes */
+    .hero-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .shape {
+      position: absolute;
+      opacity: 0.1;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      top: 10%;
+      left: 5%;
+      width: 200px;
+      height: 200px;
+      border: 3px solid var(--pink);
+      border-radius: 50%;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      top: 60%;
+      right: 10%;
+      width: 150px;
+      height: 150px;
+      border: 3px solid var(--blue);
+      transform: rotate(45deg);
+      animation-delay: -5s;
+    }
+
+    .shape-3 {
+      bottom: 20%;
+      left: 15%;
+      width: 100px;
+      height: 100px;
+      border: 3px solid var(--teal);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation-delay: -10s;
+    }
+
+    .shape-4 {
+      top: 30%;
+      right: 20%;
+      width: 80px;
+      height: 80px;
+      background: var(--gradient-main);
+      border-radius: 50%;
+      opacity: 0.15;
+      animation-delay: -7s;
+    }
+
+    .shape-5 {
+      bottom: 40%;
+      right: 5%;
+      width: 120px;
+      height: 120px;
+      border: 2px dashed var(--pink);
+      border-radius: 50%;
+      animation-delay: -12s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(20px) rotate(-5deg); }
+    }
+
+    @keyframes heroGlow {
+      0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+      33% { transform: translate(5%, -5%) rotate(120deg); }
+      66% { transform: translate(-5%, 5%) rotate(240deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      max-width: 1000px;
+    }
+
+    .hero-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out, pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .hero-label {
+      display: inline-block;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      color: white;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero-title .accent {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: rgba(255,255,255,0.7);
+      font-weight: 300;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+    }
+
+    .hero-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .scroll-indicator span {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    .scroll-indicator::after {
+      content: '↓';
+      font-size: 1.5rem;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      50% { transform: translateX(-50%) translateY(10px); opacity: 0.5; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================
+       NAVIGATION
+    ======================================== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(15,15,26,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem 2rem;
+      transform: translateY(-100%);
+      transition: transform 0.4s ease;
+    }
+
+    .nav.visible {
+      transform: translateY(0);
+    }
+
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    /* ========================================
+       MAIN CONTENT WRAPPER
+    ======================================== */
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    /* ========================================
+       INTRODUCTION
+    ======================================== */
+    .intro-section {
+      padding: 6rem 2rem;
+      background: white;
+      position: relative;
+    }
+
+    .intro-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-main);
+    }
+
+    .intro-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .intro-icon {
+      font-size: 3rem;
+    }
+
+    .intro-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.5rem;
+      color: var(--dark);
+    }
+
+    .intro-lead {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.4rem;
+      line-height: 2.2;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .intro-lead::first-letter {
+      font-size: 4rem;
+      float: left;
+      line-height: 1;
+      margin-right: 0.5rem;
+      margin-top: 0.1rem;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    .intro-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-light);
+    }
+
+    /* Profile Card */
+    .profile-card {
+      display: flex;
+      gap: 2rem;
+      background: var(--gradient-soft);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      align-items: center;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+
+    .profile-info h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-info p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      line-height: 1.7;
+    }
+
+    .profile-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .profile-tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      background: white;
+      border-radius: 20px;
+      color: var(--text-light);
+    }
+
+    @media (max-width: 600px) {
+      .profile-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-tags {
+        justify-content: center;
+      }
+    }
+
+    /* ========================================
+       CHAPTER SECTIONS
+    ======================================== */
+    .chapter {
+      padding: 5rem 0;
+      position: relative;
+    }
+
+    .chapter:nth-child(even) {
+      background: var(--gradient-soft);
+    }
+
+    .chapter-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .chapter-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .chapter-icon {
+      font-size: 3rem;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+    }
+
+    .chapter-meta {
+      flex: 1;
+    }
+
+    .chapter-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .chapter-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.4;
+    }
+
+    .chapter-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: var(--gradient-main);
+      margin-top: 1rem;
+      border-radius: 2px;
+    }
+
+    /* ========================================
+       SUBSECTIONS
+    ======================================== */
+    .subsection {
+      margin-bottom: 4rem;
+    }
+
+    .subsection-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .subsection-title::before {
+      content: '';
+      width: 4px;
+      height: 1.5em;
+      background: var(--gradient-main);
+      border-radius: 2px;
+    }
+
+    .subsection-icon {
+      font-size: 1.2rem;
+      margin-left: auto;
+    }
+
+    .body-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ========================================
+       DIALOGUE BLOCKS
+    ======================================== */
+    .dialogue-block {
+      margin: 2.5rem 0;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dialogue-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient-main);
+    }
+
+    .dialogue-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    .dialogue-header-icon {
+      font-size: 1.2rem;
+    }
+
+    .dialogue-header-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .dialogue-item {
+      margin-bottom: 1.5rem;
+      padding-left: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .dialogue-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .dialogue-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .dialogue-avatar.opi {
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+    }
+
+    .dialogue-avatar.tamkai {
+      background: linear-gradient(135deg, var(--pink), var(--blue));
+    }
+
+    .dialogue-content {
+      flex: 1;
+    }
+
+    .dialogue-speaker {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .dialogue-speaker.opi {
+      color: var(--blue);
+    }
+
+    .dialogue-speaker.tamkai {
+      color: var(--pink);
+    }
+
+    .dialogue-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--dark);
+      font-style: italic;
+    }
+
+    /* ========================================
+       ANNOTATION BLOCKS
+    ======================================== */
+    .annotation {
+      margin: 3rem 0;
+      background: linear-gradient(135deg, rgba(26,26,46,0.97) 0%, rgba(15,15,26,0.98) 100%);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .annotation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-main);
+    }
+
+    .annotation::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(63,162,134,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .annotation-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .annotation-icon {
+      font-size: 1.5rem;
+    }
+
+    .annotation-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .annotation-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .annotation-text {
+      font-size: 0.95rem;
+      line-height: 2;
+      color: rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .annotation-text p {
+      margin-bottom: 1rem;
+    }
+
+    .annotation-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ========================================
+       HIGHLIGHT BOX
+    ======================================== */
+    .highlight-box {
+      background: var(--gradient-soft);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--blue);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .highlight-box-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .highlight-box p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--text);
+    }
+
+    /* ========================================
+       PRINCIPLES SECTION (Chapter 4)
+    ======================================== */
+    .principles-intro {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .principles-diagram {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: 3rem auto;
+      aspect-ratio: 1;
+    }
+
+    .principles-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      background: var(--gradient-main);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: center;
+      z-index: 2;
+      box-shadow: 0 10px 40px rgba(191,82,125,0.3);
+    }
+
+    .principles-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border: 2px dashed rgba(32,130,166,0.3);
+      border-radius: 50%;
+      animation: spin 60s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .principle-node {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transform: translate(-50%, -50%);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .principle-node:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .principle-node-icon {
+      font-size: 1.5rem;
+    }
+
+    .principle-node-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-top: 0.25rem;
+    }
+
+    /* Position nodes in a circle */
+    .principle-node:nth-child(1) { top: 5%; left: 50%; }
+    .principle-node:nth-child(2) { top: 25%; left: 93%; }
+    .principle-node:nth-child(3) { top: 75%; left: 93%; }
+    .principle-node:nth-child(4) { top: 95%; left: 50%; }
+    .principle-node:nth-child(5) { top: 75%; left: 7%; }
+    .principle-node:nth-child(6) { top: 25%; left: 7%; }
+
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .principle-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .principle-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    }
+
+    .principle-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-main);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .principle-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .principle-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .principle-card-icon {
+      font-size: 2rem;
+    }
+
+    .principle-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .principle-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .principle-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.4;
+    }
+
+    /* ========================================
+       TESCREAL TERMS
+    ======================================== */
+    .tescreal-container {
+      background: var(--darker);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin: 2rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tescreal-container::before {
+      content: '⚠️';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 2rem;
+      opacity: 0.3;
+    }
+
+    .tescreal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .tescreal-subtitle {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+
+    .tescreal-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .tescreal-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .tescreal-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .tescreal-letter {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      flex-shrink: 0;
+    }
+
+    .tescreal-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .tescreal-content {
+      flex: 1;
+    }
+
+    .tescreal-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+
+    .tescreal-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       QUOTE BLOCK
+    ======================================== */
+    .quote-block {
+      margin: 3rem 0;
+      padding: 2.5rem;
+      background: var(--gradient-soft);
+      border-radius: 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    .quote-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .quote-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.3rem;
+      line-height: 1.9;
+      color: var(--dark);
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-source {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* ========================================
+       CONCEPT DIAGRAM
+    ======================================== */
+    .concept-diagram {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .concept-diagram-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .concept-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .concept-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .concept-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .concept-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    .concept-arrow {
+      font-size: 1.5rem;
+      color: var(--blue);
+    }
+
+    /* ========================================
+       VISUAL DIVIDERS
+    ======================================== */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 4rem 0;
+    }
+
+    .section-divider-line {
+      height: 2px;
+      width: 60px;
+      background: var(--gradient-main);
+      border-radius: 2px;
+    }
+
+    .section-divider-icon {
+      font-size: 1.5rem;
+    }
+
+    /* ========================================
+       CONCLUSION SECTION
+    ======================================== */
+    .conclusion {
+      padding: 6rem 2rem;
+      background: var(--darker);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .conclusion::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 30% 50%, rgba(191,82,125,0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 50%, rgba(32,130,166,0.2) 0%, transparent 50%);
+    }
+
+    .conclusion-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .conclusion-icon {
+      font-size: 4rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .conclusion-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: white;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .conclusion-text {
+      font-size: 1.1rem;
+      line-height: 2.2;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.5rem;
+    }
+
+    .conclusion-highlight {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.5rem;
+      line-height: 1.8;
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    /* Key Points Summary */
+    .key-points {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .key-point {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .key-point-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .key-point-text {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+    }
+
+    /* ========================================
+       FOOTER
+    ======================================== */
+    .footer {
+      padding: 3rem 2rem;
+      background: var(--dark);
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-date {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1rem;
+    }
+
+    .footer-credit {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .footer-credit a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    /* ========================================
+       TABLE OF CONTENTS
+    ======================================== */
+    .toc {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: none;
+    }
+
+    @media (min-width: 1400px) {
+      .toc {
+        display: block;
+      }
+    }
+
+    .toc-item {
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      margin: 0.75rem 0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .toc-item:hover,
+    .toc-item.active {
+      background: var(--gradient-main);
+      transform: scale(1.3);
+    }
+
+    .toc-item::before {
+      content: attr(data-label);
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      padding-right: 1rem;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .toc-item:hover::before {
+      opacity: 1;
+    }
+
+    /* ========================================
+       ANIMATIONS
+    ======================================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+    @media (max-width: 768px) {
+      .hero-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .dialogue-block {
+        padding: 1.5rem;
+      }
+
+      .dialogue-item {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .annotation {
+        padding: 1.5rem;
+      }
+
+      .principles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tescreal-container {
+        padding: 1.5rem;
+      }
+
+      .principles-diagram {
+        display: none;
+      }
+
+      .chapter-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* ========================================
+       SPECIAL EMPHASIS
+    ======================================== */
+    .emphasis {
+      background: var(--gradient-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    /* Inline emoji styling */
+    .inline-icon {
+      display: inline-block;
+      margin: 0 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">🌱 PROTOPIA</a>
+      <ul class="nav-links">
+        <li><a href="#chapter1">🤖 第一章</a></li>
+        <li><a href="#chapter2">⚡ 第二章</a></li>
+        <li><a href="#chapter3">🔄 第三章</a></li>
+        <li><a href="#chapter4">🎯 第四章</a></li>
+        <li><a href="#chapter5">🤝 第五章</a></li>
+        <li><a href="#conclusion">✨ 終章</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+      <div class="shape shape-5"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-icon">🌍</div>
+      <span class="hero-label">Protopia Futures</span>
+      <h1 class="hero-title">
+        <span class="accent">プロトピア</span><br>
+        技術万能主義を超えて、<br>生命と共に未来を彫り出す
+      </h1>
+      <p class="hero-subtitle">
+        テクノ・ユートピア批判と再生可能な未来のデザイン
+      </p>
+      <div class="hero-meta">
+        <span>📅 2025年1月27日</span>
+        <span>👤 話者：タムカイ、Opi</span>
+        <span>📖 TechGALA 2026講演</span>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>SCROLL</span>
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section class="intro-section">
+    <div class="intro-content fade-in">
+      <div class="intro-header">
+        <span class="intro-icon">🔮</span>
+        <h2 class="intro-title">未来学者が問いかける「私たちの未来」</h2>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-avatar">👩‍🔬</div>
+        <div class="profile-info">
+          <h3>Monika Bielskyte</h3>
+          <p>Nike初のFuturist in Residence。旧ソ連リトアニア出身、90カ国以上を旅した未来学者。『ブラックパンサー：ワカンダ・フォーエバー』のフューチャリスト・コンサルタント。Google、BBC、Microsoft、世界経済フォーラムのアドバイザー。</p>
+          <div class="profile-tags">
+            <span class="profile-tag">🌍 南アフリカ在住</span>
+            <span class="profile-tag">🎬 映画コンサルタント</span>
+            <span class="profile-tag">💡 未来学</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="intro-lead">
+        2025年、世界的スポーツブランドNikeは、創業以来初めて「Futurist in Residence（未来学者・イン・レジデンス）」という役職を設けた。その最初の就任者が、Monika Bielskyte（モニカ・ビエルスカイト）である。
+      </p>
+      <p class="intro-text">
+        彼女が提唱する「プロトピア（Protopia）」という概念は、テクノロジーと人間の関係を根本から問い直す試みである。ユートピア（理想郷）でもディストピア（暗黒郷）でもない、第三の道。それは最終目標ではなく、<span class="emphasis">継続的にプロトタイプを作り続けるプロセス</span>そのものを指す。
+      </p>
+
+      <div class="concept-diagram">
+        <div class="concept-diagram-title">🎯 プロトピアの位置づけ</div>
+        <div class="concept-flow">
+          <div class="concept-item">
+            <div class="concept-icon">😇</div>
+            <span class="concept-label">ユートピア</span>
+          </div>
+          <span class="concept-arrow">←</span>
+          <div class="concept-item">
+            <div class="concept-icon" style="background: var(--gradient-main);">🌱</div>
+            <span class="concept-label" style="font-weight: 700; color: var(--dark);">プロトピア</span>
+          </div>
+          <span class="concept-arrow">→</span>
+          <div class="concept-item">
+            <div class="concept-icon">💀</div>
+            <span class="concept-label">ディストピア</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="intro-text">
+        本ドキュメントは、彼女がTechGALA 2026で行った講演「未来をデザインする力：SFから生まれる新しいビジネスのヒント」を、タムカイとOpiの架空対話を通じて再構成したものである。
+      </p>
+    </div>
+  </section>
+
+  <!-- Chapter 1 -->
+  <section class="chapter" id="chapter1">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">🤖</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 01</span>
+          <h2 class="chapter-title">AIは増幅器である<br>——チェンジメーカー神話の解体</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">設計と使い方が定義するもの<span class="subsection-icon">⚙️</span></h3>
+        <p class="body-text">
+          Monika Bielskyte氏の講演で最も核心的なテーゼは、「AIはチェンジメーカーではなく、増幅器（amplifier）である」という主張だった。この一見シンプルな命題は、AI論争の根本的な前提を覆す射程を持っている。
+        </p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「AIって、何か新しいものを生み出すわけじゃなくて、既にあるものを増幅させるだけだ、と。良いものも悪いものも、設計と使い方によって、指数関数的に増幅される。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「ああ、それはすごく腑に落ちますね。僕がClaude Codeで初期衝動を感じた話、前にしましたけど、あれも『溜まってたもの』があったから爆発したわけで。AIが何かを生み出したわけじゃない。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept-diagram">
+          <div class="concept-diagram-title">📊 増幅器としてのAI</div>
+          <div class="concept-flow">
+            <div class="concept-item">
+              <div class="concept-icon">😊</div>
+              <span class="concept-label">良いもの</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon">🤖</div>
+              <span class="concept-label">AI</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon">🚀</div>
+              <span class="concept-label">指数関数的に増幅</span>
+            </div>
+          </div>
+          <div class="concept-flow" style="margin-top: 1rem;">
+            <div class="concept-item">
+              <div class="concept-icon">😈</div>
+              <span class="concept-label">悪いもの</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon">🤖</div>
+              <span class="concept-label">AI</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon">💥</div>
+              <span class="concept-label">指数関数的に増幅</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          タムカイが言及しているのは、メタクリラジオ第11話での経験である。彼はAIコーディングツールを使って「タイマーアプリを作って」と一言書いただけでアプリが完成した時、「HTMLを初めて書いた時以来の初期衝動」を感じたと語っている。
+        </p>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <span class="annotation-icon">📚</span>
+            <span class="annotation-label">注釈</span>
+          </div>
+          <h4 class="annotation-title">増幅器としてのAI</h4>
+          <div class="annotation-text">
+            <p>「増幅器（amplifier）」というメタファーは、技術哲学において重要な系譜を持つ。マーシャル・マクルーハンは『メディア論』（1964年）において、すべてのメディアを「人間の拡張」として捉えた。車輪は足の拡張であり、衣服は皮膚の拡張であり、電子メディアは神経系の拡張である。</p>
+            <p>しかし、Bielskyte氏の「増幅器」概念は、マクルーハンの「拡張」とは微妙に異なる。<span class="inline-icon">🔊</span>増幅は良いものも悪いものも等しく強化するという、よりニュートラルな——あるいは警告的な——含意を持つ。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🌐</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">文化的バイアスの埋め込み<span class="subsection-icon">🧠</span></h3>
+        <p class="body-text">
+          Bielskyte氏の批判はさらに深層に及ぶ。AIには特定の文化的バイアスが内在しており、それが「普遍的な知性」として押し付けられているという指摘である。
+        </p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「彼女はさらに踏み込んで、AIには文化的バイアスが内在してるって言ってて。アングロサクソン的な直線思考——いい大学に行って、PHD取って、いい仕事に就いて、それがインテリジェントだっていう価値観が、アルゴリズムに埋め込まれてる。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「それ、日本語と英語の主語の話とも繋がりますよね。英語は必ず『I』って言わなきゃいけないけど、日本語は主語を省略できる。言語が認知を規定するっていう。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <span class="highlight-box-icon">💡</span>
+          <p>英語圏、とりわけシリコンバレーで開発されたAIシステムは、その文化圏の価値観——個人主義、直線的キャリア観、定量化可能な「知性」への信仰——を暗黙の前提として組み込んでいる。</p>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <span class="annotation-icon">📚</span>
+            <span class="annotation-label">注釈</span>
+          </div>
+          <h4 class="annotation-title">ヒトロスト——西洋的知性概念への対抗軸 🇷🇺</h4>
+          <div class="annotation-text">
+            <p>Bielskyte氏は講演で「ヒトロスト」というロシア語の概念に言及している。これは英語の「intelligence」とは異なる知性の形態を指す言葉で、状況を読み、システムの中で巧みに立ち回る能力を意味する。</p>
+            <p>ハワード・ガードナーの「多重知能理論」が指摘するように、音楽的知能🎵、身体運動的知能🏃、対人的知能👥、内省的知能🧘など、従来のIQテストでは測定できない知性の形態がある。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🤔</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">「賢い人がなぜバカなことを信じるのか」<span class="subsection-icon">❓</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「で、彼女が面白い例を出してたんですけど、『賢い人がなぜバカなことを信じるのか』っていう問い。アメリカ人はこれにすごく困惑するらしいんですよ。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          この問いは、知性と信念の関係についての深い洞察を含んでいる。西洋近代的な知性観では、「賢い人」は「正しい情報」を与えられれば「正しい結論」に至るはずである。しかし現実には、高学歴で論理的能力に優れた人々が、陰謀論や疑似科学を信じることがある。
+        </p>
+        <p class="body-text">
+          知性と信念、理性と感情の関係は、単純な因果関係では説明できないのである。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 2 -->
+  <section class="chapter" id="chapter2">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">⚡</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 02</span>
+          <h2 class="chapter-title">TESCREAL<br>——シリコンバレーの新宗教</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">イデオロギーの集合体<span class="subsection-icon">🏛️</span></h3>
+        <p class="body-text">
+          Bielskyte氏の講演で最も挑発的だったのは、シリコンバレーの思想的基盤への直接的な批判である。彼女は「TESCREAL」という造語を用いて、これらの思想群を「イデオロギーの集合体」として分析した。
+        </p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「TESCREAL（テスクリアル）っていう言葉を使ってた。トランスヒューマニズム、エクストロピアニズム、シンギュラリタリアニズム、コスミシズム、レーショナリズム、エフェクティブ・アルトルイズム、ロングターミズム——これらの頭文字を取った造語。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「うわ、全部聞いたことあるやつだ。シリコンバレーの思想的背景として。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tescreal-container">
+          <div class="tescreal-title">TESCREAL</div>
+          <div class="tescreal-subtitle">シリコンバレーの思想的基盤を構成する7つのイデオロギー</div>
+          <div class="tescreal-grid">
+            <div class="tescreal-item">
+              <div class="tescreal-letter">T</div>
+              <span class="tescreal-icon">🦾</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Transhumanism（トランスヒューマニズム）</div>
+                <div class="tescreal-desc">技術によって人間の身体的・認知的能力を超越すること</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">E</div>
+              <span class="tescreal-icon">📈</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Extropianism（エクストロピアニズム）</div>
+                <div class="tescreal-desc">無限の成長と拡張を志向する思想</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">S</div>
+              <span class="tescreal-icon">🌀</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Singularitarianism（シンギュラリタリアニズム）</div>
+                <div class="tescreal-desc">技術的特異点（AI超知能の出現）への信仰</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">C</div>
+              <span class="tescreal-icon">🚀</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Cosmism（コスミシズム）</div>
+                <div class="tescreal-desc">宇宙への拡張と不死の追求</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">R</div>
+              <span class="tescreal-icon">🧮</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Rationalism（レーショナリズム）</div>
+                <div class="tescreal-desc">ベイズ推論を重視する特定の合理主義コミュニティ</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">E</div>
+              <span class="tescreal-icon">💰</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Effective Altruism（エフェクティブ・アルトルイズム）</div>
+                <div class="tescreal-desc">効果測定に基づく利他主義</div>
+              </div>
+            </div>
+            <div class="tescreal-item">
+              <div class="tescreal-letter">A</div>
+              <span class="tescreal-icon">⏳</span>
+              <div class="tescreal-content">
+                <div class="tescreal-name">Longtermism（ロングターミズム）</div>
+                <div class="tescreal-desc">遠い未来の人類を優先する思想</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🎭</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">ファンタジーと科学の混同<span class="subsection-icon">🔬</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「技術的特異点（シンギュラリティ）とか、意識をコンピューターにアップロードするとか、そういうやつですよね。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「そう。彼女ははっきり言ってた。『それはファンタジーです。サイエンスフィクションであって、科学的現実ではない』と。我々はその科学を理解していないし、説明もできないし、コントロールもできない。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <span class="highlight-box-icon">⚠️</span>
+          <p>「意識のアップロード」は、現在の神経科学では実現の見通しすら立っていない。意識とは何か、それがどのように脳の物理的プロセスから生じるのかさえ、科学的には未解明である。</p>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <span class="annotation-icon">🧠</span>
+            <span class="annotation-label">注釈</span>
+          </div>
+          <h4 class="annotation-title">意識のハードプロブレム</h4>
+          <div class="annotation-text">
+            <p>哲学者デイヴィッド・チャーマーズが1995年に提起した「意識のハードプロブレム（The Hard Problem of Consciousness）」は、なぜ物理的な脳のプロセスが主観的な体験（クオリア）を生み出すのかという問いである。</p>
+            <p>なぜ脳の電気化学的活動が「赤を見る」🔴という主観的体験になるのか、その説明原理は依然として不明である。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">👽</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">「エイリアン・インテリジェンス」という言い訳<span class="subsection-icon">🛸</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「『子どもが化学実験室で、いろんな液体を混ぜて、知性を作ったんだって言ってるようなもの。でも実際は、作り方がわかってないから、それを言い訳にしてる』って。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「自分たちが作ったものの責任を、『エイリアン』っていう言葉で回避してる。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          Bielskyte氏が主張するのは、AIは「エイリアン」ではなく、人間が設計し、人間のデータで訓練し、人間の目的のために運用される技術だということである。その意味で、AIのバイアスや問題点は、開発者と運用者の責任に帰せられるべきなのだ。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 3 -->
+  <section class="chapter" id="chapter3">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">🔄</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 03</span>
+          <h2 class="chapter-title">ノスタルジーは戦略ではない<br>——過去と未来の弁証法</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">毒としてのノスタルジー<span class="subsection-icon">☠️</span></h3>
+        <p class="body-text">
+          技術批判は、しばしば「過去回帰」への誘惑を伴う。「テクノロジー以前の時代は良かった」という感傷は、批判の力を奪い、建設的な代替案の構築を妨げる。Bielskyte氏は、この誘惑を明確に退ける。
+        </p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「でも、テクノロジー批判って、ともすると『昔は良かった』っていうノスタルジーに陥りがちじゃないですか。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「それがまさに彼女の核心的なメッセージで。『ノスタルジーは戦略ではない。ノスタルジーは毒だ』とまで言ってた。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「過去に戻るんじゃなくて、過去を超えていく。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote-block">
+          <div class="quote-icon">💀</div>
+          <p class="quote-text">
+            ノスタルジーは戦略ではない。<br>
+            ノスタルジーは毒だ。
+          </p>
+          <p class="quote-source">🎤 Monika Bielskyte</p>
+        </div>
+
+        <p class="body-text">
+          過去を理想化することは、過去の問題を不可視化し、現在の課題への取り組みを逃避させる。記憶というものは進化しなきゃいけない。過去から学ぶことで、もっといい決定ができるようになる。でも、過去に固執してはいけない。
+        </p>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🤝</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">ミドルパワーの連帯<span class="subsection-icon">🌏</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「ミドルパワー——カナダ🇨🇦、EU🇪🇺、日本🇯🇵、韓国🇰🇷、オーストラリア🇦🇺とか——がビジョンを持って統合すべきだって。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「そうそう。妄想ではなく、科学に基づいた事実で。彼女が言う『プロトピア』っていうのは、楽観主義じゃなくてリアリズムなんですよ。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          テクノ・ユートピア的な空想でもなく、ディストピア的な諦念でもない。既に存在するソリューションを見つけ、統合し、実装していく地道な作業こそが、プロトピアの実践なのである。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 4: Protopia Principles -->
+  <section class="chapter" id="chapter4">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">🎯</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 04</span>
+          <h2 class="chapter-title">プロトピアの六原則<br>——再生可能な未来のフレームワーク</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">円環としての原則<span class="subsection-icon">⭕</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「具体的には、プロトピアってどういう内容なんですか？」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「彼女は六つの原則を挙げてた。順番はないし、階層もない。つながったサークルだって。」</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Diagram -->
+        <div class="principles-diagram">
+          <div class="principles-ring"></div>
+          <div class="principles-center">PROTOPIA<br>六原則</div>
+          <div class="principle-node">
+            <span class="principle-node-icon">🔗</span>
+            <span class="principle-node-label">相互依存</span>
+          </div>
+          <div class="principle-node">
+            <span class="principle-node-icon">🌿</span>
+            <span class="principle-node-label">ライフ</span>
+          </div>
+          <div class="principle-node">
+            <span class="principle-node-icon">♻️</span>
+            <span class="principle-node-label">再生可能</span>
+          </div>
+          <div class="principle-node">
+            <span class="principle-node-icon">🚪</span>
+            <span class="principle-node-label">アクセス</span>
+          </div>
+          <div class="principle-node">
+            <span class="principle-node-icon">🌈</span>
+            <span class="principle-node-label">多元的</span>
+          </div>
+          <div class="principle-node">
+            <span class="principle-node-icon">😊</span>
+            <span class="principle-node-label">喜び</span>
+          </div>
+        </div>
+
+        <div class="principles-grid">
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">🔗</span>
+              <span class="principle-number">01</span>
+            </div>
+            <div class="principle-name">Interdependent</div>
+            <div class="principle-title">相互依存</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">🌿</span>
+              <span class="principle-number">02</span>
+            </div>
+            <div class="principle-name">Life-centric</div>
+            <div class="principle-title">ライフ・セントリック</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">♻️</span>
+              <span class="principle-number">03</span>
+            </div>
+            <div class="principle-name">Regenerative</div>
+            <div class="principle-title">再生可能</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">🚪</span>
+              <span class="principle-number">04</span>
+            </div>
+            <div class="principle-name">Accessible</div>
+            <div class="principle-title">アクセシブル</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">🌈</span>
+              <span class="principle-number">05</span>
+            </div>
+            <div class="principle-name">Pluriversal</div>
+            <div class="principle-title">プルリバーサル</div>
+          </div>
+          <div class="principle-card">
+            <div class="principle-card-header">
+              <span class="principle-card-icon">😊</span>
+              <span class="principle-number">06</span>
+            </div>
+            <div class="principle-name">Joyful</div>
+            <div class="principle-title">喜びに満ちた</div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <span class="annotation-icon">📚</span>
+            <span class="annotation-label">注釈</span>
+          </div>
+          <h4 class="annotation-title">線形思考と円環思考</h4>
+          <div class="annotation-text">
+            <p>西洋近代の時間観・歴史観は、基本的に「線形（linear）」である ➡️ 時間は一方向に進み、歴史は進歩（または堕落）する。</p>
+            <p>一方、多くの非西洋文化は「円環的（cyclical）」な時間観を持つ 🔄 季節の循環、生と死の輪廻、世代の交代——時間は直線ではなく、螺旋的に回帰する。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 5: Privilege and Design -->
+  <section class="chapter" id="chapter5">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">🤝</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 05</span>
+          <h2 class="chapter-title">特権とデザイン<br>——Design WITH, not FOR</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">結果から隔離される状態<span class="subsection-icon">🏰</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「彼女が『特権（Privilege）』について語ってた部分、すごく印象的だったんですけど。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「ああ、あれね。『特権とは、自らの行動の結果から隔離されている状態』だって定義してた。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <span class="highlight-box-icon">👁️</span>
+          <p>シリコンバレーのエンジニアが設計したアルゴリズムは、世界中の何十億人に影響を与える。しかし、その影響——とりわけ負の影響——を、設計者自身は体験しない。彼らは、自らの行動の結果から「隔離」されている。</p>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🎨</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Design WITH, not FOR<span class="subsection-icon">✨</span></h3>
+
+        <div class="concept-diagram">
+          <div class="concept-diagram-title">🔄 デザインアプローチの転換</div>
+          <div class="concept-flow">
+            <div class="concept-item">
+              <div class="concept-icon">❌</div>
+              <span class="concept-label">Design FOR</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon" style="background: var(--gradient-main);">✅</div>
+              <span class="concept-label" style="font-weight: 700;">Design WITH</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「『Design FOR（〜のためにデザインする）』じゃなくて『Design WITH（〜と一緒にデザインする）』が大事だってこと。イノベーションによって最も影響を受ける人々と協働しないと、結局は的外れなものを作ってしまう。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「Purpose Carvingでも、同じことを感じます。僕がパーパスを『与える』んじゃなくて、その人の中に既にあるものを一緒に彫り出す。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          タムカイが開発した「Purpose Carving」は、富士通のグローバル75,000人が実施したパーパス言語化プログラムである。その核心は、ファシリテーターがパーパスを「与える」のではなく、参加者の中に既に存在するパーパスを「彫り出す」（carve）🗿という発想にある。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 6: Entertainment -->
+  <section class="chapter" id="chapter6">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">🎬</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 06</span>
+          <h2 class="chapter-title">エンターテインメントの力<br>——ワカンダとパンドラ</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">スクリーンを超える世界<span class="subsection-icon">🌍</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「ワカンダやパンドラが『スクリーンが消えても心の中で相談し続けるほど現実味を帯びた架空の世界』だってこと。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="concept-diagram">
+          <div class="concept-diagram-title">🎥 プロトタイプとしてのフィクション</div>
+          <div class="concept-flow">
+            <div class="concept-item">
+              <div class="concept-icon">🐆</div>
+              <span class="concept-label">ワカンダ</span>
+            </div>
+            <div class="concept-item">
+              <div class="concept-icon">🌳</div>
+              <span class="concept-label">パンドラ</span>
+            </div>
+            <span class="concept-arrow">→</span>
+            <div class="concept-item">
+              <div class="concept-icon">💭</div>
+              <span class="concept-label">未来への想像力</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          ワカンダは、アフリカ未来派（アフロフューチャリズム）✊🏿の想像力が結実した架空の国家である。植民地支配を受けなかったアフリカが、独自の技術文明を発展させたらどうなるか——この「もしも」の世界は、現実の未来への想像力を刺激する。
+        </p>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🌸</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">日本庭園とガーデニング<span class="subsection-icon">🍃</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「日本式のガーデニングは、AからZまで全部エンジニアリングで考えるんじゃなくて、ランドスケープ自体を見て、リアリティに合わせた形でデザインする。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「ファンタジーだけでもなく、データだけでもなく、目に見えている現実から始める。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          日本庭園🏯の例えは、プロトピアのアプローチを端的に示している。日本庭園は、自然を「征服」するのではなく、自然と「協働」する。既存の地形、気候、植生を尊重しながら、人間の介入を加えていく。
+        </p>
+
+        <div class="annotation">
+          <div class="annotation-header">
+            <span class="annotation-icon">🗻</span>
+            <span class="annotation-label">注釈</span>
+          </div>
+          <h4 class="annotation-title">借景と見立て</h4>
+          <div class="annotation-text">
+            <p>🏔️ <strong>借景</strong>：庭園の外部にある山や森などの自然景観を、庭園の一部として取り込む技法。庭園は閉じた系ではなく、外部環境と連続している。</p>
+            <p>🪨 <strong>見立て</strong>：石や砂を山や海に見立てるなど、具体的な素材に抽象的な意味を付与する技法。現実から出発しながら、想像力によって意味を拡張する。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 7: Indifference -->
+  <section class="chapter" id="chapter7">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">⚡</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 07</span>
+          <h2 class="chapter-title">無関心という行為<br>——未来への責任</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">同じ嵐の中に<span class="subsection-icon">🌊</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「『未来は私たちの行動だけではなく、私たちの無関心によっても形作られる』って。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「『同じ船に乗っているわけではないけど、同じ嵐の中にいる』って。救命胴衣を持っている人もいれば、ヨットでかろうじて生きている人もいる。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote-block">
+          <div class="quote-icon">⛵</div>
+          <p class="quote-text">
+            同じ船に乗っているわけではないけど、<br>
+            同じ嵐の中にいる。
+          </p>
+          <p class="quote-source">🎤 Monika Bielskyte</p>
+        </div>
+
+        <p class="body-text">
+          気候変動🌡️、パンデミック🦠、経済危機📉——これらのグローバルな課題は、すべての人に影響を与えるが、その影響は平等ではない。「私には関係ない」という態度そのものが、未来を形作る力を持つのである。
+        </p>
+      </div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <span class="section-divider-icon">🌱</span>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">今いるこの場で<span class="subsection-icon">📍</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「一夜にして革命が起きるわけじゃなくて、学んで、学び直して、再創造して、新たな可能性を創造するという継続的なプロセス。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「プロトタイプを作り続けるプロセス。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「まさに。それがプロトピアなんですよね。」</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="body-text">
+          「今いるこの場で」という呼びかけは、プロトピアの実践的な側面を強調する。ユートピアは「どこにもない場所（ou-topos）」であり、到達すべき遠い目標である。しかしプロトピアは、今ここで始められるプロセスである。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter 8: Creativity and Hope -->
+  <section class="chapter" id="chapter8">
+    <div class="chapter-inner fade-in">
+      <div class="chapter-header">
+        <span class="chapter-icon">⛩️</span>
+        <div class="chapter-meta">
+          <span class="chapter-number">Chapter 08</span>
+          <h2 class="chapter-title">創造性と希望<br>——日本的感性との対話</h2>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">八百万の神とライフ・セントリック<span class="subsection-icon">🌸</span></h3>
+
+        <div class="dialogue-block">
+          <div class="dialogue-header">
+            <span class="dialogue-header-icon">💬</span>
+            <span class="dialogue-header-text">Dialogue</span>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar opi">🌊</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker opi">Opi</div>
+              <p class="dialogue-text">「八百万の神とか、『路傍の石に神を見出す』っていう感覚と、ライフ・セントリック・デザインって、実は相性がいいんじゃないかって思うんですよ。」</p>
+            </div>
+          </div>
+          <div class="dialogue-item">
+            <div class="dialogue-avatar tamkai">🔥</div>
+            <div class="dialogue-content">
+              <div class="dialogue-speaker tamkai">タムカイ</div>
+              <p class="dialogue-text">「西洋的な人間中心主義じゃない、生命全体への敬意。」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <span class="highlight-box-icon">🙏</span>
+          <p>日本の「八百万の神」は、すべてのものに神（あるいは精霊、生命力）が宿るという感覚。「自然」と「人間」を分離しない。人間は自然の「外部」に立つ管理者ではなく、自然の「内部」にいる一員である。</p>
+        </div>
+
+        <p class="body-text">
+          Bielskyte氏の「ライフ・セントリック・デザイン」🌿は、この日本的（あるいは東洋的）な感性と共鳴する可能性を持つ。人間を生態系の一部として位置づけ、他の生命との関係性の中で未来を構想する——この発想は、八百万の神が住まう世界と、深いところで接続している。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion -->
+  <section class="conclusion" id="conclusion">
+    <div class="conclusion-inner fade-in">
+      <div class="conclusion-icon">🌱</div>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="conclusion-title">おわりに——彫り出される未来</h2>
+
+      <p class="conclusion-text">
+        本ドキュメントは、Monika Bielskyte氏の講演を、タムカイとOpiの対話を通じて再構成したものである。彼女が提唱するプロトピアは、テクノ・ユートピア主義への批判であると同時に、ディストピア的な諦念への抵抗でもある。
+      </p>
+
+      <div class="key-points">
+        <div class="key-point">
+          <span class="key-point-icon">🤖</span>
+          <span class="key-point-text">AIは万能薬ではなく増幅器であり、その設計には文化的バイアスが埋め込まれている</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">☠️</span>
+          <span class="key-point-text">ノスタルジーは戦略ではなく毒であり、過去への郷愁は行動を麻痺させる</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">🏰</span>
+          <span class="key-point-text">特権とは結果から隔離される状態であり、Design FORではなくDesign WITHが求められる</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">👁️</span>
+          <span class="key-point-text">無関心もまた未来を形作る力を持つ</span>
+        </div>
+      </div>
+
+      <p class="conclusion-text">
+        Monika Bielskyte氏が提唱する「プロトピア」と、タムカイが開発した「Purpose Carving」には、深い共鳴がある。どちらも、外部から何かを「与える」のではなく、既に存在するものを「彫り出す」🗿という発想に基づいている。
+      </p>
+
+      <p class="conclusion-text">
+        プロトピアは、完成された設計図ではない。それは、学び📚、学び直し🔄、再創造し✨、新たな可能性を創造する💡という継続的なプロセスへの招待である。
+      </p>
+
+      <p class="conclusion-highlight">
+        🌍 私たちは皆、今いるこの場で、<br>その彫刻家となることができる。🗿
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-icon">🌱</div>
+      <p class="footer-date">📅 編集日：2025年1月27日</p>
+      <p class="footer-credit">
+        📖 原典：TechGALA 2026 Monika Bielskyte講演<br>
+        「未来をデザインする力：SFから生まれる新しいビジネスのヒント」
+      </p>
+    </div>
+  </footer>
+
+  <!-- Side TOC -->
+  <nav class="toc" id="toc">
+    <a class="toc-item" href="#chapter1" data-label="🤖 AIは増幅器"></a>
+    <a class="toc-item" href="#chapter2" data-label="⚡ TESCREAL"></a>
+    <a class="toc-item" href="#chapter3" data-label="🔄 ノスタルジー"></a>
+    <a class="toc-item" href="#chapter4" data-label="🎯 六原則"></a>
+    <a class="toc-item" href="#chapter5" data-label="🤝 Design WITH"></a>
+    <a class="toc-item" href="#chapter6" data-label="🎬 エンタメの力"></a>
+    <a class="toc-item" href="#chapter7" data-label="⚡ 無関心"></a>
+    <a class="toc-item" href="#chapter8" data-label="⛩️ 日本的感性"></a>
+    <a class="toc-item" href="#conclusion" data-label="🌱 終章"></a>
+  </nav>
+
+  <script>
+    // Navigation visibility on scroll
+    const nav = document.getElementById('nav');
+    let lastScroll = 0;
+    
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        nav.classList.add('visible');
+      } else {
+        nav.classList.remove('visible');
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Fade-in animation on scroll
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+    
+    fadeElements.forEach(el => observer.observe(el));
+
+    // Active TOC item
+    const tocItems = document.querySelectorAll('.toc-item');
+    const chapters = document.querySelectorAll('.chapter, .conclusion');
+    
+    window.addEventListener('scroll', () => {
+      let currentChapter = '';
+      
+      chapters.forEach(chapter => {
+        const rect = chapter.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2) {
+          currentChapter = chapter.id;
+        }
+      });
+      
+      tocItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + currentChapter) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

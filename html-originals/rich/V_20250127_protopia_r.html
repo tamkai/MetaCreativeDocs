@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プロトピア——技術万能主義を超えて、生命と共に未来を彫り出す — Metacreative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RICH HTML BOILERPLATE
+   Source of truth for CSS + JS. See metacre-html-rich skill for
+   workflow, component HTML templates, and content principles.
+   ============================================================ */
+
+/* ============================================================
+   CSS TOKENS
+   ============================================================ */
+:root {
+  /* Light "Atelier Morning" */
+  --base: #F5F0E8;
+  --surface: #FAF8F5;
+  --white: #FDFCFA;
+  --text-primary: #2C3330;
+  --text-secondary: #6B6560;
+  --text-muted: #9E9690;
+  --border: #E5DFD6;
+
+  /* Core Colors */
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+  --sage-400: #8B9A7D; --sage-500: #6B7F5D; --sage-600: #5E6E52;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+  --gold-400: #C4A057; --gold-500: #A68B45; --gold-600: #9A7B3A;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+  --rose-400: #E8A598; --rose-600: #D88B7A;
+  --blue-50: #F0F5FA; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+
+  /* Extended Colors */
+  --purple-50: #F5F0FA; --purple-400: #9B7DC4; --purple-600: #7B5DA4;
+  --red-50: #FDF2F2; --red-400: #E07070; --red-600: #C05050;
+  --amber-50: #FFF8E1; --amber-400: #D4A030; --amber-600: #B08020;
+  --teal-50: #E8F5F3; --teal-400: #4DA89A; --teal-600: #2D8878;
+
+  /* Dark "Study Night" */
+  --dark-base: #1C1A17;
+  --dark-surface: #252320;
+  --dark-surface-raised: #2E2B27;
+  --dark-text: #E2DDD5;
+  --dark-text-secondary: #A09890;
+  --dark-border: #3A3630;
+  --dark-gold-400: #B89040;
+  --dark-gold-600: #E0C070;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+  --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+
+  /* Timing */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  background-color: var(--base);
+  color: var(--text-primary);
+  line-height: 1.85;
+  transition: background-color 0.8s var(--ease);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   PROGRESS BAR (transform slide)
+   ============================================================ */
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+  transform: translateY(-100%); transition: transform 0.4s var(--ease);
+}
+.progress-bar.visible { transform: translateY(0); }
+.progress-line { height: 3px; background: var(--gradient-accent-90); width: 0%; transition: width 0.1s linear; }
+.progress-context {
+  background: rgba(28, 26, 23, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+}
+.progress-label {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400);
+}
+.progress-chapter {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.8rem;
+  color: var(--dark-text-secondary); transition: opacity 0.3s var(--ease);
+}
+
+/* ============================================================
+   SIDE TOC
+   ============================================================ */
+.side-toc { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900; display: none; }
+@media (min-width: 1200px) { .side-toc { display: flex; flex-direction: column; gap: 12px; } }
+.toc-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--border);
+  cursor: pointer; transition: all 0.3s var(--ease); position: relative;
+}
+.toc-dot:hover { background: var(--sage-400); transform: scale(1.3); }
+.toc-dot.active { background: var(--gold-400); transform: scale(1.5); box-shadow: 0 0 8px rgba(196, 160, 87, 0.4); }
+.toc-dot::after {
+  content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 0.7rem; font-family: 'Inter', sans-serif; white-space: nowrap;
+  color: var(--text-muted); opacity: 0; transition: opacity 0.2s var(--ease); pointer-events: none;
+}
+.toc-dot:hover::after { opacity: 1; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative; min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; background: var(--dark-base);
+  color: var(--dark-text); overflow: hidden; text-align: center; padding: 2rem;
+}
+.hero::before {
+  content: ''; position: absolute; width: 150%; height: 150%;
+  background:
+    radial-gradient(ellipse at 25% 35%, rgba(139, 154, 125, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 65%, rgba(196, 160, 87, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(139, 154, 125, 0.15) 0%, transparent 60%);
+  animation: heroGlow 18s ease-in-out infinite; pointer-events: none;
+}
+@keyframes heroGlow {
+  0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+  33% { transform: translate(5%, -5%) rotate(120deg); }
+  66% { transform: translate(-5%, 5%) rotate(240deg); }
+}
+.hero-shapes { position: absolute; inset: 0; overflow: hidden; opacity: 0.15; }
+.shape { position: absolute; border-radius: 50%; filter: blur(80px); }
+.shape-1 { width: 500px; height: 500px; background: var(--sage-400); top: -10%; left: -10%; animation: float1 20s ease-in-out infinite; }
+.shape-2 { width: 400px; height: 400px; background: var(--gold-400); bottom: -10%; right: -10%; animation: float2 25s ease-in-out infinite; }
+.shape-3 { width: 300px; height: 300px; background: var(--rose-400); top: 40%; left: 60%; animation: float3 22s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -40px); } }
+@keyframes float3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.hero-episode { display: block; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 220, 0.5); margin-bottom: 1.5rem; }
+.hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: var(--dark-text); }
+.hero-title .accent { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--dark-text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.hero-mini-player { max-width: 320px; margin: 0 auto 1.5rem; }
+.hero-mini-player iframe { border-radius: 12px; }
+.hero-meta { display: flex; justify-content: center; gap: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--dark-text-secondary); opacity: 0.6; animation: scrollBounce 2s ease-in-out infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+/* ============================================================
+   MAIN CONTENT + LAYOUT
+   ============================================================ */
+.main-content { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.intro-section { padding: 6rem 0 4rem; position: relative; }
+.intro-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.chapter-section { padding: 5rem 0 4rem; }
+.conclusion-section { padding: 5rem 0 4rem; background: var(--dark-base); color: var(--dark-text); position: relative; }
+.conclusion-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+
+.intro-lead {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 2; color: var(--text-primary); margin-bottom: 2rem;
+}
+.intro-lead::first-letter {
+  font-size: 3.8rem; font-weight: 700; float: left; line-height: 1;
+  margin-right: 8px; margin-top: 4px;
+  background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ============================================================
+   CHAPTER HEADER
+   ============================================================ */
+.chapter-header { text-align: center; margin-bottom: 3rem; }
+.chapter-icon { display: block; font-size: 2.5rem; margin-bottom: 0.75rem; }
+.chapter-number { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.chapter-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.chapter-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem; }
+.conclusion-section .chapter-title { color: var(--dark-text); }
+.conclusion-section .chapter-number { color: var(--dark-gold-400); }
+
+/* ============================================================
+   TEXT + INLINE HIGHLIGHTS
+   ============================================================ */
+.guide-text { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.9; margin-bottom: 1.5rem; }
+.guide-text strong.hl-warm { color: var(--rose-600); font-weight: 600; }
+.guide-text strong.hl-gold { color: var(--gold-600); font-weight: 600; }
+.guide-text strong.hl-sage { color: var(--sage-600); font-weight: 600; }
+.guide-text strong.hl-blue { color: var(--blue-600); font-weight: 600; }
+.guide-text strong.hl-purple { color: var(--purple-600); font-weight: 600; }
+.body-text { font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+.conclusion-section .guide-text { color: var(--dark-text-secondary); }
+.conclusion-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--dark-text-secondary); margin-bottom: 2rem; }
+.conclusion-text strong { color: var(--dark-text); font-weight: 600; }
+.conclusion-text .gold { color: var(--dark-gold-600); }
+
+/* ============================================================
+   DIALOGUE
+   Default = event style (no background).
+   Radio: add class "dialogue-block-radio" for white bg box.
+   ============================================================ */
+.dialogue-block { margin: 1.5rem 0; }
+.dialogue-block-radio { background: var(--white); border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05); margin: 2rem 0 4rem; }
+.dialogue-item { padding: 1rem 1rem 1rem 1.25rem; position: relative; font-style: normal; }
+.dialogue-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--sage-400); }
+.dialogue-item + .dialogue-item { border-top: 1px dashed var(--border); }
+.dialogue-speaker { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.dialogue-text { font-size: 0.95rem; line-height: 1.85; font-style: normal; }
+.dialogue-block-radio .dialogue-text { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; line-height: 1.9; }
+
+/* Fixed speakers */
+.dialogue-item.speaker-tamkai::before { background: var(--sage-400); }
+.dialogue-speaker.tamkai { color: var(--sage-600); }
+.dialogue-item.speaker-opi::before { background: var(--blue-400); }
+.dialogue-speaker.opi { color: var(--blue-600); }
+.dialogue-item.speaker-osato::before { background: var(--gold-400); }
+.dialogue-speaker.osato { color: var(--gold-600); }
+
+/* Guest speakers (by appearance order) */
+.dialogue-item.speaker-guest-1::before { background: var(--rose-400); }
+.dialogue-speaker.guest-1 { color: var(--rose-600); }
+.dialogue-item.speaker-guest-2::before { background: var(--purple-400); }
+.dialogue-speaker.guest-2 { color: var(--purple-600); }
+.dialogue-item.speaker-guest-3::before { background: var(--red-400); }
+.dialogue-speaker.guest-3 { color: var(--red-600); }
+.dialogue-item.speaker-guest-4::before { background: var(--amber-400); }
+.dialogue-speaker.guest-4 { color: var(--amber-600); }
+.dialogue-item.speaker-guest-5::before { background: var(--teal-400); }
+.dialogue-speaker.guest-5 { color: var(--teal-600); }
+.dialogue-item.speaker-participant::before { background: var(--text-muted); }
+.dialogue-speaker.participant { color: var(--text-muted); }
+
+/* ============================================================
+   ANNOTATION (3-layer architecture)
+   Layer 1: .annotation (outer, no max-height)
+   Layer 2: .annotation-body (max-height 4.5em + ::after fade)
+   Layer 3: .annotation-toggle (open/close)
+   ============================================================ */
+.annotation {
+  margin: 4rem 0; background: var(--dark-surface); color: var(--dark-text); border-radius: 12px;
+  padding: 2rem; position: relative; overflow: hidden; cursor: pointer;
+}
+.annotation::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.annotation-badge {
+  font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dark-base); background: var(--gold-400);
+  padding: 0.2rem 0.6rem; border-radius: 3px;
+  display: inline-block; margin-bottom: 0.75rem;
+}
+.annotation-title {
+  font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--dark-text); line-height: 1.4; margin-bottom: 0.75rem;
+}
+.annotation-body {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; line-height: 1.9;
+  color: var(--dark-text-secondary); position: relative;
+  max-height: 4.5em; overflow: hidden; transition: max-height 0.5s var(--ease);
+}
+.annotation-body::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2em;
+  background: linear-gradient(transparent, var(--dark-surface)); transition: opacity 0.3s var(--ease);
+}
+.annotation-body p + p { margin-top: 0.75rem; }
+html:not(.reveal-ready) .annotation-body { max-height: none; }
+html:not(.reveal-ready) .annotation-body::after { display: none; }
+html:not(.reveal-ready) .annotation-toggle { display: none; }
+.annotation.expanded .annotation-body { max-height: 500px; }
+.annotation.expanded .annotation-body::after { opacity: 0; }
+.annotation-toggle {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold-400); margin-top: 0.5rem; display: inline-block; cursor: pointer;
+}
+.annotation.expanded .annotation-toggle .toggle-more { display: none; }
+.annotation:not(.expanded) .annotation-toggle .toggle-less { display: none; }
+
+/* ============================================================
+   PULL QUOTE
+   ============================================================ */
+.pull-quote { text-align: center; margin: 4rem 0; padding: 0 1rem; position: relative; }
+.pull-quote::before { content: '\201C'; display: block; font-family: Georgia, serif; font-size: 5rem; line-height: 1; color: var(--gold-200); margin-bottom: -0.5rem; }
+.pull-quote-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8; color: var(--text-primary); font-style: normal; }
+.pull-quote-attribution { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+.conclusion-section .pull-quote-text { color: var(--dark-text); }
+.conclusion-section .pull-quote::before { color: var(--dark-gold-400); }
+
+/* ============================================================
+   HIGHLIGHT BOX
+   ============================================================ */
+.highlight-box { background: var(--gold-50); border-left: 4px solid var(--gold-400); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 0.75rem; align-items: flex-start; }
+.highlight-box-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.highlight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); }
+
+/* ============================================================
+   SECTION DIVIDER
+   ============================================================ */
+.section-divider { text-align: center; padding: 3rem 0; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 1px; background: var(--gradient-accent-90); }
+.divider-emoji { position: relative; z-index: 1; background: var(--base); padding: 0 1rem; font-size: 1.3rem; }
+
+/* ============================================================
+   CONCEPT DIAGRAM (flow)
+   ============================================================ */
+.concept-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.concept-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.concept-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.concept-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); min-width: 90px; }
+.concept-step-emoji { font-size: 1.5rem; }
+.concept-step-label { font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-primary); }
+.concept-arrow { font-size: 1.2rem; color: var(--sage-400); font-weight: 700; }
+@media (max-width: 600px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); } }
+
+/* ============================================================
+   CONTRAST DIAGRAM (vs)
+   ============================================================ */
+.contrast-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.contrast-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.contrast-side { background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.contrast-side--left { border-top: 3px solid var(--sage-400); }
+.contrast-side--right { border-top: 3px solid var(--gold-500); }
+.contrast-side-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.contrast-side-emoji { font-size: 1.3rem; }
+.contrast-side-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; }
+.contrast-side-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+.contrast-vs { display: flex; align-items: center; justify-content: center; padding-top: 2rem; }
+.contrast-vs-text { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--sage-500); letter-spacing: 0.1em; }
+@media (max-width: 600px) { .contrast-grid { grid-template-columns: 1fr; } .contrast-vs { padding: 0.5rem 0; } }
+
+/* ============================================================
+   SPEAKER GRID (event type — Introduction)
+   ============================================================ */
+.speaker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0; }
+@media (max-width: 600px) { .speaker-grid { grid-template-columns: repeat(2, 1fr); } }
+.speaker-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.25rem 1rem; text-align: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.speaker-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.speaker-avatar {
+  width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 0.75rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+}
+.speaker-avatar.rose-bg { background: var(--rose-50); border: 2px solid var(--rose-200); }
+.speaker-avatar.sage-bg { background: var(--sage-50); border: 2px solid var(--sage-200); }
+.speaker-avatar.purple-bg { background: var(--purple-50); border: 2px solid var(--purple-400); }
+.speaker-avatar.red-bg { background: var(--red-50); border: 2px solid var(--red-400); }
+.speaker-avatar.amber-bg { background: var(--amber-50); border: 2px solid var(--amber-400); }
+.speaker-avatar.teal-bg { background: var(--teal-50); border: 2px solid var(--teal-400); }
+.speaker-avatar.blue-bg { background: var(--blue-50); border: 2px solid var(--blue-400); }
+.speaker-name { font-family: 'Noto Serif JP', serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+.speaker-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+
+/* ============================================================
+   CHECKLIST VISUAL
+   ============================================================ */
+.checklist-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2rem 0; }
+.checklist-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1rem;
+}
+.checklist-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--white); border-radius: 10px; margin-bottom: 0.5rem;
+  border-left: 3px solid var(--gold-400); transition: transform 0.2s var(--ease);
+}
+.checklist-item:hover { transform: translateX(4px); }
+.checklist-item .check-icon { font-size: 1rem; flex-shrink: 0; }
+.checklist-item .check-text { font-size: 0.9rem; color: var(--text-primary); }
+.checklist-item.warning { border-left-color: var(--rose-400); background: var(--rose-50); }
+.checklist-item.warning .check-text { color: var(--rose-600); font-weight: 600; }
+
+/* ============================================================
+   SPLIT VISUAL (2-pane comparison + conclusion)
+   ============================================================ */
+.split-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.split-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem;
+}
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .split-grid { grid-template-columns: 1fr; } }
+.split-side {
+  background: var(--white); border-radius: 12px; padding: 1.5rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.split-side-icon {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid;
+}
+.split-side-icon.warm { background: var(--rose-50); border-color: var(--rose-400); }
+.split-side-icon.cool { background: var(--blue-50); border-color: var(--blue-400); }
+.split-side-icon.sage { background: var(--sage-50); border-color: var(--sage-400); }
+.split-side-icon.purple { background: var(--purple-50); border-color: var(--purple-400); }
+.split-side-title { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.split-side-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.split-effects { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.split-effect { padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.split-effect.warm-bg { background: var(--rose-50); color: var(--rose-600); }
+.split-effect.cool-bg { background: var(--blue-50); color: var(--blue-600); }
+.split-conclusion {
+  margin-top: 1.25rem; padding: 1rem 1.5rem; border-radius: 12px;
+  background: linear-gradient(135deg, var(--rose-50), var(--blue-50));
+  border: 1px solid var(--border); text-align: center;
+  font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--gold-600);
+}
+
+/* ============================================================
+   STEP TIMELINE (numbered vertical steps)
+   ============================================================ */
+.step-timeline { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.step-timeline-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem;
+}
+.step-list { display: flex; flex-direction: column; gap: 1rem; }
+.step-item { display: flex; align-items: flex-start; gap: 1rem; }
+.step-number {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: var(--gradient-accent); display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: white;
+}
+.step-body { flex: 1; background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.step-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* ============================================================
+   CARD GRID (info cards)
+   ============================================================ */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+.info-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; text-align: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.info-card.warm-top { border-top: 3px solid var(--rose-400); }
+.info-card.sage-top { border-top: 3px solid var(--sage-400); }
+.info-card.blue-top { border-top: 3px solid var(--blue-400); }
+.info-card-icon {
+  width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+.info-card.warm-top .info-card-icon { background: var(--rose-50); }
+.info-card.sage-top .info-card-icon { background: var(--sage-50); }
+.info-card.blue-top .info-card-icon { background: var(--blue-50); }
+.info-card-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.info-card.warm-top .info-card-title { color: var(--rose-600); }
+.info-card.sage-top .info-card-title { color: var(--sage-600); }
+.info-card.blue-top .info-card-title { color: var(--blue-600); }
+.info-card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============================================================
+   TAKEAWAY CARDS (Conclusion section)
+   ============================================================ */
+.takeaways-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+@media (max-width: 600px) { .takeaways-grid { grid-template-columns: 1fr; } }
+.takeaway-card { background: var(--dark-surface-raised); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; transition: transform 0.3s var(--ease); }
+.takeaway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); opacity: 0; transition: opacity 0.3s var(--ease); }
+.takeaway-card:hover { transform: translateY(-4px); }
+.takeaway-card:hover::before { opacity: 1; }
+.takeaway-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.takeaway-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+.takeaway-desc { font-size: 0.85rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer { background: var(--dark-base); color: var(--dark-text-secondary); text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--dark-border); }
+.footer-logo { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; color: var(--dark-text); margin-bottom: 0.5rem; }
+.footer-meta { font-size: 0.75rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   REVEAL SYSTEM
+   Branch 1: PC (IntersectionObserver scroll reveal)
+   Branch 2: Mobile (CSS scroll-driven animation)
+   Branch 3: IO fallback (reveal-ready → annotation folding)
+   ============================================================ */
+.reveal { opacity: 1; transform: none; filter: none; }
+
+@media (min-width: 1024px) {
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .chapter-header.reveal { transform: scale(0.85) translateY(30px); transition: opacity 0.95s ease-out, transform 0.95s ease-out; }
+  .section-divider.reveal { transform: scaleX(0.3); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .concept-diagram.reveal, .contrast-diagram.reveal, .split-visual.reveal, .checklist-visual.reveal, .step-timeline.reveal { transform: scale(0.9); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .takeaway-card.reveal { transform: scale(0.9) translateY(20px); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .annotation.reveal { transform: translateY(30px); transition: opacity 1.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .dialogue-item.reveal:nth-child(odd) { transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .dialogue-item.reveal:nth-child(even) { transform: translateX(60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .reveal.pc-revealed { opacity: 1 !important; transform: translateY(0) translateX(0) scale(1) scaleX(1) !important; }
+  html.pc-reveal-ready .guide-text.reveal + .dialogue-block .dialogue-item.reveal { transition-delay: 0.2s; }
+  html.pc-reveal-ready .dialogue-block + .guide-text.reveal { transition-delay: 0.18s; }
+}
+
+@keyframes spotlight { 0% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 12% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateY(0); } 70% { opacity: 1; filter: blur(0); transform: translateY(0); } 80% { opacity: 0.5; } 90% { opacity: 0.25; } 100% { opacity: 0.2; } }
+@keyframes spotlight-left { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(-16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(-4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-right { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-always-visible { 0%, 100% { opacity: 1; filter: none; transform: none; } }
+
+@media (max-width: 1023px) {
+  html.spotlight-ready .reveal { animation: spotlight linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(odd) { animation-name: spotlight-left; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(even) { animation-name: spotlight-right; }
+  html.spotlight-ready .chapter-header.reveal, html.spotlight-ready .concept-diagram.reveal, html.spotlight-ready .contrast-diagram.reveal, html.spotlight-ready .split-visual.reveal, html.spotlight-ready .checklist-visual.reveal, html.spotlight-ready .step-timeline.reveal, html.spotlight-ready .section-divider.reveal { animation-name: spotlight-always-visible; }
+}
+
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+html.reveal-ready .reveal.io-revealed { opacity: 1; transform: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .main-content { padding: 0 1.25rem; }
+  .hero { padding: 1.5rem; }
+  .intro-section { padding: 4rem 0 3rem; }
+  .chapter-section { padding: 4rem 0 3rem; }
+  .conclusion-section { padding: 4rem 0 3rem; }
+  .annotation { padding: 1.5rem; }
+  .progress-context { padding: 0.5rem 1rem; }
+  .progress-label { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .progress-chapter { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PROGRESS BAR ===== -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-line" id="progressLine"></div>
+  <div class="progress-context">
+    <span class="progress-label">Protopia</span>
+    <span class="progress-chapter" id="progressChapter"></span>
+  </div>
+</div>
+
+<!-- ===== SIDE TOC ===== -->
+<nav class="side-toc" id="sideToc">
+  <div class="toc-dot" data-target="intro" data-label="Introduction"></div>
+  <div class="toc-dot" data-target="chapter1" data-label="TESCREAL"></div>
+  <div class="toc-dot" data-target="chapter2" data-label="Protopia Principles"></div>
+  <div class="toc-dot" data-target="chapter3" data-label="Life-Centric"></div>
+  <div class="toc-dot" data-target="chapter4" data-label="Carving the Future"></div>
+  <div class="toc-dot" data-target="conclusion" data-label="Conclusion"></div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="hero">
+  <div class="hero-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="hero-content">
+    <span class="hero-label">Metacreative Document</span>
+    <h1 class="hero-title"><span class="accent">プロトピア</span>——技術万能主義を超えて、生命と共に未来を彫り出す</h1>
+    <p class="hero-subtitle">ユートピアでもディストピアでもない第三の道。未来学者 Monika Bielskyte の挑発的な問いかけに、二人のクリエイターが応答する。</p>
+    <div class="hero-meta"><span>2025.01.27</span><span>Tamkai &amp; Opi</span></div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span></div>
+</header>
+
+<!-- ===== INTRODUCTION ===== -->
+<section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌱</span>
+      <span class="chapter-number">Introduction</span>
+      <h2 class="chapter-title">未来学者が問いかける「AIの正体」</h2>
+    </div>
+
+    <p class="intro-lead reveal">未来学者Monika Bielskyte——旧ソ連リトアニアに生まれ、90カ国以上を旅し、『ブラックパンサー：ワカンダ・フォーエバー』のフューチャリスト・コンサルタントを務めた彼女が提唱する「プロトピア」は、テクノロジーと人間の関係を根本から問い直す試みである。</p>
+
+    <p class="guide-text reveal">彼女の核心的テーゼは明快だ。<strong class="hl-gold">AIはチェンジメーカーではなく、増幅器（amplifier）である</strong>。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「AIって、何か新しいものを生み出すわけじゃなくて、既にあるものを増幅させるだけだ、と。良いものも悪いものも、設計と使い方によって、指数関数的に増幅される。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「ああ、それはすごく腑に落ちますね。僕がClaude Codeで初期衝動を感じた話、前にしましたけど、あれも『溜まってたもの』があったから爆発したわけで。AIが何かを生み出したわけじゃない。」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">増幅器としてのAI——マクルーハンとの差異</h4>
+      <div class="annotation-body">
+        <p>マクルーハンはすべてのメディアを「人間の拡張」として捉えた。しかしBielskyte氏の「増幅」は、拡張とは微妙に異なる。拡張は新しい可能性を開くポジティブな響きを持つが、増幅は良いものも悪いものも等しく強化するという警告的な含意を持つ。AIが社会的バイアスや不平等を増幅させるリスクは、すでに多くの研究で指摘されている。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">さらに彼女は、AIには<strong class="hl-warm">文化的バイアスが内在している</strong>と指摘する。アングロサクソン的な直線思考——いい大学、PhD、いい仕事——が「知性」のデフォルトとしてアルゴリズムに埋め込まれているのだ。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「英語は必ず『I』って言わなきゃいけないけど、日本語は主語を省略できる。言語が認知を規定するっていう。」</p>
+      </div>
+    </div>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">AMPLIFIER VS EXTENSION</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">📡</span>
+            <span class="contrast-side-title">拡張（Extension）</span>
+          </div>
+          <p class="contrast-side-desc">人間の能力を新たな領域に「延長」する。車輪は足の拡張、衣服は皮膚の拡張。ポジティブなニュアンス。</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🔊</span>
+            <span class="contrast-side-title">増幅（Amplification）</span>
+          </div>
+          <p class="contrast-side-desc">既存のものを指数関数的に「強化」する。善も悪も等しく増幅。ニュートラル、あるいは警告的な含意。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">⚡</span></div>
+
+<!-- ===== CHAPTER 1: TESCREAL ===== -->
+<section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="TESCREAL——シリコンバレーの新宗教">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🏛️</span>
+      <span class="chapter-number">Chapter 01</span>
+      <h2 class="chapter-title">TESCREAL——シリコンバレーの新宗教</h2>
+      <p class="chapter-subtitle">SFと現実の区別がつかなくなった伝道者たち</p>
+    </div>
+
+    <p class="guide-text reveal">Bielskyte氏の最も挑発的な批判は、シリコンバレーの思想的基盤そのものに向けられている。彼女は<strong class="hl-purple">「TESCREAL」</strong>という造語でその思想群を解剖した。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「TESCREAL——トランスヒューマニズム、エクストロピアニズム、シンギュラリタリアニズム、コスミシズム、レーショナリズム、エフェクティブ・アルトルイズム、ロングターミズム。これらの頭文字を取った造語。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「彼女はこれを『イデオロギーの集合体』って呼んでて、シリコンバレーの伝道者たちが自らの信条に酔いしれた結果、SFと現実の区別がつかなくなってるって。」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">TESCREALの7つの思想</h4>
+      <div class="annotation-body">
+        <p>哲学者ティムニット・ゲブルとエミール・P・トーレスが2023年に提唱した批判的フレームワーク。これらの思想は共通前提を持つ——人類の「向上」への無批判な信仰、技術による問題解決への楽観、現在の不平等より未来の可能性を優先する傾向、そしてエリート層の特権的地位の正当化。「科学的」「合理的」を装いながら、実際にはSF的空想に基づいている。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">そして彼女は、この思想群の核心にある「ファンタジーと科学の混同」を容赦なく暴く。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「彼女ははっきり言ってた。『それはファンタジーです。サイエンスフィクションであって、科学的現実ではない』と。我々はその科学を理解していないし、説明もできないし、コントロールもできない。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「自分たちが作ったものの責任を、『エイリアン』っていう言葉で回避してる。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">AIを「エイリアン・インテリジェンス」と神秘化することで、開発者は説明責任を曖昧にできる。しかしAIは人間が設計し、人間のデータで訓練し、人間の目的のために運用される<strong class="hl-gold">「人間の技術」</strong>に他ならない。</p>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">RESPONSIBILITY EVASION FLOW</p>
+      <div class="concept-flow">
+        <div class="concept-step">
+          <span class="concept-step-emoji">🔧</span>
+          <span class="concept-step-label">人間が設計</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">📊</span>
+          <span class="concept-step-label">人間のデータで訓練</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">👽</span>
+          <span class="concept-step-label">「エイリアン」と神秘化</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">🚫</span>
+          <span class="concept-step-label">責任の回避</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">賢い人がなぜバカなことを信じるのか——この問いに答えられないのは、知性概念そのものが狭すぎるからだ。</p>
+      <p class="pull-quote-attribution">--- Monika Bielskyte, on intelligence</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🔄</span></div>
+
+<!-- ===== CHAPTER 2: PROTOPIA PRINCIPLES ===== -->
+<section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="プロトピアの思想——ノスタルジー批判と六原則">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🧭</span>
+      <span class="chapter-number">Chapter 02</span>
+      <h2 class="chapter-title">プロトピアの思想</h2>
+      <p class="chapter-subtitle">ノスタルジー批判と六原則のサークル</p>
+    </div>
+
+    <p class="guide-text reveal">テクノロジー批判は、しばしば<strong class="hl-warm">「昔は良かった」というノスタルジー</strong>に陥る。Bielskyte氏はこの誘惑を真正面から退ける。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「テクノロジー批判って、ともすると『昔は良かった』っていうノスタルジーに陥りがちじゃないですか。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「それがまさに彼女の核心的なメッセージで。『ノスタルジーは戦略ではない。ノスタルジーは毒だ』とまで言ってた。記憶は進化しなきゃいけない。過去から学ぶことで、もっといい決定ができるようになる。でも、過去に固執してはいけない。」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">ノスタルジアの政治学</h4>
+      <div class="annotation-body">
+        <p>「Make America Great Again」に代表されるように、ノスタルジアは保守的・反動的な政治運動の原動力となりうる。一方で、失われた共同性や自然との調和への郷愁は、現状批判の資源にもなる。問題は、ノスタルジアが「行動」に結びつくかどうかだ。Bielskyte氏の「毒」という強い表現は、ノスタルジアが行動を麻痺させる危険性への警告である。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">では、テクノロジーへの盲信でもノスタルジーでもない「第三の道」とは何か。彼女が提示するのが<strong class="hl-sage">プロトピアの六原則</strong>——順番も階層もない、つながったサークルとしての原則だ。</p>
+
+    <div class="checklist-visual reveal">
+      <p class="checklist-visual-label">🔄 プロトピアの六原則</p>
+      <div class="checklist-item"><span class="check-icon">🌍</span><span class="check-text">多元性（Plurality）——異なる価値観・世界観の積極的な並存</span></div>
+      <div class="checklist-item"><span class="check-icon">🤝</span><span class="check-text">相互依存（Interdependence）——我々自身がエコシステムの一部</span></div>
+      <div class="checklist-item"><span class="check-icon">🌿</span><span class="check-text">生物圏の再活性化（Biosphere Regeneration）——持続ではなく再生</span></div>
+      <div class="checklist-item"><span class="check-icon">✋</span><span class="check-text">感覚の具現化（Sensory Embodiment）——視覚偏重を超えた五感</span></div>
+      <div class="checklist-item"><span class="check-icon">🎨</span><span class="check-text">創造的繁栄（Creative Flourishing）——効率化ではなく繁栄のための技術</span></div>
+      <div class="checklist-item"><span class="check-icon">🙏</span><span class="check-text">精神的充足（Spiritual Fulfillment）——長期的な健康と内面の充実</span></div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「順番はないし、階層もない。つながったサークルだって。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">この「円環」の強調は、西洋近代的な線形思考——最終目標としてのユートピアを設定し、そこに至る段階を計画する——への根底的な批判を含んでいる。</p>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">LINEAR VS CIRCULAR THINKING</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">📏</span>
+            <span class="contrast-side-title">線形思考</span>
+          </div>
+          <p class="contrast-side-desc">始点→ゴール。段階的進歩。終末論と進歩史観の融合。TESCREAL的な「最終形態」への信仰。</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🔄</span>
+            <span class="contrast-side-title">円環思考</span>
+          </div>
+          <p class="contrast-side-desc">螺旋的回帰。季節の循環、生と死の輪廻。「進歩」も「目標」も相対化。プロトタイプの継続。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">ノスタルジーは戦略ではない。ノスタルジーは毒だ。</p>
+      <p class="pull-quote-attribution">--- Monika Bielskyte, on nostalgia</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🌏</span></div>
+
+<!-- ===== CHAPTER 3: LIFE-CENTRIC DESIGN ===== -->
+<section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="ライフ・セントリック・デザイン">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌿</span>
+      <span class="chapter-number">Chapter 03</span>
+      <h2 class="chapter-title">ライフ・セントリック・デザイン</h2>
+      <p class="chapter-subtitle">人間中心主義の超克と「特権」の再定義</p>
+    </div>
+
+    <p class="guide-text reveal">「ヒューマン・セントリック・デザイン」は大きな意義を持っていた。しかしBielskyte氏はさらに一歩進む。<strong class="hl-sage">「人間中心」では不十分</strong>なのだ。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「これは理想論じゃなくて、科学的な理解に基づいたデザインアプローチ。我々の生命の相互関連性に基づいてる。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「『生命こそが究極のテクノロジーだ』って言ってましたよね。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「そう。生物学こそが真の未来のフロンティアであって、ロボットでもシリコンでも火星探査でもない。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">人間の体内には人間細胞よりも多くの微生物細胞が存在する。我々は「個体」であると同時に「生態系」なのだ。この認識が、火星移住計画への批判とも直結する。</p>
+
+    <div class="split-visual reveal">
+      <p class="split-visual-label">🌍 未来のフロンティア</p>
+      <div class="split-grid">
+        <div class="split-side">
+          <div class="split-side-icon warm">🚀</div>
+          <div class="split-side-title">TESCREAL的未来</div>
+          <div class="split-side-subtitle">地球を脱出する</div>
+          <div class="split-effects">
+            <div class="split-effect warm-bg">👽 意識のアップロード</div>
+            <div class="split-effect warm-bg">🏗️ 火星移住計画</div>
+            <div class="split-effect warm-bg">🤖 シリコン中心の進化</div>
+          </div>
+        </div>
+        <div class="split-side">
+          <div class="split-side-icon sage">🌱</div>
+          <div class="split-side-title">プロトピア的未来</div>
+          <div class="split-side-subtitle">この地球で再生する</div>
+          <div class="split-effects">
+            <div class="split-effect cool-bg">🧬 生物学がフロンティア</div>
+            <div class="split-effect cool-bg">🌿 生態系の再活性化</div>
+            <div class="split-effect cool-bg">🤝 生命との協働</div>
+          </div>
+        </div>
+      </div>
+      <div class="split-conclusion">生命こそが究極のテクノロジーである</div>
+    </div>
+
+    <p class="guide-text reveal">そしてBielskyte氏は、<strong class="hl-warm">「特権」を再定義</strong>する。性別や肌の色だけの話ではない。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「『特権とは、自らの行動の結果から隔離されている状態』だって定義してた。本質的には、自分がデザインしたものが他者にどんな影響を与えるか、その全容を正確に理解できなくなる状態。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">だからこそ、「Design FOR」ではなく「Design WITH」が求められる。イノベーションによって最も影響を受ける人々との協働なしには、結局は的外れなものを作ってしまう。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「Purpose Carvingでも、同じことを感じます。僕がパーパスを『与える』んじゃなくて、その人の中に既にあるものを一緒に彫り出す。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「まさに。彼女の『Carve（彫り出す）』っていう言葉の使い方、マイケランジェロの引用とも通じるものがある。既に中にあるものを自由にするっていう。」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">設計と責任の非対称性</h4>
+      <div class="annotation-body">
+        <p>ラングドン・ウィナーは「技術には政治がある」において、ニューヨークの陸橋を例に挙げた。設計者は橋を低く設計し、バスを通れなくすることで、貧困層や黒人をビーチから排除した。「中立的」な技術に、排除の政治が埋め込まれていた。現代のアルゴリズム設計にも同じ非対称性が存在する。設計者は不利益を被る人々と異なる社会的位置にいるのだ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">特権とは、自らの行動の結果から隔離されている状態である。</p>
+      <p class="pull-quote-attribution">--- Monika Bielskyte, on privilege</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">✨</span></div>
+
+<!-- ===== CHAPTER 4: CARVING THE FUTURE ===== -->
+<section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="未来を彫り出す——想像力と行動">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎭</span>
+      <span class="chapter-number">Chapter 04</span>
+      <h2 class="chapter-title">未来を彫り出す</h2>
+      <p class="chapter-subtitle">エンターテインメントの力、無関心という行為、日本的感性との接点</p>
+    </div>
+
+    <p class="guide-text reveal">フィクションの世界は、未来の<strong class="hl-gold">「プロトタイプ」</strong>として機能しうる。ワカンダは植民地支配を受けなかったアフリカの可能性を、パンドラは生態系と調和した文明を提示する。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「ワカンダやパンドラが『スクリーンが消えても心の中で相談し続けるほど現実味を帯びた架空の世界』だってこと。人々がその宇宙に時間を過ごしたいと願う。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">そしてBielskyte氏は、日本庭園を引き合いに出す。AからZまでエンジニアリングで考えるのではなく、ランドスケープ自体を見て、現実に合わせた形でデザインする。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「日本式のガーデニングは、ランドスケープ自体を見て、リアリティに合わせた形でデザインする。自然に任せながら、エンゲージメントの基準でガーデニングを作っていく。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「ファンタジーだけでもなく、データだけでもなく、目に見えている現実から始める。」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">借景と見立て——日本庭園のプロトピア的技法</h4>
+      <div class="annotation-body">
+        <p>借景は庭園の外部にある自然景観を一部として取り込む技法——これはプロトピアの「相互依存」原則と通じる。見立ては石や砂を山や海に見立て、現実から出発しながら想像力で意味を拡張する——「プロトタイプとしてのフィクション」という発想と響き合う。現実に根ざした想像力こそ、プロトピアの核心なのだ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="section-divider reveal"><span class="divider-emoji">💭</span></div>
+
+    <p class="guide-text reveal">しかし想像力だけでは十分ではない。Bielskyte氏は最後に、<strong class="hl-warm">「無関心」という行為</strong>の力について警告する。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「『未来は私たちの行動だけではなく、私たちの無関心によっても形作られる』って。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「『同じ船に乗っているわけではないけど、同じ嵐の中にいる』って。救命胴衣を持っている人もいれば、ヨットでかろうじて生きている人もいる。」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">「これは私には関係ない」——その態度そのものが未来を形作る力を持つ。そしてタムカイは、この議論を日本的文脈に接続しようとする。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「八百万の神とか、路傍の石に神を見出すっていう感覚と、ライフ・セントリック・デザインって、実は相性がいいんじゃないかって思うんですよ。」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「西洋的な人間中心主義じゃない、生命全体への敬意。」</p>
+      </div>
+    </div>
+
+    <div class="step-timeline reveal">
+      <p class="step-timeline-label">🔨 プロトピアの実践プロセス</p>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-body">
+            <div class="step-title">現実を直視する</div>
+            <div class="step-desc">ファンタジーでもデータだけでもなく、目に見えている現実——既に存在するソリューション——から始める。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-body">
+            <div class="step-title">共に彫り出す</div>
+            <div class="step-desc">Design WITH。最も影響を受ける人々と協働し、既に内部にあるものを自由にする。</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-body">
+            <div class="step-title">プロトタイプし続ける</div>
+            <div class="step-desc">最終形態を目指さない。学び、学び直し、再創造し、新たな可能性を創造する継続的プロセス。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">未来は私たちの行動だけではなく、私たちの無関心によっても形作られる。</p>
+      <p class="pull-quote-attribution">--- Monika Bielskyte, on indifference</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="今いるこの場で">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🪨</span>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="chapter-title">今いるこの場で</h2>
+    </div>
+
+    <p class="conclusion-text reveal">プロトピアは、完成された設計図ではない。<strong>ユートピア（理想郷）でもディストピア（暗黒郷）でもない第三の道</strong>——それは最終目標ではなく、<span class="gold">継続的にプロトタイプを作り続けるプロセス</span>そのものを指す。</p>
+
+    <p class="conclusion-text reveal">AIは万能薬ではなく増幅器であり、ノスタルジーは戦略ではなく毒であり、特権とは結果から隔離される状態であり、無関心もまた未来を形作る。これらの洞察は、私たち一人ひとりに、<strong>「今いるこの場で」何ができるか</strong>を問いかけている。</p>
+
+    <p class="conclusion-text reveal">パーパスは個人の中に既に存在し、未来もまた私たちの想像力・創造性・関係性の中に既に存在する。<span class="gold">それを協働のプロセスを通じて彫り出す</span>——私たちは皆、今いるこの場で、その彫刻家となることができる。</p>
+
+    <div class="takeaways-grid">
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🔊</span>
+        <h4 class="takeaway-title">AIは増幅器である</h4>
+        <p class="takeaway-desc">善も悪も等しく増幅する。設計と使い方が未来を決める。「エイリアン」ではなく人間の技術。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🔄</span>
+        <h4 class="takeaway-title">プロトピアは円環</h4>
+        <p class="takeaway-desc">最終形態を目指さない。六原則が相互に依存し、継続的なプロトタイピングのプロセスとして機能する。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🌿</span>
+        <h4 class="takeaway-title">生命がフロンティア</h4>
+        <p class="takeaway-desc">ヒューマン・セントリックからライフ・セントリックへ。生物学こそが真の未来のフロンティアである。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🪨</span>
+        <h4 class="takeaway-title">彫り出す行為</h4>
+        <p class="takeaway-desc">Design WITH。既に内部にあるものを協働で彫り出す。今いるこの場で、彫刻家になる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p class="footer-logo">Metacreative Document</p>
+  <p class="footer-meta">2025.01.27 | Tamkai &amp; Opi<br>原典：TechGALA 2026 Monika Bielskyte 講演<br>Metacreative Document</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+  'use strict';
+
+  // === REVEAL SYSTEM (3-branch) ===
+  var supportsScrollTimeline = CSS.supports('animation-timeline', 'view()');
+  var isPC = window.innerWidth >= 1024;
+
+  if (isPC && 'IntersectionObserver' in window) {
+    // Branch 1: PC — IO scroll reveal
+    document.documentElement.classList.add('spotlight-ready', 'pc-reveal-ready');
+    initPCReveal();
+  } else if (supportsScrollTimeline) {
+    // Branch 2: Modern mobile — CSS scroll-driven animation
+    document.documentElement.classList.add('spotlight-ready');
+    setTimeout(function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; }
+      });
+    }, 5000);
+  } else if ('IntersectionObserver' in window) {
+    // Branch 3: IO fallback (adds reveal-ready → enables annotation folding)
+    document.documentElement.classList.add('reveal-ready');
+    initIOFallback();
+  }
+
+  function initPCReveal() {
+    setTimeout(function() {
+      var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+      var threshold = window.innerHeight * 0.3;
+      reveals.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < threshold) {
+          el.style.transition = 'none';
+          el.classList.add('pc-revealed');
+          setTimeout(function() { el.style.transition = ''; }, 10);
+        }
+      });
+      document.querySelectorAll('.dialogue-block').forEach(function(block) {
+        var items = block.querySelectorAll('.dialogue-item.reveal:not(.pc-revealed)');
+        items.forEach(function(item, i) { item.style.transitionDelay = Math.min(i * 80, 300) + 'ms'; });
+      });
+    }, 100);
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) { requestAnimationFrame(function() { checkReveals(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+  }
+
+  function checkReveals() {
+    var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+    var triggerLine = window.innerHeight * 0.7;
+    reveals.forEach(function(el) { if (el.getBoundingClientRect().top < triggerLine) el.classList.add('pc-revealed'); });
+  }
+
+  function initIOFallback() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('io-revealed'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal:not(.io-revealed)').forEach(function(el) { el.classList.add('io-revealed'); }); }, 4000);
+  }
+
+  // === PROGRESS BAR + ATMOSPHERE + TOC ===
+  var progressBar = document.getElementById('progressBar');
+  var progressLine = document.getElementById('progressLine');
+  var progressChapter = document.getElementById('progressChapter');
+  var heroEl = document.getElementById('hero');
+  var currentChapterName = '';
+  var sections = document.querySelectorAll('[data-atmosphere]');
+  var tocDots = document.querySelectorAll('.toc-dot');
+  var atmospheres = { 'warm': '#F5F0E8', 'cool': '#F0F2F5', 'creative': '#F8F5EE', 'deep': '#F5F0E8' };
+
+  function updateAll() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressLine.style.width = (scrollTop / docHeight * 100) + '%';
+    if (scrollTop > heroEl.offsetTop + heroEl.offsetHeight - 100) progressBar.classList.add('visible');
+    else progressBar.classList.remove('visible');
+
+    var viewportMid = scrollTop + window.innerHeight * 0.4;
+    var activeId = '';
+    sections.forEach(function(s) {
+      var t = s.offsetTop, b = t + s.offsetHeight;
+      if (viewportMid >= t && viewportMid < b) {
+        activeId = s.id;
+        var atm = s.getAttribute('data-atmosphere');
+        if (atm && atmospheres[atm]) document.body.style.backgroundColor = atmospheres[atm];
+        var cn = s.getAttribute('data-chapter-name') || '';
+        if (cn !== currentChapterName) {
+          progressChapter.style.opacity = '0';
+          setTimeout(function() { progressChapter.textContent = cn; progressChapter.style.opacity = '1'; }, 200);
+          currentChapterName = cn;
+        }
+      }
+    });
+    tocDots.forEach(function(d) { d.classList.toggle('active', d.getAttribute('data-target') === activeId); });
+  }
+
+  // TOC click navigation
+  tocDots.forEach(function(d) {
+    d.addEventListener('click', function() {
+      var t = document.getElementById(this.getAttribute('data-target'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Annotation toggle
+  document.querySelectorAll('.annotation').forEach(function(ann) {
+    ann.addEventListener('click', function() { this.classList.toggle('expanded'); });
+  });
+
+  // Unified scroll handler
+  var scrollTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(function() { updateAll(); scrollTicking = false; }); scrollTicking = true; }
+  }, { passive: true });
+  updateAll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>僕らが旅に出る理由 — Metacreative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RICH HTML BOILERPLATE
+   Source of truth for CSS + JS. See metacre-html-rich skill for
+   workflow, component HTML templates, and content principles.
+   ============================================================ */
+
+/* ============================================================
+   CSS TOKENS
+   ============================================================ */
+:root {
+  /* Light "Atelier Morning" */
+  --base: #F5F0E8;
+  --surface: #FAF8F5;
+  --white: #FDFCFA;
+  --text-primary: #2C3330;
+  --text-secondary: #6B6560;
+  --text-muted: #9E9690;
+  --border: #E5DFD6;
+
+  /* Core Colors */
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+  --sage-400: #8B9A7D; --sage-500: #6B7F5D; --sage-600: #5E6E52;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+  --gold-400: #C4A057; --gold-500: #A68B45; --gold-600: #9A7B3A;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+  --rose-400: #E8A598; --rose-600: #D88B7A;
+  --blue-50: #F0F5FA; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+
+  /* Extended Colors */
+  --purple-50: #F5F0FA; --purple-400: #9B7DC4; --purple-600: #7B5DA4;
+  --red-50: #FDF2F2; --red-400: #E07070; --red-600: #C05050;
+  --amber-50: #FFF8E1; --amber-400: #D4A030; --amber-600: #B08020;
+  --teal-50: #E8F5F3; --teal-400: #4DA89A; --teal-600: #2D8878;
+
+  /* Dark "Study Night" */
+  --dark-base: #1C1A17;
+  --dark-surface: #252320;
+  --dark-surface-raised: #2E2B27;
+  --dark-text: #E2DDD5;
+  --dark-text-secondary: #A09890;
+  --dark-border: #3A3630;
+  --dark-gold-400: #B89040;
+  --dark-gold-600: #E0C070;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+  --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+
+  /* Timing */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  background-color: var(--base);
+  color: var(--text-primary);
+  line-height: 1.85;
+  transition: background-color 0.8s var(--ease);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   PROGRESS BAR (transform slide)
+   ============================================================ */
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+  transform: translateY(-100%); transition: transform 0.4s var(--ease);
+}
+.progress-bar.visible { transform: translateY(0); }
+.progress-line { height: 3px; background: var(--gradient-accent-90); width: 0%; transition: width 0.1s linear; }
+.progress-context {
+  background: rgba(28, 26, 23, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+}
+.progress-label {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400);
+}
+.progress-chapter {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.8rem;
+  color: var(--dark-text-secondary); transition: opacity 0.3s var(--ease);
+}
+
+/* ============================================================
+   SIDE TOC
+   ============================================================ */
+.side-toc { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900; display: none; }
+@media (min-width: 1200px) { .side-toc { display: flex; flex-direction: column; gap: 12px; } }
+.toc-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--border);
+  cursor: pointer; transition: all 0.3s var(--ease); position: relative;
+}
+.toc-dot:hover { background: var(--sage-400); transform: scale(1.3); }
+.toc-dot.active { background: var(--gold-400); transform: scale(1.5); box-shadow: 0 0 8px rgba(196, 160, 87, 0.4); }
+.toc-dot::after {
+  content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 0.7rem; font-family: 'Inter', sans-serif; white-space: nowrap;
+  color: var(--text-muted); opacity: 0; transition: opacity 0.2s var(--ease); pointer-events: none;
+}
+.toc-dot:hover::after { opacity: 1; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative; min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; background: var(--dark-base);
+  color: var(--dark-text); overflow: hidden; text-align: center; padding: 2rem;
+}
+.hero-shapes { position: absolute; inset: 0; overflow: hidden; opacity: 0.15; }
+.shape { position: absolute; border-radius: 50%; filter: blur(80px); }
+.shape-1 { width: 500px; height: 500px; background: var(--sage-400); top: -10%; left: -10%; animation: float1 20s ease-in-out infinite; }
+.shape-2 { width: 400px; height: 400px; background: var(--gold-400); bottom: -10%; right: -10%; animation: float2 25s ease-in-out infinite; }
+.shape-3 { width: 300px; height: 300px; background: var(--rose-400); top: 40%; left: 60%; animation: float3 22s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -40px); } }
+@keyframes float3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+.hero-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.hero-episode { display: block; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 220, 0.5); margin-bottom: 1.5rem; }
+.hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: var(--dark-text); }
+.hero-title .accent { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--dark-text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.hero-mini-player { max-width: 320px; margin: 0 auto 1.5rem; }
+.hero-mini-player iframe { border-radius: 12px; }
+.hero-meta { display: flex; justify-content: center; gap: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--dark-text-secondary); opacity: 0.6; animation: scrollBounce 2s ease-in-out infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+/* ============================================================
+   MAIN CONTENT + LAYOUT
+   ============================================================ */
+.main-content { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.intro-section { padding: 6rem 0 4rem; position: relative; }
+.intro-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.chapter-section { padding: 5rem 0 4rem; }
+.conclusion-section { padding: 5rem 0 4rem; background: var(--dark-base); color: var(--dark-text); position: relative; }
+.conclusion-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+
+.intro-lead {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 2; color: var(--text-primary); margin-bottom: 2rem;
+}
+.intro-lead::first-letter {
+  font-size: 3.8rem; font-weight: 700; float: left; line-height: 1;
+  margin-right: 8px; margin-top: 4px;
+  background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ============================================================
+   CHAPTER HEADER
+   ============================================================ */
+.chapter-header { text-align: center; margin-bottom: 3rem; }
+.chapter-icon { display: block; font-size: 2.5rem; margin-bottom: 0.75rem; }
+.chapter-number { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.chapter-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.chapter-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem; }
+.conclusion-section .chapter-title { color: var(--dark-text); }
+.conclusion-section .chapter-number { color: var(--dark-gold-400); }
+
+/* ============================================================
+   TEXT + INLINE HIGHLIGHTS
+   ============================================================ */
+.guide-text { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.9; margin-bottom: 1.5rem; }
+.guide-text strong.hl-warm { color: var(--rose-600); font-weight: 600; }
+.guide-text strong.hl-gold { color: var(--gold-600); font-weight: 600; }
+.guide-text strong.hl-sage { color: var(--sage-600); font-weight: 600; }
+.guide-text strong.hl-blue { color: var(--blue-600); font-weight: 600; }
+.guide-text strong.hl-purple { color: var(--purple-600); font-weight: 600; }
+.body-text { font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+.conclusion-section .guide-text { color: var(--dark-text-secondary); }
+.conclusion-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--dark-text-secondary); margin-bottom: 2rem; }
+.conclusion-text strong { color: var(--dark-text); font-weight: 600; }
+.conclusion-text .gold { color: var(--dark-gold-600); }
+
+/* ============================================================
+   DIALOGUE
+   ============================================================ */
+.dialogue-block { margin: 1.5rem 0; }
+.dialogue-block-radio { background: var(--white); border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05); margin: 2rem 0 4rem; }
+.dialogue-item { padding: 1rem 1rem 1rem 1.25rem; position: relative; font-style: normal; }
+.dialogue-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--sage-400); }
+.dialogue-item + .dialogue-item { border-top: 1px dashed var(--border); }
+.dialogue-speaker { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.dialogue-text { font-size: 0.95rem; line-height: 1.85; font-style: normal; }
+.dialogue-block-radio .dialogue-text { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; line-height: 1.9; }
+
+/* Fixed speakers */
+.dialogue-item.speaker-tamkai::before { background: var(--sage-400); }
+.dialogue-speaker.tamkai { color: var(--sage-600); }
+.dialogue-item.speaker-opi::before { background: var(--blue-400); }
+.dialogue-speaker.opi { color: var(--blue-600); }
+.dialogue-item.speaker-osato::before { background: var(--gold-400); }
+.dialogue-speaker.osato { color: var(--gold-600); }
+
+/* ============================================================
+   ANNOTATION (3-layer architecture)
+   ============================================================ */
+.annotation {
+  margin: 4rem 0; background: var(--dark-surface); color: var(--dark-text); border-radius: 12px;
+  padding: 2rem; position: relative; overflow: hidden; cursor: pointer;
+}
+.annotation::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.annotation-badge {
+  font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dark-base); background: var(--gold-400);
+  padding: 0.2rem 0.6rem; border-radius: 3px;
+  display: inline-block; margin-bottom: 0.75rem;
+}
+.annotation-title {
+  font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--dark-text); line-height: 1.4; margin-bottom: 0.75rem;
+}
+.annotation-body {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; line-height: 1.9;
+  color: var(--dark-text-secondary); position: relative;
+  max-height: 4.5em; overflow: hidden; transition: max-height 0.5s var(--ease);
+}
+.annotation-body::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2em;
+  background: linear-gradient(transparent, var(--dark-surface)); transition: opacity 0.3s var(--ease);
+}
+.annotation-body p + p { margin-top: 0.75rem; }
+html:not(.reveal-ready) .annotation-body { max-height: none; }
+html:not(.reveal-ready) .annotation-body::after { display: none; }
+html:not(.reveal-ready) .annotation-toggle { display: none; }
+.annotation.expanded .annotation-body { max-height: 500px; }
+.annotation.expanded .annotation-body::after { opacity: 0; }
+.annotation-toggle {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold-400); margin-top: 0.5rem; display: inline-block; cursor: pointer;
+}
+.annotation.expanded .annotation-toggle .toggle-more { display: none; }
+.annotation:not(.expanded) .annotation-toggle .toggle-less { display: none; }
+
+/* ============================================================
+   PULL QUOTE
+   ============================================================ */
+.pull-quote { text-align: center; margin: 4rem 0; padding: 0 1rem; position: relative; }
+.pull-quote::before { content: '\201C'; display: block; font-family: Georgia, serif; font-size: 5rem; line-height: 1; color: var(--gold-200); margin-bottom: -0.5rem; }
+.pull-quote-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8; color: var(--text-primary); font-style: normal; }
+.pull-quote-attribution { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+.conclusion-section .pull-quote-text { color: var(--dark-text); }
+.conclusion-section .pull-quote::before { color: var(--dark-gold-400); }
+
+/* ============================================================
+   HIGHLIGHT BOX
+   ============================================================ */
+.highlight-box { background: var(--gold-50); border-left: 4px solid var(--gold-400); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 0.75rem; align-items: flex-start; }
+.highlight-box-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.highlight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); }
+
+/* ============================================================
+   SECTION DIVIDER
+   ============================================================ */
+.section-divider { text-align: center; padding: 3rem 0; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 1px; background: var(--gradient-accent-90); }
+.divider-emoji { position: relative; z-index: 1; background: var(--base); padding: 0 1rem; font-size: 1.3rem; }
+
+/* ============================================================
+   CONCEPT DIAGRAM (flow)
+   ============================================================ */
+.concept-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.concept-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.concept-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.concept-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); min-width: 90px; }
+.concept-step-emoji { font-size: 1.5rem; }
+.concept-step-label { font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-primary); }
+.concept-arrow { font-size: 1.2rem; color: var(--sage-400); font-weight: 700; }
+@media (max-width: 600px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); } }
+
+/* ============================================================
+   CONTRAST DIAGRAM (vs)
+   ============================================================ */
+.contrast-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.contrast-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.contrast-side { background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.contrast-side--left { border-top: 3px solid var(--sage-400); }
+.contrast-side--right { border-top: 3px solid var(--gold-500); }
+.contrast-side-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.contrast-side-emoji { font-size: 1.3rem; }
+.contrast-side-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; }
+.contrast-side-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+.contrast-vs { display: flex; align-items: center; justify-content: center; padding-top: 2rem; }
+.contrast-vs-text { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--sage-500); letter-spacing: 0.1em; }
+@media (max-width: 600px) { .contrast-grid { grid-template-columns: 1fr; } .contrast-vs { padding: 0.5rem 0; } }
+
+/* ============================================================
+   SPLIT VISUAL (2-pane comparison + conclusion)
+   ============================================================ */
+.split-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.split-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem;
+}
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .split-grid { grid-template-columns: 1fr; } }
+.split-side {
+  background: var(--white); border-radius: 12px; padding: 1.5rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.split-side-icon {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid;
+}
+.split-side-icon.warm { background: var(--rose-50); border-color: var(--rose-400); }
+.split-side-icon.cool { background: var(--blue-50); border-color: var(--blue-400); }
+.split-side-icon.sage { background: var(--sage-50); border-color: var(--sage-400); }
+.split-side-icon.purple { background: var(--purple-50); border-color: var(--purple-400); }
+.split-side-title { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.split-side-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.split-effects { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.split-effect { padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.split-effect.warm-bg { background: var(--rose-50); color: var(--rose-600); }
+.split-effect.cool-bg { background: var(--blue-50); color: var(--blue-600); }
+.split-conclusion {
+  margin-top: 1.25rem; padding: 1rem 1.5rem; border-radius: 12px;
+  background: linear-gradient(135deg, var(--rose-50), var(--blue-50));
+  border: 1px solid var(--border); text-align: center;
+  font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--gold-600);
+}
+
+/* ============================================================
+   STEP TIMELINE (numbered vertical steps)
+   ============================================================ */
+.step-timeline { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.step-timeline-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem;
+}
+.step-list { display: flex; flex-direction: column; gap: 1rem; }
+.step-item { display: flex; align-items: flex-start; gap: 1rem; }
+.step-number {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: var(--gradient-accent); display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: white;
+}
+.step-body { flex: 1; background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.step-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+.step-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+
+/* ============================================================
+   CARD GRID (info cards)
+   ============================================================ */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+.info-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; text-align: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.info-card.warm-top { border-top: 3px solid var(--rose-400); }
+.info-card.sage-top { border-top: 3px solid var(--sage-400); }
+.info-card.blue-top { border-top: 3px solid var(--blue-400); }
+.info-card-icon {
+  width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+.info-card.warm-top .info-card-icon { background: var(--rose-50); }
+.info-card.sage-top .info-card-icon { background: var(--sage-50); }
+.info-card.blue-top .info-card-icon { background: var(--blue-50); }
+.info-card-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.info-card.warm-top .info-card-title { color: var(--rose-600); }
+.info-card.sage-top .info-card-title { color: var(--sage-600); }
+.info-card.blue-top .info-card-title { color: var(--blue-600); }
+.info-card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============================================================
+   CHECKLIST VISUAL
+   ============================================================ */
+.checklist-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2rem 0; }
+.checklist-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1rem;
+}
+.checklist-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--white); border-radius: 10px; margin-bottom: 0.5rem;
+  border-left: 3px solid var(--gold-400); transition: transform 0.2s var(--ease);
+}
+.checklist-item:hover { transform: translateX(4px); }
+.checklist-item .check-icon { font-size: 1rem; flex-shrink: 0; }
+.checklist-item .check-text { font-size: 0.9rem; color: var(--text-primary); }
+.checklist-item.warning { border-left-color: var(--rose-400); background: var(--rose-50); }
+.checklist-item.warning .check-text { color: var(--rose-600); font-weight: 600; }
+
+/* ============================================================
+   TAKEAWAY CARDS (Conclusion section)
+   ============================================================ */
+.takeaways-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+@media (max-width: 600px) { .takeaways-grid { grid-template-columns: 1fr; } }
+.takeaway-card { background: var(--dark-surface-raised); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; transition: transform 0.3s var(--ease); }
+.takeaway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); opacity: 0; transition: opacity 0.3s var(--ease); }
+.takeaway-card:hover { transform: translateY(-4px); }
+.takeaway-card:hover::before { opacity: 1; }
+.takeaway-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.takeaway-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+.takeaway-desc { font-size: 0.85rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   SPOTIFY SECTION (Radio only)
+   ============================================================ */
+.spotify-section { background: var(--dark-base); padding: 3rem 0 4rem; }
+.spotify-label {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--dark-gold-600);
+  text-align: center; margin-bottom: 1.5rem;
+}
+.spotify-player { max-width: 400px; margin: 0 auto; }
+.spotify-player iframe { border-radius: 12px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer { background: var(--dark-base); color: var(--dark-text-secondary); text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--dark-border); }
+.footer-logo { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; color: var(--dark-text); margin-bottom: 0.5rem; }
+.footer-meta { font-size: 0.75rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   REVEAL SYSTEM
+   ============================================================ */
+.reveal { opacity: 1; transform: none; filter: none; }
+
+@media (min-width: 1024px) {
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .chapter-header.reveal { transform: scale(0.85) translateY(30px); transition: opacity 0.95s ease-out, transform 0.95s ease-out; }
+  .section-divider.reveal { transform: scaleX(0.3); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .concept-diagram.reveal, .contrast-diagram.reveal, .split-visual.reveal, .checklist-visual.reveal, .step-timeline.reveal { transform: scale(0.9); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .takeaway-card.reveal { transform: scale(0.9) translateY(20px); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .annotation.reveal { transform: translateY(30px); transition: opacity 1.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .dialogue-item.reveal:nth-child(odd) { transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .dialogue-item.reveal:nth-child(even) { transform: translateX(60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .reveal.pc-revealed { opacity: 1 !important; transform: translateY(0) translateX(0) scale(1) scaleX(1) !important; }
+  html.pc-reveal-ready .guide-text.reveal + .dialogue-block .dialogue-item.reveal { transition-delay: 0.2s; }
+  html.pc-reveal-ready .dialogue-block + .guide-text.reveal { transition-delay: 0.18s; }
+}
+
+@keyframes spotlight { 0% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 12% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateY(0); } 70% { opacity: 1; filter: blur(0); transform: translateY(0); } 80% { opacity: 0.5; } 90% { opacity: 0.25; } 100% { opacity: 0.2; } }
+@keyframes spotlight-left { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(-16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(-4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-right { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-always-visible { 0%, 100% { opacity: 1; filter: none; transform: none; } }
+
+@media (max-width: 1023px) {
+  html.spotlight-ready .reveal { animation: spotlight linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(odd) { animation-name: spotlight-left; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(even) { animation-name: spotlight-right; }
+  html.spotlight-ready .chapter-header.reveal, html.spotlight-ready .concept-diagram.reveal, html.spotlight-ready .contrast-diagram.reveal, html.spotlight-ready .split-visual.reveal, html.spotlight-ready .checklist-visual.reveal, html.spotlight-ready .step-timeline.reveal, html.spotlight-ready .section-divider.reveal { animation-name: spotlight-always-visible; }
+}
+
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+html.reveal-ready .reveal.io-revealed { opacity: 1; transform: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .main-content { padding: 0 1.25rem; }
+  .hero { padding: 1.5rem; }
+  .intro-section { padding: 4rem 0 3rem; }
+  .chapter-section { padding: 4rem 0 3rem; }
+  .conclusion-section { padding: 4rem 0 3rem; }
+  .annotation { padding: 1.5rem; }
+  .progress-context { padding: 0.5rem 1rem; }
+  .progress-label { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .progress-chapter { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PROGRESS BAR ===== -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-line" id="progressLine"></div>
+  <div class="progress-context">
+    <span class="progress-label">Ep.19</span>
+    <span class="progress-chapter" id="progressChapter"></span>
+  </div>
+</div>
+
+<!-- ===== SIDE TOC ===== -->
+<nav class="side-toc" id="sideToc">
+  <div class="toc-dot" data-target="intro" data-label="Introduction"></div>
+  <div class="toc-dot" data-target="chapter1" data-label="パリ北駅の冒険"></div>
+  <div class="toc-dot" data-target="chapter2" data-label="旅はプリプロから"></div>
+  <div class="toc-dot" data-target="chapter3" data-label="レゴブロックの旅行術"></div>
+  <div class="toc-dot" data-target="chapter4" data-label="プロトピアと腹時計"></div>
+  <div class="toc-dot" data-target="conclusion" data-label="名古屋の余韻"></div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="hero">
+  <div class="hero-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="hero-content">
+    <span class="hero-label">Metacreative Radio</span>
+    <span class="hero-episode">Episode 19</span>
+    <h1 class="hero-title">僕らが旅に出る理由<br><span class="accent">プリプロダクション</span>としての人生</h1>
+    <p class="hero-subtitle">パリの韓国人おばちゃん、名古屋の台湾まぜそば、<br>ワカンダの未来学者が教えてくれること</p>
+    <div class="hero-mini-player">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/4LGR7doGcyPM6rtEJCzH3o?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    <div class="hero-meta"><span>2026.02.02</span><span>Tamkai &amp; Opi</span></div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span></div>
+</header>
+
+<!-- ===== INTRODUCTION ===== -->
+<section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🧳</span>
+      <span class="chapter-number">Introduction</span>
+      <h2 class="chapter-title">「行くよね」「行きますよね」</h2>
+    </div>
+
+    <p class="intro-lead reveal">旅には二種類ある。「行こう」と自分で決めて出発する旅と、「行くよね？」と誰かに言われて気づけば出発している旅。タムカイの旅は、ほぼ後者である。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「メタクリラジオ、僕らが旅に出る理由について話そうよ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「まあ、心変わりはね、何かのせいなんで。あまり乗り気じゃなかったんですよ、マジで。名古屋マジかいっつって」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">冒頭の掛け合いは、実は小沢健二「僕らが旅に出る理由」（1994年）の歌詞の引用だ。楽曲の持つ軽やかな浮遊感——<strong class="hl-gold">旅に出る理由なんて後付けでいい</strong>——が、二人の旅のトーンをそのまま設定している。</p>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">AI Dev NINJA</h4>
+      <div class="annotation-body">
+        <p>AI駆動開発の実践者が集まるコミュニティイベント。インフォバーンの小林弘人氏が発起人。vol.1は2025年12月に東京、vol.2は名古屋テックガーラのサイドイベントとして2026年1月に開催。参加者は20代から60代まで多様で、二人はここで「メタクリスペース」の掛け合いピッチを行った。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">名古屋への旅を起点に、このエピソードは25年前のパリでの冒険、映像制作と旅の類似性、DJ権の喜び、ワカンダの未来学者が語る「プロトピア」、そしてAIの時間感覚にまで至る。底流に流れる問い——<strong class="hl-warm">旅はいつ始まり、いつ終わるのか</strong>。</p>
+  </div>
+</section>
+
+<!-- ===== DIVIDER ===== -->
+<div class="section-divider reveal"><span class="divider-emoji">✈️</span></div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="パリ北駅の冒険">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🗼</span>
+      <span class="chapter-number">Chapter 01</span>
+      <h2 class="chapter-title">なんとかなる力の冒険</h2>
+      <p class="chapter-subtitle">パリ北駅から始まった「状況対応型の創造性」</p>
+    </div>
+
+    <p class="guide-text reveal">タムカイの旅への姿勢を理解するには、まず「家」への感覚を知る必要がある。整ったモニター環境、手を伸ばせば調味料が揃うキッチン。その最適化された環境が<strong class="hl-sage">「たまに崩れると楽しい」</strong>けれど、ずっと崩れ続けているのは耐えられない。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「旅をしょっちゅうしてさ、タムカイさんの中のいろんな周りのツールが旅に最適化されてたら、気にならなくなるのかな」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「そっちが常態化されたら気にならなくなるのかもしれないですよね」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">しかし、このインドア志向の人間には25年前のパリでの冒険譚がある。大学のゼミの先生がオランダに行ってしまい、「1回ぐらいは会おう」と言われて4週間渡欧。1週間半先生の家にいたら「お前ずっと家にいるのか」と言われ、TGVのチケットだけ取ってパリへ。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「お前は日本人かチャイニーズか韓国かどれかって言われて、ジャパニーズだっつって。ホテルはあるのかって言われて、ないんだけどっつって。うちの家がユースホステルやってるから泊まりに来ていいよって言われて」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">初めての海外でこの状況。不安になったタムカイは公衆電話で大学の先生に電話をかけた。「今こういうおばちゃんに声かけられたんですけど、大丈夫ですかね」「わかんねえ」「わかんないですよね」ガチャン。</p>
+
+    <div class="step-timeline reveal">
+      <p class="step-timeline-label">🔍 タムカイのリスク管理レイヤー</p>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-body">
+            <div class="step-title">まず駅まで行く</div>
+            <div class="step-desc">そこにも別のホテルがあるだろうし</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-body">
+            <div class="step-title">電話はかける</div>
+            <div class="step-desc">出た人が男だったら帰ろう</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-body">
+            <div class="step-title">迎えに来た人を確認</div>
+            <div class="step-desc">男だったら知らんふりして逃げよう → ちっちゃい女の人が来た、まだいける</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">結果として本当にユースホステルだった。韓国人バックパッカーと仲良くなり、翌日セーヌ川クルーズに行くほどの関係に。</p>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">ポンヌフの恋人——新橋のがっかり</h4>
+      <div class="annotation-body">
+        <p>Opiもセーヌ川にまつわるエピソードを持っていた。映画『ポンヌフの恋人』が好きでパリのポンヌフ橋まで行ったが、「ポンヌフ＝新橋」と知りテンションが下がった。さらに撮影場所も別の場所だったと聞き、二重のがっかり。旅がもたらす「がっかり」もまた、旅の一部である。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「なんとかなる、あるいはする力はあると思ってるんですけど、なんとかするところに自分をどんどん放り込んでいこうってするよりは、なんか起こった後でなんとか面白くしようって思うタイプ。お題ありきなのかもしれないです」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">状況対応型の創造性みたいなもので駆動しているところがありますね。観客がいるからお笑いができるというか。</p>
+      <p class="pull-quote-attribution">--- Tamkai, on 自分の創造性の本質</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIVIDER ===== -->
+<div class="section-divider reveal"><span class="divider-emoji">🎬</span></div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="旅はプリプロから">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎥</span>
+      <span class="chapter-number">Chapter 02</span>
+      <h2 class="chapter-title">旅はプリプロダクションから始まる</h2>
+      <p class="chapter-subtitle">映像制作者の時間感覚</p>
+    </div>
+
+    <p class="guide-text reveal">Opiの旅観は、タムカイとは根本的に異なる。旅の起点は「出発した瞬間」ではなく、<strong class="hl-blue">「行こうと思った日」</strong>から始まっている。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「僕はあの旅行、もともと好きなんだけど、多分旅の起点がね、行こうって思った日から、もう旅が始まってるんですよ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「いや、俺、今話して思ったんだけど、これ映像をやってるからだわ。映像ってプリプロダクションとポストプロダクションがあってさ。プリプロやってる時にその作品をまだ撮ってないかって言ったら撮ってないけど、もう作ってるわけじゃない」</p>
+      </div>
+    </div>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">TRAVEL AS FILMMAKING</p>
+      <div class="concept-flow">
+        <div class="concept-step">
+          <span class="concept-step-emoji">📋</span>
+          <span class="concept-step-label">プリプロ<br>計画・準備</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">🎬</span>
+          <span class="concept-step-label">プロダクション<br>現地での体験</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">✂️</span>
+          <span class="concept-step-label">ポストプロ<br>振り返り・余韻</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">ここで二人の関係性の構造が見えてくる。Opiが旅の「プリプロダクション」を担当し、タムカイが「撮影現場」でアドリブを入れる演者として機能する。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「全部1回頭に入れてから、その後まっさらにして演技に臨むみたいなのは近いかもしれない」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">脚本と即興——準備が深いほど即興の質が上がる</h4>
+      <div class="annotation-body">
+        <p>「全部1回頭に入れてからまっさらにする」という方法は、スタニスラフスキー・システムの応用やジャズの即興演奏とも同じ構造を持つ。Ep14でOpiが語った八丈島太鼓の「頭でフレーズをやろうとすると失敗する。気持ちよくなって下打ちのリズムを体で感じ取れている時は適当やっててもいい感じ」という感覚とも通底している。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">タムカイが計画表を苦手としてきた理由も、ここで明らかになった。学校教育の計画は「守るためのもの」だった。企業の目標設定も、年初と年末でやっていることが変わっているのに「なんでここに書いたことやってないの」と言われる息苦しさ。</p>
+
+    <p class="guide-text reveal">しかし今回の名古屋旅行で、Opiとの間にはその齟齬がなかった。「決めてたのにやんないじゃん」がないというか——<strong class="hl-sage">計画を変えることへの信頼</strong>がそこにあった。</p>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">TWO TRAVEL STYLES</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🎯</span>
+            <span class="contrast-side-title">タムカイの旅</span>
+          </div>
+          <p class="contrast-side-desc">直前に始まり、直後に終わる。「ここ」という瞬間から旅になり、「ここ」で終わる。余韻はあるけど旅の一部ではない。</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🎞️</span>
+            <span class="contrast-side-title">Opiの旅</span>
+          </div>
+          <p class="contrast-side-desc">「行こう」と思った日から始まる。しおりを作るのも全部旅。日常にグラデーションで紛れ込み、混ざり込む。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIVIDER ===== -->
+<div class="section-divider reveal"><span class="divider-emoji">🧱</span></div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="レゴブロックの旅行術">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎵</span>
+      <span class="chapter-number">Chapter 03</span>
+      <h2 class="chapter-title">レゴブロックの旅行術</h2>
+      <p class="chapter-subtitle">名古屋で起きたこと——計画と即興とDJ権</p>
+    </div>
+
+    <p class="guide-text reveal">タムカイは最近、家族旅行で「生まれて初めてチェックポイント型の予定を立てた」という。AIを使って予定表を作り、いくつかのチェックポイントをバラバラに認識した上で、組み上げは即興で行う。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「徒手空拳だとそれが何かもわからない、完全な設計図で順番に組み立てるのもある。今回はバラバラのレゴブロックの何のパーツがあるかは理解してる状態で、組み上げるのは即興でやるみたいな感じでした」</p>
+      </div>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="info-card warm-top">
+        <div class="info-card-icon">📦</div>
+        <div class="info-card-title">徒手空拳型</div>
+        <div class="info-card-desc">パーツが何かもわからない。<br>確かめてる間に時間切れ。</div>
+      </div>
+      <div class="info-card sage-top">
+        <div class="info-card-icon">🧱</div>
+        <div class="info-card-title">レゴブロック型</div>
+        <div class="info-card-desc">パーツを把握している。<br>組み方は現場で決める。</div>
+      </div>
+      <div class="info-card blue-top">
+        <div class="info-card-icon">📐</div>
+        <div class="info-card-title">設計図型</div>
+        <div class="info-card-desc">1番の工程でこれとこれを<br>組み合わせて、と指定済み。</div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">Opiの作ったしおりも結果的には同じ構造だった。予定通りにはいかなかったけれど、しおりに載せたコンテンツはほぼ全て消化している。<strong class="hl-gold">順序は変わっても、要素は網羅されている</strong>。</p>
+
+    <div class="section-divider reveal"><span class="divider-emoji">🎧</span></div>
+
+    <p class="guide-text reveal">名古屋への4時間のドライブでは、もう一つの発見があった。OpiがタムカイにBluetooth接続を渡す——DJ権の譲渡である。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「もともとやっぱすごい好きなんだと思います。助手席側に乗って、相手との話題も取り込みながら、次の曲、次の曲ってつないでいったりとか。古くはやっぱり友達の誕生日にテーマコンピCDとか作ってたタイプなんで」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">台湾まぜそばと「名前の地層」</h4>
+      <div class="annotation-body">
+        <p>台湾まぜそばは名古屋発祥で台湾とは無関係。名前に「台湾」とあるのは、先行する「台湾ラーメン」（これも名古屋発祥）のひき肉をアレンジしたことに由来する。ポンヌフ＝新橋と同様、名前が持つ「意味の地層」——本来の意味と現在の使われ方のズレ——をめぐる対話の一部だ。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">しかし4時間のDJは、想像以上のスリルだった。選曲がBGMから「フォアグラウンド」に上がっていく。映像のプロが自分の選曲にコメントをしている。「怖い」と笑いながら——けれどOpiは「自分とのズレが面白い」と返す。</p>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">自分との、これは俺だけしかわからないだろうと思ってかけたら、意外とわかってくれる人がいたみたいなのあるじゃん。</p>
+      <p class="pull-quote-attribution">--- Opi, on DJ権と自己開示</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DIVIDER ===== -->
+<div class="section-divider reveal"><span class="divider-emoji">🌍</span></div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="プロトピアと腹時計">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">⏳</span>
+      <span class="chapter-number">Chapter 04</span>
+      <h2 class="chapter-title">プロトピアと腹時計</h2>
+      <p class="chapter-subtitle">時間をめぐる問い——ワカンダの未来学者からAIの状態変化まで</p>
+    </div>
+
+    <p class="guide-text reveal">名古屋のテックガーラで、キーノートスピーカーのモニカ・ビエルスカイトが強烈な印象を残した。ナイキ初の「Futurist in Residence」であり、映画『ブラックパンサー：ワカンダ・フォーエバー』のコンサルタント。彼女が語った概念が<strong class="hl-purple">「プロトピア」</strong>だった。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「悪い方がディストピア、いい方がユートピアで、今までどうしてもその二つに分かれて。何も思ってない自分とかは、どっちなんだろうって黙るか。何かをしたとしても、どっちかになんか呼ばれてしまう」</p>
+      </div>
+    </div>
+
+    <div class="split-visual reveal">
+      <p class="split-visual-label">🌐 プロトピアという第三の道</p>
+      <div class="split-grid">
+        <div class="split-side">
+          <div class="split-side-icon warm">😈</div>
+          <div class="split-side-title">ディストピア</div>
+          <div class="split-side-subtitle">AIは人類の脅威</div>
+          <div class="split-effects">
+            <div class="split-effect warm-bg">⚠️ 恐怖に基づく規制論</div>
+            <div class="split-effect warm-bg">🚫 技術への抵抗</div>
+          </div>
+        </div>
+        <div class="split-side">
+          <div class="split-side-icon cool">😇</div>
+          <div class="split-side-title">ユートピア</div>
+          <div class="split-side-subtitle">AIは万能の救世主</div>
+          <div class="split-effects">
+            <div class="split-effect cool-bg">✨ シンギュラリティ信仰</div>
+            <div class="split-effect cool-bg">🚀 無批判な楽観</div>
+          </div>
+        </div>
+      </div>
+      <div class="split-conclusion">プロトピア——少しずつ、状態が変わりながら、未来を作り続ける姿勢</div>
+    </div>
+
+    <p class="guide-text reveal">議論はデジタルツインの「わかっていないもの」問題、そしてAIの時間感覚へと展開する。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「実はAIって時間軸超弱いのよ。自分で今の時刻もわからないぐらいだからね。世界が生成されるということは時間軸が入ってくるわけよ」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">話は人間の時間感覚の起源へ遡る。近代以前は「タスク指向」の時間——仕事が終わったら終わり——であり、時計が時間を切り刻むようになったのは産業革命以降だ。</p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「腹時計って、時計っていう概念が生まれるまでは腹時計って呼ばれてなかったわけですよね。腹の虫の方だったんですかね」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">名前に埋め込まれた認知構造</h4>
+      <div class="annotation-body">
+        <p>「腹時計」は「時計」なしには命名されない。「デジタルツイン」は「ツイン」なしには、「AI」は「Intelligence」なしには命名されない。名前は、それが名付けられた時代の認知構造を映し込んでいる。Ep15でタムカイが議論した「黒電話のアイコンで電話を認識している子供」と同じ構造——記号は、その指示対象が消滅した後も残り続ける。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「タイムというよりも、状態。ステートとかそういう感じ。その状態の変化っていうのが結構今後面白いのかもね」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">渡り鳥が渡るとかっていうのは、こっちの思ってる感覚とは違う、向こうの時間感覚の中で動いている。それを持ってることが生物なのかな。</p>
+      <p class="pull-quote-attribution">--- Tamkai, on 生物の時間感覚</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="名古屋の余韻">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌙</span>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="chapter-title">名古屋の余韻、あるいは人生のポストプロダクション</h2>
+    </div>
+
+    <p class="conclusion-text reveal">4時間のドライブでDJを務めた体験は、予想外の親密さを生んでいた。中学生のタムカイが聴いていた曲を、大学生のOpiも聴いていた。<strong>つながってなかった人生の時間軸が、音楽を介して少しつながる。</strong></p>
+
+    <div class="dialogue-block dialogue-block-radio">
+      <div class="dialogue-item reveal speaker-opi">
+        <p class="dialogue-speaker opi">Opi</p>
+        <p class="dialogue-text">「ちょっといい話で終わってな、珍しいな。なんでいい話になっちゃったんだろう」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「いや、これが名古屋の余韻ですよ」</p>
+      </div>
+    </div>
+
+    <p class="conclusion-text reveal">旅に出る理由は、旅に出た後にしかわからない。パリのユースホステルも、名古屋の台湾まぜそばも、4時間のDJも、ワカンダの未来学者も、行く前には予測できなかった。<span class="gold">プロトピア的に——少しずつ、状態が変わりながら。</span></p>
+
+    <div class="takeaways-grid">
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🧭</span>
+        <h4 class="takeaway-title">状況対応型の創造性</h4>
+        <p class="takeaway-desc">初期衝動で動くのではなく、他者の呼びかけに応答することで始まる創造のかたち。お題ありきの即興。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🎬</span>
+        <h4 class="takeaway-title">旅 = 映像制作</h4>
+        <p class="takeaway-desc">プリプロ（計画）→ プロダクション（体験）→ ポストプロ（余韻）。旅の持続時間は物理的な移動期間より長い。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🧱</span>
+        <h4 class="takeaway-title">レゴブロック的計画</h4>
+        <p class="takeaway-desc">設計図通りでも無計画でもない。パーツを把握した上で、組み方は現場で決める第三のアプローチ。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🌱</span>
+        <h4 class="takeaway-title">プロトピアの姿勢</h4>
+        <p class="takeaway-desc">ユートピアでもディストピアでもない。少しずつ状態が変わりながら、未来を作り続ける姿勢。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPOTIFY ===== -->
+<section class="spotify-section">
+  <div class="main-content">
+    <p class="spotify-label reveal">Listen on Spotify</p>
+    <div class="spotify-player reveal">
+      <iframe style="border-radius:12px" src="https://open.spotify.com/embed/episode/4LGR7doGcyPM6rtEJCzH3o?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p class="footer-logo">Metacreative Radio</p>
+  <p class="footer-meta">Episode 19 | 2026.02.02 | Tamkai &amp; Opi<br>Metacreative Document</p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+  'use strict';
+
+  // === REVEAL SYSTEM (3-branch) ===
+  var supportsScrollTimeline = CSS.supports('animation-timeline', 'view()');
+  var isPC = window.innerWidth >= 1024;
+
+  if (isPC && 'IntersectionObserver' in window) {
+    // Branch 1: PC — IO scroll reveal
+    document.documentElement.classList.add('spotlight-ready', 'pc-reveal-ready');
+    initPCReveal();
+  } else if (supportsScrollTimeline) {
+    // Branch 2: Modern mobile — CSS scroll-driven animation
+    document.documentElement.classList.add('spotlight-ready');
+    setTimeout(function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; }
+      });
+    }, 5000);
+  } else if ('IntersectionObserver' in window) {
+    // Branch 3: IO fallback (adds reveal-ready → enables annotation folding)
+    document.documentElement.classList.add('reveal-ready');
+    initIOFallback();
+  }
+
+  function initPCReveal() {
+    setTimeout(function() {
+      var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+      var threshold = window.innerHeight * 0.3;
+      reveals.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < threshold) {
+          el.style.transition = 'none';
+          el.classList.add('pc-revealed');
+          setTimeout(function() { el.style.transition = ''; }, 10);
+        }
+      });
+      document.querySelectorAll('.dialogue-block').forEach(function(block) {
+        var items = block.querySelectorAll('.dialogue-item.reveal:not(.pc-revealed)');
+        items.forEach(function(item, i) { item.style.transitionDelay = Math.min(i * 80, 300) + 'ms'; });
+      });
+    }, 100);
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) { requestAnimationFrame(function() { checkReveals(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+  }
+
+  function checkReveals() {
+    var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+    var triggerLine = window.innerHeight * 0.7;
+    reveals.forEach(function(el) { if (el.getBoundingClientRect().top < triggerLine) el.classList.add('pc-revealed'); });
+  }
+
+  function initIOFallback() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('io-revealed'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal:not(.io-revealed)').forEach(function(el) { el.classList.add('io-revealed'); }); }, 4000);
+  }
+
+  // === PROGRESS BAR + ATMOSPHERE + TOC ===
+  var progressBar = document.getElementById('progressBar');
+  var progressLine = document.getElementById('progressLine');
+  var progressChapter = document.getElementById('progressChapter');
+  var heroEl = document.getElementById('hero');
+  var currentChapterName = '';
+  var sections = document.querySelectorAll('[data-atmosphere]');
+  var tocDots = document.querySelectorAll('.toc-dot');
+  var atmospheres = { 'warm': '#F5F0E8', 'cool': '#F0F2F5', 'creative': '#F8F5EE', 'deep': '#F5F0E8' };
+
+  function updateAll() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressLine.style.width = (scrollTop / docHeight * 100) + '%';
+    if (scrollTop > heroEl.offsetTop + heroEl.offsetHeight - 100) progressBar.classList.add('visible');
+    else progressBar.classList.remove('visible');
+
+    var viewportMid = scrollTop + window.innerHeight * 0.4;
+    var activeId = '';
+    sections.forEach(function(s) {
+      var t = s.offsetTop, b = t + s.offsetHeight;
+      if (viewportMid >= t && viewportMid < b) {
+        activeId = s.id;
+        var atm = s.getAttribute('data-atmosphere');
+        if (atm && atmospheres[atm]) document.body.style.backgroundColor = atmospheres[atm];
+        var cn = s.getAttribute('data-chapter-name') || '';
+        if (cn !== currentChapterName) {
+          progressChapter.style.opacity = '0';
+          setTimeout(function() { progressChapter.textContent = cn; progressChapter.style.opacity = '1'; }, 200);
+          currentChapterName = cn;
+        }
+      }
+    });
+    tocDots.forEach(function(d) { d.classList.toggle('active', d.getAttribute('data-target') === activeId); });
+  }
+
+  // TOC click navigation
+  tocDots.forEach(function(d) {
+    d.addEventListener('click', function() {
+      var t = document.getElementById(this.getAttribute('data-target'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Annotation toggle
+  document.querySelectorAll('.annotation').forEach(function(ann) {
+    ann.addEventListener('click', function() { this.classList.toggle('expanded'); });
+  });
+
+  // Unified scroll handler
+  var scrollTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(function() { updateAll(); scrollTicking = false; }); scrollTicking = true; }
+  }, { passive: true });
+  updateAll();
+})();
+</script>
+</body>
+</html>
