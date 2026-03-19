@@ -504,7 +504,7 @@
     <section class="hero site-container">
       <p class="hero__label">Metacreative Document</p>
       <h1 class="hero__title">
-        対話のログを、知的資産に変える。
+        対話のログを、<br>知的資産に変える。
       </h1>
       <p class="hero__subtitle">
         三層構造のドキュメントで、<br>
@@ -841,14 +841,14 @@
         divider.style.left  = pct + '%';
       }
 
-      // mouse
-      container.addEventListener('mousedown', function(e) { dragging = true; setPosition(e.clientX); e.preventDefault(); });
+      // mouse — dividerのみ反応
+      divider.addEventListener('mousedown', function(e) { dragging = true; e.preventDefault(); });
       document.addEventListener('mousemove',  function(e) { if (dragging) setPosition(e.clientX); });
       document.addEventListener('mouseup',    function()  { dragging = false; });
 
-      // touch
-      container.addEventListener('touchstart', function(e) { dragging = true; setPosition(e.touches[0].clientX); }, {passive:true});
-      document.addEventListener('touchmove',   function(e) { if (dragging) setPosition(e.touches[0].clientX); },   {passive:true});
+      // touch — dividerのみ反応
+      divider.addEventListener('touchstart', function(e) { dragging = true; }, {passive:true});
+      document.addEventListener('touchmove',   function(e) { if (dragging) { e.preventDefault(); setPosition(e.touches[0].clientX); } }, {passive:false});
       document.addEventListener('touchend',    function()  { dragging = false; });
     })();
   </script>
