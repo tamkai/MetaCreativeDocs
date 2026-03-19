@@ -4,109 +4,854 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Metacreative Document</title>
-  <meta name="description" content="対話の知的資産化。三層構造による対話の再構成で、会話を読み物に変える。">
+  <meta name="description" content="対話のログを知的資産に変える。三層構造のドキュメントで対話の中に眠る知を掘り出し、磨き、価値につなげる。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/site.css">
+  <style>
+    /* Hero image */
+    .hero-image {
+      width: 100%;
+      max-width: 960px;
+      margin: var(--space-8) auto 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 16 / 7;
+      background: linear-gradient(135deg, #1a1a1a 0%, #1e2420 40%, #1a1a1a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-image__placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      color: var(--gold-400, #c4a265);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .hero-image__placeholder::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--gold-400, #c4a265);
+    }
+
+    /* Landing page specific */
+    .pain-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-8);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .pain-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      text-align: left;
+    }
+    .pain-list li {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      padding-left: 1.6em;
+      position: relative;
+    }
+    .pain-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--sage-400);
+    }
+    .bridge {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .annotation-box {
+      background: var(--dark-surface, #1a1a1a);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 720px;
+      margin: var(--space-8) auto 0;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .annotation-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold-400, #c4a265), var(--sage-400, #8faa8b), var(--rose-400, #c49a9a));
+    }
+    .annotation-box__label {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--gold-400, #c4a265);
+      color: var(--dark-surface, #1a1a1a);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      margin-bottom: 1rem;
+    }
+    .annotation-box__title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark-text, #e8e4df);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+    .annotation-box__body {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: #e2dfd9;
+    }
+    @media (max-width: 640px) {
+      .annotation-box { padding: 1.5rem; }
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    .why-item {
+      padding: var(--space-6);
+      border-left: 3px solid var(--sage-300);
+    }
+    .why-item__title {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: var(--space-2);
+    }
+    .why-item__desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* 2 View cards */
+    .view-cards {
+      display: grid;
+      gap: var(--space-4);
+    }
+    .view-card {
+      padding: var(--space-6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    a.view-card:hover {
+      border-color: var(--sage-400);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .view-card__emoji {
+      font-size: 1.5rem;
+      margin-bottom: var(--space-3);
+    }
+    .view-card__name {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    .view-card__desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .view-card__btn {
+      display: inline-block;
+      margin-top: var(--space-4);
+      padding: 0.45rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .view-card__btn:hover {
+      border-color: var(--sage-400);
+      color: var(--text-primary);
+    }
+    .view-card__btn--primary {
+      background: var(--sage-400, #8B9A7D);
+      border-color: var(--sage-400, #8B9A7D);
+      color: #fff;
+    }
+    .view-card__btn--primary:hover {
+      background: var(--sage-500, #6B7F5D);
+      border-color: var(--sage-500, #6B7F5D);
+      color: #fff;
+    }
+    /* view-card flex layout for button alignment */
+    .view-card {
+      display: flex;
+      flex-direction: column;
+    }
+    @media (max-width: 640px) {
+      .view-cards { grid-template-columns: 1fr !important; }
+    }
+
+    /* Comparison slider */
+    /* Compare slider — overflow方式 */
+    .compare-wrap {
+      margin-top: var(--space-8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      user-select: none;
+    }
+    .compare-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .compare-label {
+      padding: 0.6rem 1.25rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .compare-label--log {
+      background: #2a2a2a;
+      color: #777;
+    }
+    .compare-label--doc {
+      background: #8B9A7D;
+      color: #fff;
+      text-align: right;
+    }
+    /* outer container: relative, fixed height, clips both panels */
+    .compare-slider-container {
+      position: relative;
+      height: 320px;
+      overflow: hidden;
+      cursor: ew-resize;
+    }
+    /* both panels sit side-by-side in an absolute full-width row */
+    .compare-panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+    }
+    .compare-side {
+      flex-shrink: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1.25rem 1.5rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.85;
+    }
+    /* log side: fixed to left half, clips at container edge */
+    .compare-side--log {
+      width: 50%;
+      background: #F5F0E8;
+      color: #4a4540;
+    }
+    /* doc side: starts right after log, takes remaining space */
+    .compare-side--doc {
+      width: 50%;
+      background: #FAF8F5;
+      color: #6B6560;
+      border-left: 1px solid #E5DFD6;
+    }
+    .compare-log-speaker {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #5E6E52;
+      margin-bottom: 0.3rem;
+      margin-top: 0.9rem;
+    }
+    .compare-log-speaker:first-child { margin-top: 0; }
+    .compare-log-item {
+      padding: 0.5rem 0.75rem;
+      border-left: 3px solid #C5D1BC;
+      background: #fff;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 0.5rem;
+      color: #2C3330;
+      font-size: 0.82rem;
+      line-height: 1.75;
+    }
+    .compare-doc-guide {
+      color: #6B6560;
+      margin-bottom: 0.75rem;
+    }
+    .compare-doc-dialogue {
+      padding: 0.4rem 0.75rem;
+      border-left: 3px solid #8B9A7D;
+      background: #f0f4ed;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+      color: #4a5a42;
+    }
+    .compare-doc-speaker {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #8B9A7D;
+      margin-bottom: 2px;
+    }
+    .compare-doc-annotation {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      background: #fff9ed;
+      border-left: 3px solid #C4A057;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.76rem;
+      color: #8a6e35;
+      line-height: 1.65;
+    }
+    .compare-doc-annotation-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #C4A057;
+      margin-bottom: 0.25rem;
+    }
+    /* divider bar */
+    .compare-divider {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 3px;
+      background: #8B9A7D;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: ew-resize;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .compare-divider__handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: #8B9A7D;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      pointer-events: all;
+      cursor: ew-resize;
+    }
+    .compare-divider__handle::before {
+      content: '⇔';
+      font-size: 0.75rem;
+      color: #fff;
+    }
+
+    /* Document grid */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+    }
+    .doc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      background: var(--surface);
+    }
+    .doc-card:hover {
+      border-color: var(--sage-400);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .doc-card__source {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--sage-500);
+    }
+    .doc-card__title {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    .doc-card__meta {
+      font-size: 0.78rem;
+      color: var(--text-tertiary, var(--text-secondary));
+      margin-top: auto;
+      padding-top: var(--space-2);
+    }
+    .doc-card--placeholder {
+      opacity: 0.45;
+      pointer-events: none;
+      border-style: dashed;
+    }
+    @media (max-width: 768px) {
+      .doc-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .doc-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Profile section */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-8);
+      margin-top: var(--space-8);
+    }
+    .profile-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .profile-card__avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: var(--space-2);
+      border: 2px solid var(--border);
+    }
+    .profile-card__name {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .profile-card__role {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--sage-500);
+    }
+    .profile-card__bio {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    @media (max-width: 640px) {
+      .profile-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="site-header">
-    <div class="site-header__inner">
-      <a href="/" class="site-header__brand">Metacreative Document</a>
-      <nav class="site-header__nav">
-        <a href="about.html" class="site-header__link">About</a>
-        <a href="showcase/" class="site-header__link">Showcase</a>
-      </nav>
-    </div>
-  </header>
 
-  <!-- Hero -->
   <main>
+
+    <!-- ============================================
+         A. HERO
+         ============================================ -->
     <section class="hero site-container">
       <p class="hero__label">Metacreative Document</p>
-      <h1 class="hero__title">対話を、知的資産に変える。</h1>
+      <h1 class="hero__title">
+        対話のログを、知的資産に変える。
+      </h1>
       <p class="hero__subtitle">
-        三層構造による対話の再構成。<br>
-        会話のなかに眠る洞察を、読み物として蘇らせる。
+        三層構造のドキュメントで、<br>
+        対話の中に眠る知を掘り出し、磨き、価値につなげる。
       </p>
-      <div class="mt-8">
-        <a href="about.html" class="btn btn--primary">メタクリドキュメントとは</a>
+      <div class="hero-image">
+        <img src="assets/images/hero.png" alt="対話から知的資産が生まれるイメージ">
       </div>
     </section>
 
-    <!-- Three Layers -->
-    <section class="section section--bordered site-container">
-      <p class="section__label">Three Layers</p>
-      <h2 class="section__title">三層構造という設計思想</h2>
-      <div class="card-grid">
-        <div class="card">
-          <div class="card__meta" style="color: var(--sage-500);">Layer 1</div>
-          <h3 class="card__title">導の文</h3>
-          <p class="card__description">
-            各章の冒頭に置かれる、テーマの要約と文脈の導入。
-            読者が対話に入る前の「地図」となる。
-          </p>
-        </div>
-        <div class="card">
-          <div class="card__meta" style="color: var(--gold-500);">Layer 2</div>
-          <h3 class="card__title">対話</h3>
-          <p class="card__description">
-            実際の会話を忠実に再構成した、臨場感のある対話パート。
-            思考の揺れ、発見の瞬間がそのまま残る。
-          </p>
-        </div>
-        <div class="card">
-          <div class="card__meta" style="color: var(--rose-600);">Layer 3</div>
-          <h3 class="card__title">註釈</h3>
-          <p class="card__description">
-            対話で触れられた概念や理論の補足。
-            知的好奇心を次の探索へと導く。
-          </p>
+    <!-- ============================================
+         B. 「ありませんか」— 共感リスト
+         ============================================ -->
+    <section class="section section--bordered site-container text-center">
+      <h2 class="bridge" style="margin-bottom: var(--space-6);">
+        ログを取るのは簡単になった。でも本当に「活用」できていますか？
+      </h2>
+      <div class="pain-box">
+        <ul class="pain-list">
+          <li>チームの議論が白熱した。でも翌週には、誰も内容を覚えていない。</li>
+          <li>セミナーで「いい話だった」と思った。感想は言えるが、中身を説明できない。</li>
+          <li>面白いポッドキャストを聴いた。でも音声なので内容の振り返りが難しい。</li>
+          <li>AI要約はきれいにまとまっている。でも、不思議と読み返さない。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================================
+         C. ブリッジ — 解決宣言
+         ============================================ -->
+    <section style="padding: var(--space-8) 0 var(--space-10);" class="site-container text-center">
+      <h2 class="bridge">
+        これらの課題を解決するために、メタクリドキュメントが生まれました。
+      </h2>
+      <div class="annotation-box">
+        <span class="annotation-box__label">Annotation</span>
+        <h3 class="annotation-box__title">MetaCreativeとは</h3>
+        <div class="annotation-box__body">
+          創造性を「一部の人が持つ才能」として定義するのではなく、様々な行為・思考・存在のなかに宿る創造性をメタな視点で捉え直す概念である。「私にはクリエイティビティがない」という思い込みを解体し、創造性を誰もがアクセスできるものとして再定義するために生まれた。<br><br>その実践の1つとして生まれたのが、対話の中に眠る知を掘り出し、磨き、創造につなげるためのメタクリドキュメントである。
         </div>
       </div>
     </section>
 
-    <!-- Two Experiences -->
+    <!-- ============================================
+         C-2. 2ビュー対比
+         ============================================ -->
     <section class="section section--bordered site-container">
-      <p class="section__label">Two Experiences</p>
-      <h2 class="section__title">2つの読み方</h2>
+      <p class="section__label">What Is</p>
+      <h2 class="section__title">「メタクリドキュメントとは」を、2つの視点で読む</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: var(--space-2); margin-bottom: var(--space-6); max-width: 960px;">
+        対話のログは「起きたこと」を記録する。メタクリドキュメントは「何が生まれたか」を引き出す。同じ対話から、何が変わるのか。スライダーを動かして比べてみてください。
+      </p>
+
+      <!-- 比較スライダー -->
+      <div class="compare-wrap">
+        <div class="compare-labels">
+          <div class="compare-label compare-label--log">対話ログ</div>
+          <div class="compare-label compare-label--doc">Metacreative Document</div>
+        </div>
+        <div class="compare-slider-container" id="compareContainer">
+          <div class="compare-panel" id="comparePanel">
+
+            <!-- 左：会話文 -->
+            <div class="compare-side compare-side--log">
+              <p class="compare-log-speaker">タムカイ</p>
+              <div class="compare-log-item">今日はちょっと、僕たちがずっと作ってきた「メタクリドキュメント」というもの自体について話してみたいなと思うんですよね。これ何なの？ って聞かれることが最近増えてきて。</div>
+              <p class="compare-log-speaker">Opi</p>
+              <div class="compare-log-item">そうそうそうそう。メタクリドキュメントって名前だけ聞くと「何それ？」ってなるよね。でもね、これ実は、僕たちがラジオを始めたことからすべてが始まってるわけですよ。</div>
+              <p class="compare-log-speaker">タムカイ</p>
+              <div class="compare-log-item">ですよね。メタクリラジオ。最初は普通にポッドキャストとして二人で話してたわけですけど。</div>
+              <p class="compare-log-speaker">Opi</p>
+              <div class="compare-log-item">そう。で、当然録った音声をどうするかっていう問題があるじゃないですか。普通だったらまず文字起こしするわけですよ。で、文字起こしをして議事録的なものを作るっていうのが、まあ、普通の流れですよね。</div>
+              <p class="compare-log-speaker">タムカイ</p>
+              <div class="compare-log-item">なんか、確かにこういう話はしたんだけど、話してたときに感じたあの面白さとか、「おお、そういうことか！」っていう発見の感覚が、全部消えてるんですよ。</div>
+            </div>
+
+            <!-- 右：Standardドキュメント -->
+            <div class="compare-side compare-side--doc">
+              <p class="compare-doc-guide">ポッドキャストの音声を文字に起こし、要約して議事録にまとめる。それは合理的で、効率的で、そして致命的に何かを失う行為でもある。</p>
+              <p class="compare-doc-guide">タムカイとOpiが<strong>「メタクリドキュメント」</strong>と呼ぶ文書形式は、この「失われるもの」を取り戻すために生まれた。もともと対話の中に潜在していたが、話者自身も気づいていなかった知的資産を掘り起こし、増幅させるために。</p>
+              <div class="compare-doc-dialogue">
+                <p class="compare-doc-speaker">タムカイ</p>
+                「なんか、確かにこういう話はしたんだけど、話してたときに感じたあの面白さとか、『おお、そういうことか！』っていう発見の感覚が、全部消えてるんですよ」
+              </div>
+              <p class="compare-doc-guide">議事録は「何が話されたか」を記録する。しかし「なぜそれが面白かったのか」は記録しない。対話という行為の本質——思考と思考がぶつかり合い、予想もしなかった場所に着地する化学反応——は、要約という処理の中できれいに蒸発してしまう。</p>
+              <div class="compare-doc-annotation">
+                <p class="compare-doc-annotation-title">📚 要約と情報エントロピー</p>
+                情報理論の観点から見れば、要約とは「情報の非可逆圧縮」である。対話においては、本筋に関係ないと判断された部分——脱線、笑い、言い淀み——にこそ、話者の思考の核心が宿っていることがある。
+              </div>
+            </div>
+
+          </div>
+          <div class="compare-divider" id="compareDivider">
+            <div class="compare-divider__handle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- カード（スライダーの下） -->
+      <div class="view-cards" style="grid-template-columns: 1fr 1fr; margin-top: var(--space-6);">
+        <div class="view-card">
+          <div class="view-card__emoji">🎙️</div>
+          <p class="view-card__name">対話ログ</p>
+          <p class="view-card__desc">発言の記録。何が語られたかを残す。ただし、文脈も熱量も、ページを閉じれば消えていく。</p>
+          <a href="d/about_conversation.html" class="view-card__btn" target="_blank">対話ログの全文を読む →</a>
+        </div>
+        <div class="view-card">
+          <div class="view-card__emoji">📖</div>
+          <p class="view-card__name">メタクリドキュメント</p>
+          <p class="view-card__desc">対話から知を引き出す構造。三層（会話・地の文・註釈）で編集され、何度でも読み返せる知的資産になる。</p>
+          <a href="d/about_standard.html" class="view-card__btn view-card__btn--primary" target="_blank">メタクリドキュメントの全文を読む →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         D-0. 三層構造とは
+         ============================================ -->
+    <section class="section section--bordered site-container">
+      <p class="section__label">Structure</p>
+      <h2 class="section__title">メタクリドキュメントの三層構造とは</h2>
+      <div style="margin-top:var(--space-6);">
+        <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding:1.25rem 1.5rem;border-radius:8px;background:var(--surface);border:1px solid var(--border);">
+          <div style="font-size:1.5rem;flex-shrink:0;width:2.5rem;text-align:center;line-height:1.8;">💬</div>
+          <div style="flex:1;">
+            <p style="font-size:0.8rem;font-weight:600;letter-spacing:0.04em;color:var(--text-primary);margin-bottom:0.25rem;">対話の引用</p>
+            <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.75;">実際の対話から選び抜かれた発言。文脈と温度感を保ったまま、核心的なやりとりを再現する。</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding:1.25rem 1.5rem;border-radius:8px;background:var(--surface);border:1px solid var(--border);">
+          <div style="font-size:1.5rem;flex-shrink:0;width:2.5rem;text-align:center;line-height:1.8;">🖊</div>
+          <div style="flex:1;">
+            <p style="font-size:0.8rem;font-weight:600;letter-spacing:0.04em;color:var(--text-primary);margin-bottom:0.25rem;">地の文（導の文）</p>
+            <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.75;">対話の前後を補い、文脈をつなぎ、読者を導く第三者の視点。映像作品のナレーションに近い役割を果たす。</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem;padding:1.25rem 1.5rem;border-radius:8px;background:var(--surface);border:1px solid var(--border);">
+          <div style="font-size:1.5rem;flex-shrink:0;width:2.5rem;text-align:center;line-height:1.8;">📚</div>
+          <div style="flex:1;">
+            <p style="font-size:0.8rem;font-weight:600;letter-spacing:0.04em;color:var(--text-primary);margin-bottom:0.25rem;">註釈</p>
+            <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.75;">対話の中の何気ない一言を、学術的概念や文化的文脈と接続する知的架橋。対話を「教養」に昇華させる。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation-box" style="margin-top: 2.5rem;">
+        <span class="annotation-box__label">Annotation</span>
+        <h3 class="annotation-box__title">対話と知識創造——ソクラテスの問答法から</h3>
+        <div class="annotation-box__body">
+          「対話によって知識が生まれる」という考え方は、古代ギリシアのソクラテスに遡る。彼の「産婆術（マイエウティケー）」は、問いかけを通じて相手の内側にある知を引き出すプロセスを指す。自分一人では気づかなかった考えが、対話の中で言語化される——メタクリドキュメントが「記録」ではなく「知的資産の発掘」と呼ぶのは、この伝統に根ざしている。
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         D. ドキュメント一覧（3×2グリッド）
+         ============================================ -->
+    <section class="section section--bordered site-container">
+      <p class="section__label">SHOWCASE</p>
+      <h2 class="section__title">メタクリドキュメントショーケース</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: var(--space-2);">
+        対話から生まれたドキュメントを、読める形で公開しています。
+      </p>
+
+      <div class="doc-grid">
+
+        <!-- メタクリラジオ Row -->
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+          <span style="font-size:0.9rem;font-weight:600;letter-spacing:0.05em;color:var(--text-primary);">Metacreative Radio</span>
+          <a href="https://open.spotify.com/show/20pCclqxQrONhKAZ8j7Hrb" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;color:#1DB954;border:1px solid #1DB954;border-radius:20px;padding:3px 10px;text-decoration:none;font-weight:500;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Spotifyで聴く
+          </a>
+        </div>
+        <a href="d/showcase/R_20250922_ep01-jikoshoukai_s.html" class="doc-card">
+          <span class="doc-card__source">Metacreative Radio</span>
+          <p class="doc-card__title">自己紹介という名の存在証明</p>
+          <p class="doc-card__meta">2025.09.22 · Ep.01</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+        <a href="d/showcase/R_20251229_ep15-mitate_s.html" class="doc-card">
+          <span class="doc-card__source">Metacreative Radio</span>
+          <p class="doc-card__title">遠いものを結びつける知性</p>
+          <p class="doc-card__meta">2025.12.29 · Ep.15</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+        <a href="d/showcase/R_20260126_ep18-noise_s.html" class="doc-card">
+          <span class="doc-card__source">Metacreative Radio</span>
+          <p class="doc-card__title">予期せぬ「ノイズ」を愛して、デザインする</p>
+          <p class="doc-card__meta">2026.01.26 · Ep.18</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+        <!-- ザッソウラジオ Row -->
+        <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); margin-top: var(--space-4);">
+          <span style="font-size:0.9rem;font-weight:600;letter-spacing:0.05em;color:var(--text-primary);">ザッソウラジオ</span>
+          <a href="https://open.spotify.com/show/4Qx1P7o7W16A1Io6jyKO3R" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;color:#1DB954;border:1px solid #1DB954;border-radius:20px;padding:3px 10px;text-decoration:none;font-weight:500;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            Spotifyで聴く
+          </a>
+        </div>
+        <a href="d/showcase/T_20250507_zassou-radio-169_s.html" class="doc-card">
+          <span class="doc-card__source">ザッソウラジオ</span>
+          <p class="doc-card__title">テントの中で始まる戦略</p>
+          <p class="doc-card__meta">2025.05.07 · #169</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+        <a href="d/showcase/T_20250514_zazuradio170-kangaeru_s.html" class="doc-card">
+          <span class="doc-card__source">ザッソウラジオ</span>
+          <p class="doc-card__title">言葉の地層を掘る手つき</p>
+          <p class="doc-card__meta">2025.05.14 · #170</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+        <a href="d/showcase/T_20250521_zassou-radio-171_s.html" class="doc-card">
+          <span class="doc-card__source">ザッソウラジオ</span>
+          <p class="doc-card__title">ラクガキみたいに生きる</p>
+          <p class="doc-card__meta">2025.05.21 · #171</p>
+          <span style="display:inline-block;margin-top:var(--space-3);font-size:0.75rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:6px;padding:4px 12px;">メタクリドキュメントを読む →</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ============================================
+         E. ユースケース × ベネフィット
+         ============================================ -->
+    <section class="section section--bordered site-container">
+      <p class="section__label">Use Cases</p>
+      <h2 class="section__title">こんな場面で活用できます</h2>
       <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-        <div class="card">
-          <span class="tag tag--standard">Standard</span>
-          <h3 class="card__title mt-4">構造テンプレート版</h3>
-          <p class="card__description">
-            メタクリドキュメントを忠実に 1:1 で構造変換。
-            三層構造がそのまま見える、じっくり読む体験。
-          </p>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <img src="assets/images/usecase_team.jpg" alt="チームの議論・ブレスト" style="width:100%;height:180px;object-fit:cover;display:block;">
+          <div style="padding:var(--space-6);">
+            <div class="card__meta" style="color: var(--sage-500);">Team Discussion</div>
+            <h3 class="card__title">チームの議論・ブレスト</h3>
+            <p class="card__description">「いい議論だったね」で終わらせない。週次のディスカッションやブレストを、チームの知的資産として蓄積。次の議論の出発点になる。</p>
+          </div>
         </div>
-        <div class="card">
-          <span class="tag tag--rich">Rich</span>
-          <h3 class="card__title mt-4">イマーシブ版</h3>
-          <p class="card__description">
-            編集的に再構成されたイマーシブな読み物。
-            スクロールアニメーション、空気感の変化で「読む」を再発明。
-          </p>
-          <a href="showcase/" class="btn btn--ghost mt-4" style="font-size: 0.8rem;">Showcase を見る</a>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <img src="assets/images/usecase_seminar.jpg" alt="セミナー・講演" style="width:100%;height:180px;object-fit:cover;display:block;">
+          <div style="padding:var(--space-6);">
+            <div class="card__meta" style="color: var(--sage-500);">Seminar / Lecture</div>
+            <h3 class="card__title">セミナー・講演</h3>
+            <p class="card__description">登壇者の語りと会場の対話を、参加者以外にも届くコンテンツに変換。イベントの価値を、その日だけで終わらせない。</p>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <img src="assets/images/usecase_workshop.jpg" alt="ワークショップ" style="width:100%;height:180px;object-fit:cover;display:block;">
+          <div style="padding:var(--space-6);">
+            <div class="card__meta" style="color: var(--sage-500);">Workshop</div>
+            <h3 class="card__title">ワークショップ</h3>
+            <p class="card__description">参加者同士の対話を、次のアクションにつなげる振り返り資料に。「あのとき何を話したか」がチームの共通言語になる。</p>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <img src="assets/images/usecase_podcast.jpg" alt="ポッドキャスト・対談" style="width:100%;height:180px;object-fit:cover;display:block;">
+          <div style="padding:var(--space-6);">
+            <div class="card__meta" style="color: var(--sage-500);">Podcast / Dialogue</div>
+            <h3 class="card__title">ポッドキャスト・対談</h3>
+            <p class="card__description">音声コンテンツを、聴くだけでなく読める知的資産に拡張。リスナーの「あの回、なんて言ってたっけ」に応える。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotation-box" style="margin-top: 2.5rem;">
+        <span class="annotation-box__label">Annotation</span>
+        <h3 class="annotation-box__title">暗黙知と形式知——なぜ要約すると「あの感じ」が消えるのか</h3>
+        <div class="annotation-box__body">
+          野中郁次郎・竹内弘高『知識創造企業』(1996) が提唱した「暗黙知（Tacit Knowledge）」の概念によれば、人間の知識の大部分は言語化できない身体的・経験的な知として存在する。対話の中に宿る「発見の感覚」や「その場の熱量」はまさに暗黙知であり、要約という「非可逆圧縮」の過程で失われる。メタクリドキュメントが対話の文脈ごと残す理由は、この暗黙知の輪郭を保つためでもある。
         </div>
       </div>
     </section>
 
-    <!-- Contact -->
+
+    <!-- ============================================
+         G. タムカイ・オピ 自己紹介
+         ============================================ -->
+    <section class="section section--bordered site-container">
+      <p class="section__label">About Us</p>
+      <h2 class="section__title">タムカイ と Opi</h2>
+      <div class="profile-grid">
+        <div class="profile-card">
+          <img src="assets/images/tamkai_profile.png" alt="タムカイ" class="profile-card__avatar">
+          <p class="profile-card__role">株式会社AFFLATUS 代表 / 富士通株式会社 デザインフェロー</p>
+          <p class="profile-card__name">タムラカイ（タムカイ）</p>
+          <p class="profile-card__bio">
+            「世界の創造性のレベルを1つあげる」をパーパスに、人と組織の対話設計をテーマに活動。ラクガキライフコーチの肩書きでの企業・自治体向けの講演・ワークショップや、富士通の全社変革プロジェクト「フジトラ」への参画など、創造性とコミュニケーションの現場に関わり続けている。
+          </p>
+        </div>
+        <div class="profile-card">
+          <img src="assets/images/opi_profile.png" alt="Opi" class="profile-card__avatar">
+          <p class="profile-card__role">元NAKED Inc. 創業メンバー / 株式会社FULL 代表</p>
+          <p class="profile-card__name">大屋友紀雄（Opi）</p>
+          <p class="profile-card__bio">
+            1997年、村松亮太郎らとともにNAKED Inc.を設立。東京駅の3Dプロジェクションマッピング『TOKYO HIKARI VISION』をはじめ、空間全体を演出するプロジェクションマッピングや映像技術で国内屈指のクリエイティブを誇る。コンテンツプロデュース／クリエイティブ・ディレクションを中心に活動。
+          </p>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--bordered site-container text-center">
       <p class="section__label">Contact</p>
       <h2 class="section__title">お問い合わせ</h2>
       <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: var(--space-6);">
-        メタクリドキュメントの制作依頼、サービスに関するご相談はこちらから。
+        制作のご依頼、サービスに関するご相談はこちらから。
       </p>
-      <a href="https://metacreativeradio.github.io/" class="btn btn--ghost" target="_blank" rel="noopener">
-        Metacreative Radio Web →
+      <a href="https://afflatus.design/" class="btn btn--ghost" target="_blank" rel="noopener">
+        AFFLATUS.Inc →
       </a>
     </section>
+
   </main>
+
+  <script>
+    (function() {
+      var container = document.getElementById('compareContainer');
+      var divider   = document.getElementById('compareDivider');
+      var logSide   = document.querySelector('.compare-side--log');
+      var docSide   = document.querySelector('.compare-side--doc');
+      if (!container || !divider || !logSide || !docSide) return;
+
+      var dragging = false;
+
+      function setPosition(x) {
+        var rect = container.getBoundingClientRect();
+        var pct  = Math.max(15, Math.min(85, ((x - rect.left) / rect.width) * 100));
+        // Resize both sides directly
+        logSide.style.width = pct + '%';
+        docSide.style.width = (100 - pct) + '%';
+        divider.style.left  = pct + '%';
+      }
+
+      // mouse
+      container.addEventListener('mousedown', function(e) { dragging = true; setPosition(e.clientX); e.preventDefault(); });
+      document.addEventListener('mousemove',  function(e) { if (dragging) setPosition(e.clientX); });
+      document.addEventListener('mouseup',    function()  { dragging = false; });
+
+      // touch
+      container.addEventListener('touchstart', function(e) { dragging = true; setPosition(e.touches[0].clientX); }, {passive:true});
+      document.addEventListener('touchmove',   function(e) { if (dragging) setPosition(e.touches[0].clientX); },   {passive:true});
+      document.addEventListener('touchend',    function()  { dragging = false; });
+    })();
+  </script>
 
   <!-- Footer -->
   <footer class="site-footer">
