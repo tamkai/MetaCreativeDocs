@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Metacreative Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --base: #F5F0E8;
+      --surface: #FAF8F5;
+      --white: #FDFCFA;
+      --text-primary: #2C3330;
+      --text-secondary: #6B6560;
+      --text-muted: #9E9690;
+      --border: #E5DFD6;
+      --sage-50: #F4F6F2;
+      --sage-100: #E2E8DD;
+      --sage-400: #8B9A7D;
+      --sage-600: #5E6E52;
+      --gold-50: #FDF9EE;
+      --gold-400: #C4A057;
+      --rose-50: #FDF5F3;
+      --rose-400: #E8A598;
+      --blue-50: #F0F5FA;
+      --blue-400: #5B8DB8;
+      --purple-50: #F5F2F8;
+      --purple-400: #9B7DC4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+      background: var(--base);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ---- Auth Screen ---- */
+    .auth-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .auth-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .auth-box h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-box p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .auth-input:focus {
+      border-color: var(--sage-400);
+    }
+
+    .auth-input.error {
+      border-color: var(--rose-400);
+      animation: shake 0.4s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .auth-btn {
+      width: 100%;
+      margin-top: 1rem;
+      padding: 12px;
+      background: var(--sage-400);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .auth-btn:hover {
+      background: var(--sage-600);
+    }
+
+    /* ---- Admin Content ---- */
+    .admin-content {
+      display: none;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .admin-header .badge {
+      font-size: 0.75rem;
+      color: var(--sage-600);
+      background: var(--sage-50);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .article-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--white);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .article-item:hover {
+      background: var(--surface);
+    }
+
+    .article-type {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.05em;
+      color: #fff;
+    }
+
+    .type-radio { background: var(--sage-400); }
+    .type-talk { background: var(--blue-400); }
+    .type-rich { background: var(--purple-400); }
+
+    .article-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .article-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .article-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 0.75em;
+    }
+
+    .article-status {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .status-public {
+      color: var(--sage-600);
+      background: var(--sage-50);
+    }
+
+    .status-limited {
+      color: var(--gold-400);
+      background: var(--gold-50);
+    }
+
+    .admin-footer {
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+
+    .admin-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .admin-footer a:hover {
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 600px) {
+      .article-item {
+        padding: 1rem 1.25rem;
+      }
+      .article-title {
+        font-size: 0.85rem;
+      }
+      .article-status {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Auth -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-box">
+      <h1>Showcase Admin</h1>
+      <p>パスワードを入力してください</p>
+      <form id="authForm">
+        <input type="password" class="auth-input" id="authInput" placeholder="Password" autocomplete="off" autofocus>
+        <button type="submit" class="auth-btn">Enter</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin -->
+  <div class="admin-content" id="adminContent">
+    <div class="admin-header">
+      <h1>Showcase Admin</h1>
+      <span class="badge" id="articleCount"></span>
+    </div>
+
+    <div class="article-list" id="articleList"></div>
+
+    <div class="admin-footer">
+      <a href="../../">← メタクリドキュメントについて</a>
+    </div>
+  </div>
+
+  <script>
+    // Simple auth — hash compare (not security-critical, just casual gate)
+    var PASS_HASH = '8f14e45fceea167a5a36dedd4bea2543'; // md5 of 'metacre' (7 chars)
+
+    // Minimal MD5 for single-use hash check
+    function md5(s){function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d)return(x^2147483648^F^H);if(I|d){if(x&1073741824)return(x^3221225472^F^H);else return(x^1073741824^F^H)}else return(x^F^H)}function M(d,F,e){return(d&F)|((~d)&e)}function N(d,F,e){return(d&e)|(F&(~e))}function O(d,F,e){return(d^F^e)}function P(d,F,e){return(F^(d|(~e)))}function X(d,e,F,G,x,S,I){d=K(d,K(K(e,F),K(x,I)));return K(L(d,S),G)}var C=[],P1,aa,bb,cc,dd,a,b,c,d,S=function(x){var r='',i,h;for(i=0;i<=3;i++){h=(x>>>(i*8))&255;r+=('0'+h.toString(16)).slice(-2)}return r};s=function(s){s=s.replace(/\r\n/g,'\n');var u='';for(var n=0;n<s.length;n++){var c=s.charCodeAt(n);if(c<128)u+=String.fromCharCode(c);else if(c>127&&c<2048){u+=String.fromCharCode((c>>6)|192);u+=String.fromCharCode((c&63)|128)}else{u+=String.fromCharCode((c>>12)|224);u+=String.fromCharCode(((c>>6)&63)|128);u+=String.fromCharCode((c&63)|128)}}return u}(s);var wl=s.length,nw=(((wl+8)>>>6)+1)*16,i;for(i=0;i<nw;i++)C[i]=0;for(i=0;i<wl;i++)C[i>>>2]|=s.charCodeAt(i)<<((i%4)*8);C[i>>>2]|=128<<((i%4)*8);C[nw-2]=wl*8;a=1732584193;b=4023233417;c=2562383102;d=271733878;for(i=0;i<nw;i+=16){aa=a;bb=b;cc=c;dd=d;a=X(a,b,c,d,C[i+0],7,3614090360);d=X(d,a,b,c,C[i+1],12,3905402710);c=X(c,d,a,b,C[i+2],17,606105819);b=X(b,c,d,a,C[i+3],22,3250441966);a=X(a,b,c,d,C[i+4],7,4118548399);d=X(d,a,b,c,C[i+5],12,1200080426);c=X(c,d,a,b,C[i+6],17,2821735955);b=X(b,c,d,a,C[i+7],22,4249261313);a=X(a,b,c,d,C[i+8],7,1770035416);d=X(d,a,b,c,C[i+9],12,2336552879);c=X(c,d,a,b,C[i+10],17,4294925233);b=X(b,c,d,a,C[i+11],22,2304563134);a=X(a,b,c,d,C[i+12],7,1804603682);d=X(d,a,b,c,C[i+13],12,4254626195);c=X(c,d,a,b,C[i+14],17,2792965006);b=X(b,c,d,a,C[i+15],22,1236535329);a=X(a,b,c,d,C[i+1],5,4129170786);d=X(d,a,b,c,C[i+6],9,3225465664);c=X(c,d,a,b,C[i+11],14,643717713);b=X(b,c,d,a,C[i+0],20,3921069994);a=X(a,b,c,d,C[i+5],5,3593408605);d=X(d,a,b,c,C[i+10],9,38016083);c=X(c,d,a,b,C[i+15],14,3634488961);b=X(b,c,d,a,C[i+4],20,3889429448);a=X(a,b,c,d,C[i+9],5,568446438);d=X(d,a,b,c,C[i+14],9,3275163606);c=X(c,d,a,b,C[i+3],14,4107603335);b=X(b,c,d,a,C[i+8],20,1163531501);a=X(a,b,c,d,C[i+13],5,2850285829);d=X(d,a,b,c,C[i+2],9,4243563512);c=X(c,d,a,b,C[i+7],14,1735328473);b=X(b,c,d,a,C[i+12],20,2368359562);a=X(a,b,c,d,C[i+5],4,4294588738);d=X(d,a,b,c,C[i+8],11,2272392833);c=X(c,d,a,b,C[i+11],16,1839030562);b=X(b,c,d,a,C[i+14],23,4259657740);a=X(a,b,c,d,C[i+1],4,2763975236);d=X(d,a,b,c,C[i+4],11,1272893353);c=X(c,d,a,b,C[i+7],16,4139469664);b=X(b,c,d,a,C[i+10],23,3200236656);a=X(a,b,c,d,C[i+13],4,681279174);d=X(d,a,b,c,C[i+0],11,3936430074);c=X(c,d,a,b,C[i+3],16,3572445317);b=X(b,c,d,a,C[i+6],23,76029189);a=X(a,b,c,d,C[i+9],4,3654602809);d=X(d,a,b,c,C[i+12],11,3873151461);c=X(c,d,a,b,C[i+15],16,530742520);b=X(b,c,d,a,C[i+2],23,3299628645);a=X(a,b,c,d,C[i+0],6,4096336452);d=X(d,a,b,c,C[i+7],10,1126891415);c=X(c,d,a,b,C[i+14],15,2878612391);b=X(b,c,d,a,C[i+5],21,4237533241);a=X(a,b,c,d,C[i+12],6,1700485571);d=X(d,a,b,c,C[i+3],10,2399980690);c=X(c,d,a,b,C[i+10],15,4293915773);b=X(b,c,d,a,C[i+1],21,2240044497);a=X(a,b,c,d,C[i+8],6,1873313359);d=X(d,a,b,c,C[i+15],10,4264355552);c=X(c,d,a,b,C[i+6],15,2734768916);b=X(b,c,d,a,C[i+13],21,1309151649);a=X(a,b,c,d,C[i+4],6,4149444226);d=X(d,a,b,c,C[i+11],10,3174756917);c=X(c,d,a,b,C[i+2],15,718787259);b=X(b,c,d,a,C[i+9],21,3951481745);a=K(a,aa);b=K(b,bb);c=K(c,cc);d=K(d,dd)}return(S(a)+S(b)+S(c)+S(d))}
+
+    // Article data
+    var articles = [
+      {
+        file: 'T_20260315_naze-ima-podcast_r.html',
+        title: 'なぜ今Podcastなのか？',
+        type: 'rich', typeLabel: 'Rich',
+        date: '2026.03.15',
+        source: 'けんすう × 高木新平',
+        listed: false
+      },
+      {
+        file: 'T_20260315_naze-ima-podcast_s.html',
+        title: 'なぜ今Podcastなのか？',
+        type: 'talk', typeLabel: 'Std',
+        date: '2026.03.15',
+        source: 'けんすう × 高木新平',
+        listed: false
+      },
+      {
+        file: 'R_20260126_ep18-noise_s.html',
+        title: '予期せぬ「ノイズ」を愛して、デザインする',
+        type: 'radio', typeLabel: 'Ep18',
+        date: '2026.01.26',
+        source: 'メタクリラジオ',
+        listed: true
+      },
+      {
+        file: 'R_20251229_ep15-mitate_s.html',
+        title: '遠いものを結びつける知性',
+        type: 'radio', typeLabel: 'Ep15',
+        date: '2025.12.29',
+        source: 'メタクリラジオ',
+        listed: true
+      },
+      {
+        file: 'R_20250922_ep01-jikoshoukai_s.html',
+        title: '自己紹介という名の存在証明',
+        type: 'radio', typeLabel: 'Ep01',
+        date: '2025.09.22',
+        source: 'メタクリラジオ',
+        listed: true
+      },
+      {
+        file: 'T_20250521_zassou-radio-171_s.html',
+        title: 'ラクガキみたいに生きる',
+        type: 'talk', typeLabel: '#171',
+        date: '2025.05.21',
+        source: 'ザッソウラジオ',
+        listed: true
+      },
+      {
+        file: 'T_20250514_zazuradio170-kangaeru_s.html',
+        title: '言葉の地層を掘る手つき',
+        type: 'talk', typeLabel: '#170',
+        date: '2025.05.14',
+        source: 'ザッソウラジオ',
+        listed: true
+      },
+      {
+        file: 'T_20250507_zassou-radio-169_s.html',
+        title: 'テントの中で始まる戦略',
+        type: 'talk', typeLabel: '#169',
+        date: '2025.05.07',
+        source: 'ザッソウラジオ',
+        listed: true
+      }
+    ];
+
+    // Auth
+    var authForm = document.getElementById('authForm');
+    var authInput = document.getElementById('authInput');
+
+    // Check session
+    if (sessionStorage.getItem('showcase_auth') === '1') {
+      showAdmin();
+    }
+
+    authForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (md5(authInput.value) === PASS_HASH) {
+        sessionStorage.setItem('showcase_auth', '1');
+        showAdmin();
+      } else {
+        authInput.classList.add('error');
+        setTimeout(function() { authInput.classList.remove('error'); }, 500);
+        authInput.value = '';
+      }
+    });
+
+    function showAdmin() {
+      document.getElementById('authScreen').style.display = 'none';
+      var content = document.getElementById('adminContent');
+      content.style.display = 'block';
+
+      document.getElementById('articleCount').textContent = articles.length + ' articles';
+
+      var list = document.getElementById('articleList');
+      var typeClasses = { radio: 'type-radio', talk: 'type-talk', rich: 'type-rich' };
+
+      articles.forEach(function(a) {
+        var el = document.createElement('a');
+        el.href = a.file;
+        el.className = 'article-item';
+        el.innerHTML =
+          '<div class="article-type ' + typeClasses[a.type] + '">' + a.typeLabel + '</div>' +
+          '<div class="article-info">' +
+            '<div class="article-title">' + a.title + '</div>' +
+            '<div class="article-meta"><span>' + a.date + '</span><span>' + a.source + '</span></div>' +
+          '</div>' +
+          '<span class="article-status ' + (a.listed ? 'status-public' : 'status-limited') + '">' +
+            (a.listed ? 'Public' : 'Limited') +
+          '</span>';
+        list.appendChild(el);
+      });
+    }
+  </script>
+</body>
+</html>
