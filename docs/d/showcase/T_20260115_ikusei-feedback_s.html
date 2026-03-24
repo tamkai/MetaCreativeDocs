@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>育成という名の権力装置——正しさの罠を超えて</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+      --sage-400: #8B9A7D; --sage-600: #5E6E52;
+      --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+      --rose-400: #E8A598; --rose-600: #D88B7A;
+      --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+      --gold-400: #C4A057; --gold-600: #9A7B3A;
+      --red-50: #FEF2F1; --red-100: #FDDBD8; --red-200: #F5AFA7;
+      --red-400: #E74C3C; --red-600: #C0392B;
+      --blue-50: #F0F5FA; --blue-100: #D6E4F0;
+      --blue-400: #5B8DB8; --blue-600: #3A6B91;
+      --purple-50: #F5F2F8; --purple-100: #E4DCF0;
+      --purple-400: #8B7AAD; --purple-600: #6B5A8E;
+      --base: #F5F0E8; --surface: #FAF8F5; --white: #FDFCFA;
+      --text-primary: #2C3330; --text-secondary: #6B6560;
+      --text-muted: #9E9690; --border: #E5DFD6;
+      --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      --font-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+      --font-inter: 'Inter', 'Noto Sans JP', sans-serif;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+      --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+      --content-standard: 800px; --content-wide: 1080px;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+      --shadow-sm: 0 1px 2px rgba(44, 51, 48, 0.05);
+      --shadow-md: 0 4px 12px rgba(44, 51, 48, 0.08);
+      --duration-fast: 150ms; --duration-normal: 250ms;
+      --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body { font-family: var(--font-sans); color: var(--text-primary); background-color: var(--base); line-height: 1.85; font-size: 0.9375rem; }
+    .title-page { text-align: center; padding: 5em 2em 4em; max-width: var(--content-wide); margin: 0 auto; }
+    .title-ornament { font-size: 2.5em; color: var(--gold-400); margin: 0.5em 0; line-height: 1; }
+    .title-page h1 { font-family: var(--font-serif); font-size: 2.25rem; font-weight: 700; line-height: 1.3; color: var(--text-primary); margin-bottom: 0.3em; }
+    .title-subtitle { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 400; color: var(--text-secondary); margin-bottom: 1.5em; line-height: 1.6; }
+    .title-meta { font-family: var(--font-inter); font-size: 0.8125rem; color: var(--text-muted); letter-spacing: 0.02em; }
+    .title-meta span { display: inline-block; margin: 0 0.75em; }
+    .title-meta-sub { margin-top: var(--space-2); font-size: 0.75rem; }
+    .title-divider { width: 60px; height: 1px; background: var(--border); margin: 2em auto; }
+    .document-wrapper { display: flex; gap: var(--space-8); max-width: var(--content-wide); margin: 0 auto; padding: 0 var(--space-6) var(--space-16); }
+    .sidebar { width: 220px; flex-shrink: 0; position: sticky; top: var(--space-8); align-self: flex-start; max-height: calc(100vh - 64px); overflow-y: auto; }
+    .sidebar-toc { padding: var(--space-4); border-right: 1px solid var(--border); }
+    .sidebar-toc .toc-label { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-4); }
+    .sidebar-toc ul { list-style: none; }
+    .sidebar-toc li { margin-bottom: var(--space-1); }
+    .sidebar-toc li a { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-1) var(--space-2); font-family: var(--font-sans); font-size: 0.8125rem; color: var(--text-muted); text-decoration: none; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--easing-default); line-height: 1.4; }
+    .sidebar-toc li a:hover { color: var(--text-secondary); background: var(--sage-50); }
+    .sidebar-toc li.active a { color: var(--sage-600); font-weight: 500; background: var(--sage-50); }
+    .sidebar-toc .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 6px; transition: all var(--duration-fast) var(--easing-default); }
+    .sidebar-toc li.active .dot { background: var(--sage-400); width: 6px; height: 6px; margin-top: 5px; }
+    .content { flex: 1; min-width: 0; max-width: var(--content-standard); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-8); box-shadow: var(--shadow-sm); }
+    .chapter { margin-bottom: var(--space-12); }
+    .chapter + .chapter { padding-top: var(--space-8); border-top: 1px solid var(--border); }
+    .chapter-image { display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; margin: var(--space-4) auto var(--space-6); background: linear-gradient(135deg, var(--sage-100), var(--sage-50)); border-radius: var(--radius-lg); font-size: 2em; line-height: 1; }
+    .chapter-heading { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--border); line-height: 1.5; }
+    .chapter-number { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage-400); display: block; margin-bottom: var(--space-1); }
+    .subsection-heading { font-family: var(--font-sans); font-size: 1.125rem; font-weight: 700; color: var(--text-primary); margin-top: var(--space-8); margin-bottom: var(--space-4); padding-left: var(--space-3); border-left: 3px solid var(--sage-200); line-height: 1.5; }
+    .guide { font-family: var(--font-sans); font-weight: 500; line-height: 2; color: var(--text-secondary); margin: var(--space-6) 0; }
+    .guide strong { color: var(--text-primary); font-weight: 700; }
+    .dialogue-block { margin: var(--space-6) 0; }
+    .dialogue-item { padding: var(--space-3) var(--space-4); border-left: 4px solid var(--border); border-radius: var(--radius-sm); margin-bottom: var(--space-2); }
+    .dialogue-item.speaker-guest-1 { background-color: var(--rose-50); border-left-color: var(--rose-400); }
+    .dialogue-item.speaker-guest-2 { background-color: var(--purple-50); border-left-color: var(--purple-400); }
+    .dialogue-item.speaker-guest-3 { background-color: var(--red-50); border-left-color: var(--red-400); }
+    .dialogue-item.speaker-guest-4 { background-color: var(--gold-50); border-left-color: var(--gold-400); }
+    .dialogue-speaker { font-family: var(--font-inter); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; margin-bottom: var(--space-1); }
+    .speaker-guest-1 .dialogue-speaker { color: var(--rose-600); }
+    .speaker-guest-2 .dialogue-speaker { color: var(--purple-600); }
+    .speaker-guest-3 .dialogue-speaker { color: var(--red-600); }
+    .speaker-guest-4 .dialogue-speaker { color: var(--gold-600); }
+    .dialogue-text { font-size: 0.9375rem; line-height: 1.85; }
+    .annotation { margin: var(--space-6) 0; padding: var(--space-4) var(--space-6); background: var(--gold-50); border-left: 3px solid var(--gold-200); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .annotation-title { font-family: var(--font-inter); font-size: 0.8125rem; font-weight: 700; color: var(--gold-600); letter-spacing: 0.02em; margin-bottom: var(--space-2); }
+    .annotation-title::before { content: "📚 "; font-size: 1em; }
+    .annotation-text { font-size: 0.8125rem; line-height: 1.7; color: var(--text-secondary); }
+    .annotation-text + .annotation-text { margin-top: var(--space-2); }
+    .quote-block { margin: var(--space-6) 0; padding: var(--space-4) var(--space-6); border-left: 3px solid var(--rose-200); }
+    .quote-text { font-family: var(--font-serif); font-size: 0.9375rem; font-style: italic; color: var(--text-primary); line-height: 1.85; }
+    .document-footer { max-width: var(--content-wide); margin: 0 auto; padding: var(--space-8) var(--space-6) var(--space-16); text-align: center; }
+    .footer-about { max-width: var(--content-standard); margin: 0 auto; padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); font-size: 0.8125rem; line-height: 1.7; color: var(--text-secondary); }
+    .footer-about strong { display: block; font-family: var(--font-inter); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: var(--space-2); }
+    .footer-date { font-family: var(--font-inter); font-size: 0.75rem; color: var(--text-muted); margin-top: var(--space-4); }
+    .mobile-toc-toggle { display: none; position: fixed; bottom: var(--space-6); right: var(--space-6); z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: var(--sage-400); color: var(--white); border: none; box-shadow: var(--shadow-md); cursor: pointer; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--easing-default); }
+    .mobile-toc-toggle:hover { background: var(--sage-600); }
+    .mobile-toc-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+    .mobile-toc-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(44, 51, 48, 0.3); backdrop-filter: blur(2px); opacity: 0; transition: opacity var(--duration-normal) var(--easing-default); }
+    .mobile-toc-overlay.is-open { opacity: 1; }
+    .mobile-toc-panel { position: fixed; bottom: 0; left: 0; right: 0; z-index: 201; background: var(--surface); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: var(--space-6); transform: translateY(100%); transition: transform var(--duration-normal) var(--easing-default); max-height: 60vh; overflow-y: auto; display: none; }
+    .mobile-toc-panel.is-open { transform: translateY(0); }
+    .mobile-toc-panel .toc-label { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-4); }
+    .mobile-toc-panel .toc-close { position: absolute; top: var(--space-4); right: var(--space-4); width: 32px; height: 32px; border-radius: 50%; background: none; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 1.25rem; line-height: 1; transition: all var(--duration-fast) var(--easing-default); }
+    .mobile-toc-panel .toc-close:hover { background: var(--sage-50); color: var(--text-primary); }
+    .mobile-toc-panel ul { list-style: none; }
+    .mobile-toc-panel li { margin-bottom: var(--space-2); }
+    .mobile-toc-panel li a { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-2); font-family: var(--font-sans); font-size: 0.9375rem; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--easing-default); }
+    .mobile-toc-panel li a:hover, .mobile-toc-panel li.active a { color: var(--sage-600); background: var(--sage-50); }
+    .mobile-toc-panel .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .mobile-toc-panel li.active .dot { background: var(--sage-400); }
+    @page { margin: 15mm; }
+    @media print { body { background-color: white; } .sidebar { display: none; } .mobile-toc-toggle { display: none !important; } .document-wrapper { display: block; padding: 0; } .content { background: white; border: none; box-shadow: none; padding: 0; max-width: 100%; } .title-page { page-break-after: always; padding: 10em 2em 8em; } .chapter + .chapter { page-break-before: always; } }
+    @media (max-width: 768px) { .document-wrapper { padding: 0 var(--space-4) var(--space-8); } .sidebar { display: none; } .mobile-toc-toggle { display: flex; } .mobile-toc-overlay, .mobile-toc-panel { display: block; } .mobile-toc-panel:not(.is-open) { display: block; pointer-events: none; } .content { padding: var(--space-6) var(--space-4); } .title-page { padding: 3em 1em 2em; } .title-page h1 { font-size: 1.75rem; } .chapter-heading { font-size: 1.2rem; } .chapter-image { width: 64px; height: 64px; font-size: 1.75em; } }
+  </style>
+</head>
+<body>
+
+<header class="title-page">
+  <div class="title-ornament">✦</div>
+  <h1>育成という名の権力装置——正しさの罠を超えて</h1>
+  <p class="title-subtitle">「育成不全」と「科学的に正しい褒め方」から問い直す、人を育てることの意味</p>
+  <div class="title-ornament">✦</div>
+  <div class="title-divider"></div>
+  <p class="title-meta">
+    <span>メタクリドキュメント</span>
+    <span>2026年1月15日</span>
+    <span>神谷俊 ・ 伊達洋駆 ・ 志水静香 ・ 三木芳夫</span>
+  </p>
+  <p class="title-meta title-meta-sub">
+    <span>Funleash主催セミナー「どんなメンバーも伸びる組織へ」</span>
+  </p>
+</header>
+
+<div class="document-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-toc">
+      <p class="toc-label">Contents</p>
+      <ul>
+        <li class="active"><a href="#intro"><span class="dot"></span>はじめに</a></li>
+        <li><a href="#ch1"><span class="dot"></span>第1章：複雑化する問題、疲弊する管理職</a></li>
+        <li><a href="#ch2"><span class="dot"></span>第2章：育成という名のディスコース</a></li>
+        <li><a href="#ch3"><span class="dot"></span>第3章：なぜ何度言っても治らないのか</a></li>
+        <li><a href="#ch4"><span class="dot"></span>第4章：褒めることの難しさと可能性</a></li>
+        <li><a href="#ch5"><span class="dot"></span>第5章：育成を問い直す</a></li>
+        <li><a href="#outro"><span class="dot"></span>おわりに</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="content">
+
+    <section class="chapter" id="intro">
+      <div class="chapter-heading"><span class="chapter-number">Introduction</span>はじめに</div>
+      <p class="guide">「育成」という言葉は、ビジネスの世界において一種の聖域のように扱われてきた。人を育てることは善であり、育成に力を入れることは正しい——そんな暗黙の了解が、組織のあらゆる場面に浸透している。しかし、その「正しさ」こそが、現場と人事の間に見えない溝を生み出しているとしたらどうだろうか。</p>
+      <p class="guide">本ドキュメントは、2026年1月15日にFunleash主催で開催されたセミナー「どんなメンバーも伸びる組織へ」の内容を再構成したものである。エスノグラファーとして組織の生態系を観察してきた神谷俊氏と、組織行動論の研究知見をビジネスに応用する伊達洋駆氏。二人の視点が交差するとき、私たちが「育成」と呼んできたものの輪郭が、思いがけない角度から照らし出される。</p>
+    </section>
+
+    <section class="chapter" id="ch1">
+      <div class="chapter-heading"><span class="chapter-number">Chapter 01</span>複雑化する問題、疲弊する管理職</div>
+      <div class="chapter-image">🏋️</div>
+
+      <h3 class="subsection-heading">1.1 ウィキッドプロブレム——定義すらできない問題群</h3>
+
+      <p class="guide">現代の職場で発生している問題は、もはや単純な因果関係では捉えられない。神谷氏は、クライアントの完成車メーカーで起きている状況を例に挙げる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷俊（エスノグラファー代表）</p>
+          <p class="dialogue-text">「原材料が高騰していて調達先をどうすればいいかわからない。流通コストも上がっているから流通業者をどこと契約すればいいかもわからない。DXの必要もあるからテクノロジーを見なきゃいけないし、外国人労働者を雇わなければいけないので育成の問題も出てきた。環境配慮を求められているので排出するガスや有毒物質のコントロールも求められている。様々な問題が絡み合って複雑化してきている」</p>
+        </div>
+      </div>
+
+      <p class="guide">これは単なる「問題が多い」という話ではない。神谷氏が指摘するのは、一体何が本当の問題なのかを定義することすら困難になっているという事態である。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">ウィキッドプロブレム（Wicked Problem）</p>
+        <p class="annotation-text">1973年にホルスト・リッテルとメルヴィン・ウェバーが都市計画の文脈で提唱した概念。「厄介な問題」と訳されることもある。明確な定義ができず、唯一の正解がなく、試行錯誤でしか対処できない問題群を指す。気候変動、貧困、組織文化の変革などが典型例とされる。従来のPDCAサイクルのような線形的なアプローチでは対処が困難であり、問題に取り組むこと自体が問題の性質を変化させてしまう特徴を持つ。</p>
+      </div>
+
+      <p class="guide">神谷氏は「静かな退職」を例に、この複雑さを具体的に描き出す。定時に出社し、定時に帰る。自分の役割はしっかり果たすが、それ以上のことはしない。この状態をどう評価すべきか。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「人事担当者に話を聞くと、労務管理や働き方改革の担当者は『これはもう成功事例です。ベストな状態です』とおっしゃる。給与に見合う分は発揮してくれているし、働き方も管理できているから。ただ、人材開発の担当者やエンゲージメント指数を気にしている経営企画の担当者に聞くと、『これはもう大問題ですよね』となったりする」</p>
+        </div>
+      </div>
+
+      <p class="guide">同じ現象が、立場によって「成功」にも「問題」にもなる。この両義性こそが、現代の組織が直面している根本的な難しさである。</p>
+
+      <h3 class="subsection-heading">1.2 打席に立ち続ける管理職の疲弊</h3>
+
+      <p class="guide">こうした複雑な問題に対して、多くの組織はどう対処しているのか。神谷氏の観察によれば、答えは驚くほど単純だ——管理職に任せる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「基本的な定型業務は現場社員がやる。イレギュラーに関しては管理職がやる。だからウィキッド化した問題に対しても打席に立つのはマネージャーなんです。『あれが問題です』と発生するたびに打席に管理職が立つ。これをやれやれと思ってベンチに戻って、『あれが問題です』とまた管理職が打席に立ち続ける。管理職の残業時間は半端ないことになっている」</p>
+        </div>
+      </div>
+
+      <p class="guide">この構造は持続可能ではない。そして、管理職だけでなく組織全体の問題解決能力を弱体化させる。なぜなら、現場のメンバーはイレギュラーに対処する経験を積む機会を奪われているからだ。</p>
+
+      <div class="annotation">
+        <p class="annotation-title">経験学習理論</p>
+        <p class="annotation-text">デイヴィッド・コルブが1984年に体系化した学習理論。具体的な経験（Concrete Experience）、内省的観察（Reflective Observation）、抽象的概念化（Abstract Conceptualization）、能動的実験（Active Experimentation）という4つの段階からなる学習サイクルを提唱した。単に知識を伝達するのではなく、実際の経験とその振り返りを通じて学ぶことが、深い理解と行動変容につながるとされる。</p>
+      </div>
+
+      <h3 class="subsection-heading">1.3 イレギュラーに強い人材の三つの能力</h3>
+
+      <p class="guide">では、複雑な問題に対処できる人材はどのような能力を持っているのか。神谷氏は長年のフィールドワークとデータ分析から、三つの能力を抽出した。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「心理的エンパワーメント、これは主体性をいかに高めるかと言い換えてもいい。前向きに仕事に自分ごととして取り組むようなマインドセット。コンセプチュアルスキル、これは本質を的確につかむ能力。ロジカルシンキングと違うのは、そこに視座が加わること。そして戦略的ネットワーキング、利害関係が変化したときに誰がキーパーソンで、どこと合意形成しないとちゃぶ台返しにあうかを見極める能力」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">心理的エンパワーメント</p>
+        <p class="annotation-text">ガレット・スプレイツァーが1995年に提唱した概念。仕事に対する内発的動機づけの状態を指し、意味（Meaning）、有能感（Competence）、自己決定（Self-determination）、影響力（Impact）の四つの認知的要素から構成される。単なる「やる気」とは異なり、自分の仕事が意味を持ち、自分には遂行能力があり、自分で決められ、組織に影響を与えられるという認知の総体である。</p>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">コンセプチュアルスキル</p>
+        <p class="annotation-text">ロバート・カッツが1955年に提唱した管理者に必要な三つのスキルの一つ。組織全体を俯瞰し、複雑な状況の本質を見抜き、抽象的な概念を扱う能力を指す。神谷氏の定義では、「高い視座」が強調されており、個人的な観点ではなくチームや組織の観点から物事を考える能力として位置づけられている。</p>
+      </div>
+
+      <p class="guide">重要なのは、これらの能力は生まれ持った才能ではなく、経験と育成によって後天的に形成されるという点だ。しかし、ここで大きな問題が立ち上がる。育成しようとする側の「育成観」そのものが、育成を阻害しているのではないか。</p>
+    </section>
+
+    <section class="chapter" id="ch2">
+      <div class="chapter-heading"><span class="chapter-number">Chapter 02</span>育成という名のディスコース</div>
+      <div class="chapter-image">🏛️</div>
+
+      <h3 class="subsection-heading">2.1 予想外の反響——現場からの拒絶</h3>
+
+      <p class="guide">『育成不全』を出版した神谷氏は、想定外の反響に直面した。本来のターゲットは経営者やマネージャー、人事担当者だった。しかし、最も大きな反響があったのは現場のプレイヤー層からだった。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「タイトルに反応したんですね。『育成不全』というタイトルで。買ってないですよ、全然ここの人たち買ってくれないんですけど、『育成不全』というタイトルがついたメディア記事に多くの反響が集まった。『育成なんて必要ないよ』という反響がほとんどだった」</p>
+        </div>
+      </div>
+
+      <p class="guide">神谷氏が目にしたコメントは、育成そのものへの強い拒否反応だった。「金を与えてエグい環境に放り込めば人は育つ」「育ちたいやつが勝手に育てばいい。巻き込むな」「研修とかやるな」「ワンオンワンとかいきなり強制的に導入するんじゃねえよ」——そして「育成は人材業者のビジネスツールですよね」という声。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「ネガティブなコメントは心の健康によろしくないので目を背けるタイプなんですけど、自分の本についてのコメントなのでさすがに見ざるを得ないという感じで読み込んで。そうすると一つのことに気づいたんです。育成そのものに対して、育成を是とするスタンスに対しての批判なんだなと」</p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">2.2 暗黙の了解という権力</h3>
+
+      <p class="guide">神谷氏は、この拒否反応の根底にあるものを「ディスコース」という概念で説明する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「会社は人を育てる責任があるよね。育たないのは上司の育成力不足。育たないのは本人の努力不足。育成の仕事なんだから、育成は多少の負荷が当然だよね。育成されてるんだから文句や不平は言わない。育成は善であり、疑うべきではない。こんな暗黙の了解が、もしかしたら会社の中に強く浸透してしまっているんじゃないか」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">ディスコース</p>
+        <p class="annotation-text">ミシェル・フーコーの概念を起源とし、ある社会や集団において「語られうること」「語られる方法」を規定する言説の体系を指す。単なる言葉遣いではなく、何が正しく何が誤りとされるか、何が問題で何が問題でないとされるかを決定する暗黙の枠組みである。<strong>この対話の文脈では</strong>、育成を「善」とする暗黙の前提が、育成に関する議論の仕方自体を規定し、それに異議を唱えることを困難にしている状況を指して用いられている。</p>
+      </div>
+
+      <p class="guide">この暗黙の了解は、人事や経営にとっては都合がいい。研修をやるのにも、組織サーベイをやるのにも、ワンオンワンを導入するのにも、具体的な説明や現場の納得を必要としない。「育成だから」で通ってしまう。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「自分自身のこれまでのビジネスを振り返ってみたときに、育成とか組織開発って、あまりにも企業側との合意形成がすんなりいくなっていう経験が多かった。『主体性が育ってないですよね、じゃあ育てていきましょう』とか、『前向きな方向に向いてないので組織文化を作っていきましょう』とか、企業側とすんなり合意形成ができてしまう。その前提にあるのは、『育成はやっぱり正しい』『育成できてない状態が問題だよね』という暗黙の了解なんです」</p>
+        </div>
+      </div>
+
+      <p class="guide">志水氏は、この問題をさらに掘り下げる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-2">
+          <p class="dialogue-speaker">志水静香（Funleash代表）</p>
+          <p class="dialogue-text">「人事の方が『うちの組織の社員ってこういう課題があるんですよね』と言う。その時点で、現場で発生している問題が個人の能力不足によるもので、それによって現場側の生産性が落ちているという方程式が最初から成り立っている」</p>
+        </div>
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「その方程式にはまる育成のアプローチをください、という議論になってしまう。他にも業務プロセスの問題とか、資源の問題とか、様々なリソースの問題があると思うんですよ。育成以外の問題という視点が、机の上には上がってこない。これがディスコースのなせる技かなという感じがします」</p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">2.3 OJTと経験学習——二つの育成の混同</h3>
+
+      <p class="guide">志水氏との対話の中で、神谷氏は「育成」という言葉に含まれる二つの異なる意味の混同を指摘する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「おそらく育成のWayに今にじむのはOJTなんですよ。OJTというのは仕事が変わらないことが前提なんです。業務プロセスがあって、マニュアルがあって、それを上の人が下の人にインストールする。これがOJTの前提にある考え方。でも、イレギュラーに適応する力を高めるためには経験学習のほうなんです。難しいプロジェクトをアサインして、その中でもがきながらなんとかする力を獲得していくのを支援する」</p>
+        </div>
+        <div class="dialogue-item speaker-guest-2">
+          <p class="dialogue-speaker">志水</p>
+          <p class="dialogue-text">「こっち側（OJT）で話している人事って多いかもしれない」</p>
+        </div>
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「元来こちら側（経験学習）は学術的に言えばリーダーシップ開発。でも現場にリーダーシップ開発するのってまた違うじゃないですか。適切な言葉が今見つかっていない状態というのがあるのかなと」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">OJT（On-the-Job Training）</p>
+        <p class="annotation-text">職場内訓練。実際の業務を通じて必要な知識やスキルを習得させる訓練方法。1917年にアメリカの造船所で開発された「4段階職業指導法」がその起源とされる。標準化された業務を効率的に習得させるには有効だが、神谷氏の指摘する通り、「仕事が変わらないこと」が前提となっている。不確実性の高い環境では、OJTだけでは対応できない能力の育成が求められる。</p>
+      </div>
+
+      <p class="guide">この区別は、育成における根本的な転換を示唆している。従来型のOJTでは、上司が持っている知識やスキルを部下に「授ける」。しかし経験学習のアプローチでは、現場の中に埋め込まれた育成機会を「掘り起こす」支援が求められる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「上司とか育成担当者が力を持って、それを授けるという考え方。こちら側（OJT）の育成に関しては、現場の中に育成機会が埋め込まれているので、それを掘り起こさせるのを支援するというアプローチ。アプローチが変わってくるんです」</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch3">
+      <div class="chapter-heading"><span class="chapter-number">Chapter 03</span>なぜ何度言っても治らないのか</div>
+      <div class="chapter-image">🧠</div>
+
+      <h3 class="subsection-heading">3.1 脳が忘れさせる仕組み</h3>
+
+      <p class="guide">第二部では、伊達洋駆氏がフィードバックの科学的メカニズムを解説した。「何度注意しても同じミスをする部下」という、多くのマネージャーが経験する状況。その原因は、やる気や能力の問題ではないかもしれない。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達洋駆（ビジネスリサーチラボ代表）</p>
+          <p class="dialogue-text">「人間って自分に関するネガティブな情報って思い出せないという傾向があるんです。ダメ出しをされると、それは自分についてのネガティブな情報なんですよね。そうすると、人間はこれを『記憶無視』というふうに科学的には呼ばれているんですが、なかなか思い出しにくくなってしまう」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">記憶無視（Mnemonic Neglect）</p>
+        <p class="annotation-text">セダキデスとグリーンが2000年代に提唱した概念。人は自己を脅かすようなネガティブな情報を選択的に忘却するという心理メカニズム。これは自己防衛の一種であり、自尊心を維持するための無意識的な戦略である。フィードバックを受ける側がダメ出しを「覚えていない」のは、必ずしも怠惰や無関心ではなく、脳の自然な防衛反応である可能性を示唆している。</p>
+      </div>
+
+      <p class="guide">自分に関するネガティブな情報を忘れやすいという傾向は、進化の過程で獲得された防衛機制である。しかし、職場のフィードバック場面では、この機制が学習を妨げることになる。</p>
+
+      <h3 class="subsection-heading">3.2 他者の欠点はよく見える</h3>
+
+      <p class="guide">一方で、人間には他者のネガティブな情報には非常に敏感であるという特性もある。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「人間は人のネガティブな情報ってめちゃくちゃ覚えてるんですよ。他者のダメなところとか問題のある点はめちゃくちゃ覚えているという性質があります。これを『ネガティビティバイアス』と呼ぶんですが、ポジティブな情報よりも他者についてはネガティブな情報に注意が向きやすくて記憶もされやすい」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">ネガティビティバイアス</p>
+        <p class="annotation-text">ポジティブな情報よりもネガティブな情報に対して、より強く注意を向け、より深く処理し、より長く記憶する傾向。進化心理学的には、かつて人類が捕食者や危険から身を守る必要があった時代の名残とされる。脅威に敏感であることは生存に有利だったが、現代の職場では、部下の欠点ばかりが目につき、長所が見過ごされるという問題を引き起こす。</p>
+      </div>
+
+      <p class="guide">これは進化の過程で獲得された有用な能力だった。かつて草原を走り回っていた人類にとって、敵や危険という「ネガティブな情報」を素早く察知し記憶することは、生存に直結していた。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「つまり、他人のあらはよく見えるが、他人のいいところは見えにくいというのが人の心の癖としてある」</p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">3.3 噛み合わない二つのバイアス</h3>
+
+      <p class="guide">この二つの心理メカニズムが組み合わさったとき、フィードバック場面で何が起きるか。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「人のミスを見つけたときにめちゃくちゃ具体的に指摘できるんですよ。『昨日の会議資料だけど、3ページ目の数字間違ってたよね』というふうにめちゃくちゃ具体的に指摘することができる。一方でポジティブフィードバックはどうかというと、覚えてないんで、『よく頑張ったね』とか『いいよね、いい感じだよね』というふうに言うだけにとどまってしまう」</p>
+        </div>
+      </div>
+
+      <p class="guide">上司側は部下のミスを詳細に記憶している。しかし部下側は、その指摘を脳が自動的に忘却しようとする。一方、部下の良い仕事については、上司の脳はそもそも注目しておらず、記憶にも残りにくい。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「フィードバックされる側については記憶無視といって、ネガティブな情報は忘れてしまうという傾向がある。一方で上司側、フィードバックする側にしたらミスが気になってしまう。ここが噛み合わない、逆に噛み合ってうまくいかないという状態が固定化されてしまう」</p>
+        </div>
+      </div>
+
+      <p class="guide">これが「何度言っても治らない」という現象のメカニズムである。意思の問題でも能力の問題でもなく、人間の脳の構造に起因する問題なのだ。</p>
+    </section>
+
+    <section class="chapter" id="ch4">
+      <div class="chapter-heading"><span class="chapter-number">Chapter 04</span>褒めることの難しさと可能性</div>
+      <div class="chapter-image">👏</div>
+
+      <h3 class="subsection-heading">4.1 素材を集めるという行為</h3>
+
+      <p class="guide">ネガティブフィードバックの限界が明らかになったとき、ポジティブフィードバック、つまり「褒める」ことの重要性が浮上する。しかし、褒めることは想像以上に難しい。</p>
+
+      <p class="guide">三木氏は率直に問いかける。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-4">
+          <p class="dialogue-speaker">三木芳夫（キャリアシンク代表）</p>
+          <p class="dialogue-text">「褒めるのが得意ですという方おられます？」</p>
+        </div>
+      </div>
+
+      <p class="guide">会場の反応は鈍い。これは偶然ではない。褒めることの難しさには、先述のネガティビティバイアスという心理学的な根拠がある。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「何を褒めればいいのかわからない。その場になると、何を褒めればいいかということがよくわからなくなってしまう。私がこの本の中で指摘しているんですが、褒めるための素材を集めるというところが、実は褒めるという行為の大部分を占めているんじゃないか」</p>
+        </div>
+      </div>
+
+      <p class="guide">「褒める」という行為は、褒める瞬間だけで成立するわけではない。日常的に相手を観察し、良い点を記録しておくという「素材収集」の過程が、褒めることの基盤を形成する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「相手をきちんと観察して、ここを結構よくやってたなとか、ここ素晴らしいなというところをきちんとメモしておく。それを伝えていく。記録しておくということができないと記憶に頼れない。それが私のお話の趣旨だったのかな」</p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">4.2 評価としての褒めと感謝としての褒め</h3>
+
+      <p class="guide">三木氏は、褒めることの具体的な実践方法を伊達氏に問う。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-4">
+          <p class="dialogue-speaker">三木</p>
+          <p class="dialogue-text">「評価の制度をしっかり作って、スタッフのことを褒めてあげましょうとか、ワンオンワンのフィードバックでしっかりとコミュニケーションして、そのスタッフの良いところを見つけていきましょうというコミュニケーションがあると思うんですけど、ちょっと足りないんですよね」</p>
+        </div>
+      </div>
+
+      <p class="guide">伊達氏は、「評価としてのポジティブフィードバック」と「感謝としてのポジティブフィードバック」という二つの方向性を示す。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「評価としてのポジティブフィードバックってイメージがしやすいんですが、やりにくいんですよね。正解がある程度わかってないとなかなか言いにくかったりする。あるいは上司から部下みたいな権力構造がないとなかなか言いにくかったりする」</p>
+        </div>
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「感謝としてのポジティブフィードバックという方向性ってあるんじゃないかと思うんですよね。『こういうことしてくれてありがとう』とか『こういうことしてくれて助かりました』とか。そういった言い方であれば、これは正しさがわからなくても、自分の主観的に助かったと思ったら言っていいというところなので、一つの切り口にはなり得るのかな」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">感謝の効果</p>
+        <p class="annotation-text">ポジティブ心理学の研究では、感謝を表明することが、表明する側と受け取る側の双方にウェルビーイングの向上をもたらすことが示されている。エモンズとマカルー（2003）の研究によれば、定期的に感謝を記録する習慣を持つ人は、そうでない人に比べて幸福感が高く、健康状態も良好であった。職場における感謝の表明は、評価とは異なる文脈で相手を承認する方法として機能する。</p>
+      </div>
+
+      <h3 class="subsection-heading">4.3 感情報酬という視点</h3>
+
+      <p class="guide">三木氏は、この議論を「感情報酬」という概念で整理する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-4">
+          <p class="dialogue-speaker">三木</p>
+          <p class="dialogue-text">「人事で人を動かそうと思うときって、何らかのインセンティブを設計したいなと思って、将来のことを考えたりとか、お金のことを考えることが多いかなと思うんですけど、感情報酬を設計するということを最近すごく意識してまして。褒めるとか関係性が良くなるとか、ポジティブな状況を作っていくということをどうやって設計するのか。これは金銭的な報酬じゃなくて、感情面の報酬をどう設計するかということ」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">感情報酬</p>
+        <p class="annotation-text">金銭的報酬（外発的動機づけ）に対置される概念で、仕事から得られる感情的な満足感を指す。承認、達成感、成長実感、所属感、意味の実感などが含まれる。ダニエル・ピンクは『モチベーション3.0』（2009年）で、創造性を必要とする仕事では金銭的報酬よりも内発的動機づけのほうが効果的であることを論じている。三木氏の「感情報酬の設計」という視点は、組織設計において感情面を意図的に考慮することの重要性を示唆している。</p>
+      </div>
+
+      <h3 class="subsection-heading">4.4 環境を設計する——いい思い出作り</h3>
+
+      <p class="guide">伊達氏は、個人のスキルとしての「褒め方」を超えて、褒め合いが自然に生まれる「環境」の設計という視点を提示する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「ポジティブフィードバックに関する研究を見ていて結構面白いなと思った研究があって、大抵の研究ってこういうふうに褒めるといいですよっていう手法について書いてるんですよ。ところがある研究が、そういう手法を突き詰めていってもあんまり意味ないんじゃないかと言っている。そもそも褒めることができるような、讃え合うことができるような環境とか仕事とかを提供しないとダメなんじゃないかと」</p>
+        </div>
+      </div>
+
+      <p class="guide">具体的には、お互いに助け合って乗り越えなければならない仕事を一緒にやれば、自然と「ありがとう」「助かる」という言葉が交わされるようになる。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「一つ、これはかなり尖ったアプローチかもしれないんですが、『いい思い出を作る』というアプローチってあるのかな。仕事をしていて、この仕事を通じていい思い出を作っていこうとなると、おのずとポジティブな感情が沸き起こっていきやすくなりますし、互いを褒めたり讃えたりし合えるような形になるんじゃないか」</p>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <p class="annotation-title">ノスタルジア</p>
+        <p class="annotation-text">過去の経験を懐かしく思い出す感情状態。かつては後ろ向きな感情として否定的に捉えられることもあったが、近年の心理学研究では、ノスタルジアがウェルビーイング、社会的つながりの感覚、自己連続性の維持、そして将来への意欲に肯定的な影響を与えることが示されている。伊達氏の「いい思い出作り」という提案は、仕事を通じてノスタルジアの素材となるような経験を意図的に創出することで、職場のポジティビティを高めようとする試みである。</p>
+      </div>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-4">
+          <p class="dialogue-speaker">三木</p>
+          <p class="dialogue-text">「実際にどういう会社でどの仕事をしたのかみたいな、後から振り返って昔の仲間と飲んだりすると楽しいというのありますもんね」</p>
+        </div>
+        <div class="dialogue-item speaker-guest-3">
+          <p class="dialogue-speaker">伊達</p>
+          <p class="dialogue-text">「職務経歴書とか結構無味乾燥じゃないですか。でも本当の人のキャリアって結構思い出があったりするわけですよね。こんなことをしたなとか、こんな苦労したなとか、こんな大変なことあったけどその後すごい面白かったなとか。まさにその飲んでる時に話をするような、そういった思い出作りを積極的に行っていけるかどうかって、ポジティブフィードバックにもつながりますし、感情報酬にもつながる視点だなと思いますね」</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch5">
+      <div class="chapter-heading"><span class="chapter-number">Chapter 05</span>育成を問い直す</div>
+      <div class="chapter-image">🔄</div>
+
+      <h3 class="subsection-heading">5.1 正しさの罠</h3>
+
+      <p class="guide">神谷氏の問題提起は、私たちに深い問いを投げかける。育成は正しい——その前提に立つ限り、現場との溝は埋まらないのではないか。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「私たちがここに集まっている方々、すごく意識が高くて、育成に対して改善したいって問題意識を持っているんだけど、これを強めれば強めるほど、現場側は『なんで育成なんかやらなきゃいけないんだ』という不満を強めてしまう可能性もある」</p>
+        </div>
+      </div>
+
+      <p class="guide">「育成不全」という言葉に込められたメッセージは、単に「育成がうまくいっていない」ということではなかった。育成という概念そのものが、ある種の権力として機能してしまっている可能性を示唆していたのだ。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「普段仕事で現場のフィールドに参加しているのに、現場側のパースペクティブ、現場側の視点というものが見て取れないということは、それだけ育成とか組織開発の権力というかパワーのようなものが強すぎるんだろうな」</p>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">5.2 育成から支援へ</h3>
+
+      <p class="guide">志水氏は、マネージャーの役割の転換について言及する。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-2">
+          <p class="dialogue-speaker">志水</p>
+          <p class="dialogue-text">「もしかしたら、マネージャーと言われている管理職の方たち、見てあげて、観察するということはよくファシリテーションすることに大事だと思うんですけど、そのことによってこの人のありたい姿とか、ありたいところに近づいていけるんじゃないかと思う」</p>
+        </div>
+      </div>
+
+      <p class="guide">「育てる」から「見守り、支援する」へ。この転換は、育成する側の権力を手放すことを意味する。それは同時に、現場のメンバーに対する信頼の表明でもある。</p>
+
+      <h3 class="subsection-heading">5.3 問いの持ち帰り</h3>
+
+      <p class="guide">神谷氏は、明確な答えを提示することなくセッションを締めくくった。</p>
+
+      <div class="dialogue-block">
+        <div class="dialogue-item speaker-guest-1">
+          <p class="dialogue-speaker">神谷</p>
+          <p class="dialogue-text">「私たちの健全な問題意識をしっかりと大切なアプローチに反映して現場に届けて、現場の人たちも納得した形で組織を改善していくために、私たちに求められているのは何なのか。これは私も今日全然答えを持ってきていないので、スライドはここで終わりなんです」</p>
+        </div>
+      </div>
+
+      <p class="guide">これは無責任な態度ではない。むしろ、「育成とは何か」という問いを、参加者一人ひとりが自らの文脈で考え続けることを促す、意図的な開放である。</p>
+    </section>
+
+    <section class="chapter" id="outro">
+      <div class="chapter-heading"><span class="chapter-number">Closing</span>おわりに——思考を開く場として</div>
+
+      <p class="guide">本セミナーは、「育成」と「フィードバック」という、人事の世界で当然のように使われてきた概念を根本から問い直す機会となった。</p>
+
+      <p class="guide">神谷氏の指摘は、私たちが「育成」という言葉を使うとき、そこに権力関係が埋め込まれている可能性を示した。伊達氏の解説は、フィードバックが「伝わらない」理由が、心理的なメカニズムに根ざしていることを明らかにした。そして両者の議論が交差するところに、「褒める」という行為の新しい可能性——評価ではなく感謝として、個人のスキルではなく環境の設計として——が浮かび上がった。</p>
+
+      <p class="guide">育成のディスコースを乗り越えるということは、「育成は正しい」という前提を捨てることではない。その前提が当然視されすぎることで、現場との対話が閉ざされてしまっていないかを、常に問い続けることである。</p>
+
+      <p class="guide">職務経歴書には書かれない「思い出」の中に、人の成長の本質がある。その思い出を共に作り、共に振り返ることができる関係性こそが、育成という言葉が本来指し示していたものなのかもしれない。</p>
+    </section>
+
+  </main>
+</div>
+
+<footer class="document-footer">
+  <div class="footer-about">
+    <strong>About MetaCreative Document</strong>
+    <p>メタクリドキュメントは、クリエイティブにまつわる対話を三層構造（対話引用・導の文・註釈）で再構成し、知的な読み物として編集したものです。</p>
+    <p style="margin-top:1.25em;"><a href="../../" style="display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:8px;padding:10px 20px;text-decoration:none;">← メタクリドキュメントについて</a></p>
+  </div>
+  <p class="footer-date">編集日：2026年3月24日</p>
+</footer>
+
+<button class="mobile-toc-toggle" id="mobileTocToggle" aria-label="目次を開く">
+  <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</button>
+<div class="mobile-toc-overlay" id="mobileTocOverlay"></div>
+<div class="mobile-toc-panel" id="mobileTocPanel">
+  <button class="toc-close" id="mobileTocClose" aria-label="目次を閉じる">×</button>
+  <p class="toc-label">Contents</p>
+  <ul>
+    <li><a href="#intro"><span class="dot"></span>はじめに</a></li>
+    <li><a href="#ch1"><span class="dot"></span>第1章：複雑化する問題、疲弊する管理職</a></li>
+    <li><a href="#ch2"><span class="dot"></span>第2章：育成という名のディスコース</a></li>
+    <li><a href="#ch3"><span class="dot"></span>第3章：なぜ何度言っても治らないのか</a></li>
+    <li><a href="#ch4"><span class="dot"></span>第4章：褒めることの難しさと可能性</a></li>
+    <li><a href="#ch5"><span class="dot"></span>第5章：育成を問い直す</a></li>
+    <li><a href="#outro"><span class="dot"></span>おわりに</a></li>
+  </ul>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.chapter[id]');
+  const sidebarLinks = document.querySelectorAll('.sidebar-toc li');
+  const mobileLinks = document.querySelectorAll('.mobile-toc-panel li');
+  function setActive(id) {
+    [sidebarLinks, mobileLinks].forEach(links => { links.forEach(li => li.classList.remove('active')); });
+    const sa = document.querySelector(`.sidebar-toc li a[href="#${id}"]`);
+    const ma = document.querySelector(`.mobile-toc-panel li a[href="#${id}"]`);
+    if (sa) sa.parentElement.classList.add('active');
+    if (ma) ma.parentElement.classList.add('active');
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  sections.forEach(section => observer.observe(section));
+  const toggle = document.getElementById('mobileTocToggle');
+  const overlay = document.getElementById('mobileTocOverlay');
+  const panel = document.getElementById('mobileTocPanel');
+  const closeBtn = document.getElementById('mobileTocClose');
+  function openMobileToc() {
+    overlay.style.display = 'block'; panel.style.display = 'block';
+    requestAnimationFrame(() => { overlay.classList.add('is-open'); panel.classList.add('is-open'); });
+  }
+  function closeMobileToc() {
+    overlay.classList.remove('is-open'); panel.classList.remove('is-open');
+    setTimeout(() => { overlay.style.display = 'none'; }, 250);
+  }
+  toggle.addEventListener('click', openMobileToc);
+  overlay.addEventListener('click', closeMobileToc);
+  closeBtn.addEventListener('click', closeMobileToc);
+  panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMobileToc); });
+</script>
+
+</body>
+</html>

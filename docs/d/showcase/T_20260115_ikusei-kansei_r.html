@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>育成という言葉の陥穽 — Metacreative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RICH HTML BOILERPLATE
+   Source of truth for CSS + JS. See metacre-html-rich skill for
+   workflow, component HTML templates, and content principles.
+   ============================================================ */
+
+/* ============================================================
+   CSS TOKENS
+   ============================================================ */
+:root {
+  /* Light "Atelier Morning" */
+  --base: #F5F0E8;
+  --surface: #FAF8F5;
+  --white: #FDFCFA;
+  --text-primary: #2C3330;
+  --text-secondary: #6B6560;
+  --text-muted: #9E9690;
+  --border: #E5DFD6;
+
+  /* Core Colors */
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+  --sage-400: #8B9A7D; --sage-500: #6B7F5D; --sage-600: #5E6E52;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+  --gold-400: #C4A057; --gold-500: #A68B45; --gold-600: #9A7B3A;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+  --rose-400: #E8A598; --rose-600: #D88B7A;
+  --blue-50: #F0F5FA; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+
+  /* Extended Colors */
+  --purple-50: #F5F0FA; --purple-400: #9B7DC4; --purple-600: #7B5DA4;
+  --red-50: #FDF2F2; --red-400: #E07070; --red-600: #C05050;
+  --amber-50: #FFF8E1; --amber-400: #D4A030; --amber-600: #B08020;
+  --teal-50: #E8F5F3; --teal-400: #4DA89A; --teal-600: #2D8878;
+
+  /* Dark "Study Night" */
+  --dark-base: #1C1A17;
+  --dark-surface: #252320;
+  --dark-surface-raised: #2E2B27;
+  --dark-text: #E2DDD5;
+  --dark-text-secondary: #A09890;
+  --dark-border: #3A3630;
+  --dark-gold-400: #B89040;
+  --dark-gold-600: #E0C070;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+  --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+
+  /* Timing */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  background-color: var(--base);
+  color: var(--text-primary);
+  line-height: 1.85;
+  transition: background-color 0.8s var(--ease);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   PROGRESS BAR (transform slide)
+   ============================================================ */
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
+  transform: translateY(-100%); transition: transform 0.4s var(--ease);
+}
+.progress-bar.visible { transform: translateY(0); }
+.progress-line { height: 3px; background: var(--gradient-accent-90); width: 0%; transition: width 0.1s linear; }
+.progress-context {
+  background: rgba(28, 26, 23, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+}
+.progress-label {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400);
+}
+.progress-chapter {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.8rem;
+  color: var(--dark-text-secondary); transition: opacity 0.3s var(--ease);
+}
+
+/* ============================================================
+   SIDE TOC
+   ============================================================ */
+.side-toc { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900; display: none; }
+@media (min-width: 1200px) { .side-toc { display: flex; flex-direction: column; gap: 12px; } }
+.toc-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--border);
+  cursor: pointer; transition: all 0.3s var(--ease); position: relative;
+}
+.toc-dot:hover { background: var(--sage-400); transform: scale(1.3); }
+.toc-dot.active { background: var(--gold-400); transform: scale(1.5); box-shadow: 0 0 8px rgba(196, 160, 87, 0.4); }
+.toc-dot::after {
+  content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  font-size: 0.7rem; font-family: 'Inter', sans-serif; white-space: nowrap;
+  color: var(--text-muted); opacity: 0; transition: opacity 0.2s var(--ease); pointer-events: none;
+}
+.toc-dot:hover::after { opacity: 1; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  position: relative; min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; background: var(--dark-base);
+  color: var(--dark-text); overflow: hidden; text-align: center; padding: 2rem;
+}
+.hero::before {
+  content: ''; position: absolute; width: 150%; height: 150%;
+  background:
+    radial-gradient(ellipse at 25% 35%, rgba(139, 154, 125, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 65%, rgba(196, 160, 87, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(139, 154, 125, 0.15) 0%, transparent 60%);
+  animation: heroGlow 18s ease-in-out infinite; pointer-events: none;
+}
+@keyframes heroGlow {
+  0%, 100% { transform: translate(-10%, -10%) rotate(0deg); }
+  33% { transform: translate(5%, -5%) rotate(120deg); }
+  66% { transform: translate(-5%, 5%) rotate(240deg); }
+}
+.hero-shapes { position: absolute; inset: 0; overflow: hidden; opacity: 0.15; }
+.shape { position: absolute; border-radius: 50%; filter: blur(80px); }
+.shape-1 { width: 500px; height: 500px; background: var(--sage-400); top: -10%; left: -10%; animation: float1 20s ease-in-out infinite; }
+.shape-2 { width: 400px; height: 400px; background: var(--gold-400); bottom: -10%; right: -10%; animation: float2 25s ease-in-out infinite; }
+.shape-3 { width: 300px; height: 300px; background: var(--rose-400); top: 40%; left: 60%; animation: float3 22s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -40px); } }
+@keyframes float3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.hero-episode { display: block; font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232, 228, 220, 0.5); margin-bottom: 1.5rem; }
+.hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: var(--dark-text); }
+.hero-title .accent { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--dark-text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.hero-mini-player { max-width: 320px; margin: 0 auto 1.5rem; }
+.hero-mini-player iframe { border-radius: 12px; }
+.hero-meta { display: flex; justify-content: center; gap: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--dark-text-secondary); opacity: 0.6; animation: scrollBounce 2s ease-in-out infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+/* ============================================================
+   MAIN CONTENT + LAYOUT
+   ============================================================ */
+.main-content { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+.intro-section { padding: 6rem 0 4rem; position: relative; }
+.intro-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.chapter-section { padding: 5rem 0 4rem; }
+.conclusion-section { padding: 5rem 0 4rem; background: var(--dark-base); color: var(--dark-text); position: relative; }
+.conclusion-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+
+.intro-lead {
+  font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 2; color: var(--text-primary); margin-bottom: 2rem;
+}
+.intro-lead::first-letter {
+  font-size: 3.8rem; font-weight: 700; float: left; line-height: 1;
+  margin-right: 8px; margin-top: 4px;
+  background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ============================================================
+   CHAPTER HEADER
+   ============================================================ */
+.chapter-header { text-align: center; margin-bottom: 3rem; }
+.chapter-icon { display: block; font-size: 2.5rem; margin-bottom: 0.75rem; }
+.chapter-number { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.chapter-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.chapter-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem; }
+.conclusion-section .chapter-title { color: var(--dark-text); }
+.conclusion-section .chapter-number { color: var(--dark-gold-400); }
+
+/* ============================================================
+   TEXT + INLINE HIGHLIGHTS
+   ============================================================ */
+.guide-text { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.9; margin-bottom: 1.5rem; }
+.guide-text strong.hl-warm { color: var(--rose-600); font-weight: 600; }
+.guide-text strong.hl-gold { color: var(--gold-600); font-weight: 600; }
+.guide-text strong.hl-sage { color: var(--sage-600); font-weight: 600; }
+.guide-text strong.hl-blue { color: var(--blue-600); font-weight: 600; }
+.guide-text strong.hl-purple { color: var(--purple-600); font-weight: 600; }
+.body-text { font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+.conclusion-section .guide-text { color: var(--dark-text-secondary); }
+.conclusion-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--dark-text-secondary); margin-bottom: 2rem; }
+.conclusion-text strong { color: var(--dark-text); font-weight: 600; }
+.conclusion-text .gold { color: var(--dark-gold-600); }
+
+/* ============================================================
+   DIALOGUE
+   ============================================================ */
+.dialogue-block { margin: 1.5rem 0; }
+.dialogue-block-radio { background: var(--white); border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 1px 2px rgba(44, 51, 48, 0.05); margin: 2rem 0 4rem; }
+.dialogue-item { padding: 1rem 1rem 1rem 1.25rem; position: relative; font-style: normal; }
+.dialogue-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--sage-400); }
+.dialogue-item + .dialogue-item { border-top: 1px dashed var(--border); }
+.dialogue-speaker { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.dialogue-text { font-size: 0.95rem; line-height: 1.85; font-style: normal; }
+.dialogue-block-radio .dialogue-text { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; line-height: 1.9; }
+
+/* Fixed speakers */
+.dialogue-item.speaker-tamkai::before { background: var(--sage-400); }
+.dialogue-speaker.tamkai { color: var(--sage-600); }
+.dialogue-item.speaker-opi::before { background: var(--blue-400); }
+.dialogue-speaker.opi { color: var(--blue-600); }
+.dialogue-item.speaker-osato::before { background: var(--gold-400); }
+.dialogue-speaker.osato { color: var(--gold-600); }
+
+/* Guest speakers */
+.dialogue-item.speaker-guest-1::before { background: var(--rose-400); }
+.dialogue-speaker.guest-1 { color: var(--rose-600); }
+.dialogue-item.speaker-guest-2::before { background: var(--purple-400); }
+.dialogue-speaker.guest-2 { color: var(--purple-600); }
+.dialogue-item.speaker-guest-3::before { background: var(--red-400); }
+.dialogue-speaker.guest-3 { color: var(--red-600); }
+.dialogue-item.speaker-guest-4::before { background: var(--amber-400); }
+.dialogue-speaker.guest-4 { color: var(--amber-600); }
+.dialogue-item.speaker-guest-5::before { background: var(--teal-400); }
+.dialogue-speaker.guest-5 { color: var(--teal-600); }
+.dialogue-item.speaker-participant::before { background: var(--text-muted); }
+.dialogue-speaker.participant { color: var(--text-muted); }
+
+/* ============================================================
+   ANNOTATION (3-layer architecture)
+   ============================================================ */
+.annotation {
+  margin: 4rem 0; background: var(--dark-surface); color: var(--dark-text); border-radius: 12px;
+  padding: 2rem; position: relative; overflow: hidden; cursor: pointer;
+}
+.annotation::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.annotation-badge {
+  font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dark-base); background: var(--gold-400);
+  padding: 0.2rem 0.6rem; border-radius: 3px;
+  display: inline-block; margin-bottom: 0.75rem;
+}
+.annotation-title {
+  font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--dark-text); line-height: 1.4; margin-bottom: 0.75rem;
+}
+.annotation-body {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; line-height: 1.9;
+  color: var(--dark-text-secondary); position: relative;
+  max-height: 4.5em; overflow: hidden; transition: max-height 0.5s var(--ease);
+}
+.annotation-body::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2em;
+  background: linear-gradient(transparent, var(--dark-surface)); transition: opacity 0.3s var(--ease);
+}
+.annotation-body p + p { margin-top: 0.75rem; }
+html:not(.reveal-ready) .annotation-body { max-height: none; }
+html:not(.reveal-ready) .annotation-body::after { display: none; }
+html:not(.reveal-ready) .annotation-toggle { display: none; }
+.annotation.expanded .annotation-body { max-height: 500px; }
+.annotation.expanded .annotation-body::after { opacity: 0; }
+.annotation-toggle {
+  font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold-400); margin-top: 0.5rem; display: inline-block; cursor: pointer;
+}
+.annotation.expanded .annotation-toggle .toggle-more { display: none; }
+.annotation:not(.expanded) .annotation-toggle .toggle-less { display: none; }
+
+/* ============================================================
+   PULL QUOTE
+   ============================================================ */
+.pull-quote { text-align: center; margin: 4rem 0; padding: 0 1rem; position: relative; }
+.pull-quote::before { content: '\201C'; display: block; font-family: Georgia, serif; font-size: 5rem; line-height: 1; color: var(--gold-200); margin-bottom: -0.5rem; }
+.pull-quote-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8; color: var(--text-primary); font-style: normal; }
+.pull-quote-attribution { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+.conclusion-section .pull-quote-text { color: var(--dark-text); }
+.conclusion-section .pull-quote::before { color: var(--dark-gold-400); }
+
+/* ============================================================
+   HIGHLIGHT BOX
+   ============================================================ */
+.highlight-box { background: var(--gold-50); border-left: 4px solid var(--gold-400); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 0.75rem; align-items: flex-start; }
+.highlight-box-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.highlight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); }
+
+/* ============================================================
+   SECTION DIVIDER
+   ============================================================ */
+.section-divider { text-align: center; padding: 3rem 0; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 1px; background: var(--gradient-accent-90); }
+.divider-emoji { position: relative; z-index: 1; background: var(--base); padding: 0 1rem; font-size: 1.3rem; }
+
+/* ============================================================
+   CONCEPT DIAGRAM (flow)
+   ============================================================ */
+.concept-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.concept-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.concept-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.concept-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); min-width: 90px; }
+.concept-step-emoji { font-size: 1.5rem; }
+.concept-step-label { font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-primary); }
+.concept-arrow { font-size: 1.2rem; color: var(--sage-400); font-weight: 700; }
+@media (max-width: 600px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); } }
+
+/* ============================================================
+   CONTRAST DIAGRAM (vs)
+   ============================================================ */
+.contrast-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.contrast-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.contrast-side { background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.contrast-side--left { border-top: 3px solid var(--sage-400); }
+.contrast-side--right { border-top: 3px solid var(--gold-500); }
+.contrast-side-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.contrast-side-emoji { font-size: 1.3rem; }
+.contrast-side-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; }
+.contrast-side-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+.contrast-vs { display: flex; align-items: center; justify-content: center; padding-top: 2rem; }
+.contrast-vs-text { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--sage-500); letter-spacing: 0.1em; }
+@media (max-width: 600px) { .contrast-grid { grid-template-columns: 1fr; } .contrast-vs { padding: 0.5rem 0; } }
+
+/* ============================================================
+   SPEAKER GRID
+   ============================================================ */
+.speaker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0; }
+@media (max-width: 600px) { .speaker-grid { grid-template-columns: repeat(2, 1fr); } }
+.speaker-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.25rem 1rem; text-align: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.speaker-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.speaker-avatar {
+  width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 0.75rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+}
+.speaker-avatar.rose-bg { background: var(--rose-50); border: 2px solid var(--rose-200); }
+.speaker-avatar.sage-bg { background: var(--sage-50); border: 2px solid var(--sage-200); }
+.speaker-avatar.purple-bg { background: var(--purple-50); border: 2px solid var(--purple-400); }
+.speaker-avatar.red-bg { background: var(--red-50); border: 2px solid var(--red-400); }
+.speaker-avatar.amber-bg { background: var(--amber-50); border: 2px solid var(--amber-400); }
+.speaker-avatar.teal-bg { background: var(--teal-50); border: 2px solid var(--teal-400); }
+.speaker-avatar.blue-bg { background: var(--blue-50); border: 2px solid var(--blue-400); }
+.speaker-name { font-family: 'Noto Serif JP', serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+.speaker-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+
+/* ============================================================
+   SPLIT VISUAL
+   ============================================================ */
+.split-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.split-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem;
+}
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .split-grid { grid-template-columns: 1fr; } }
+.split-side {
+  background: var(--white); border-radius: 12px; padding: 1.5rem; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.split-side-icon {
+  width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid;
+}
+.split-side-icon.warm { background: var(--rose-50); border-color: var(--rose-400); }
+.split-side-icon.cool { background: var(--blue-50); border-color: var(--blue-400); }
+.split-side-icon.sage { background: var(--sage-50); border-color: var(--sage-400); }
+.split-side-icon.purple { background: var(--purple-50); border-color: var(--purple-400); }
+.split-side-title { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.split-side-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.split-effects { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.split-effect { padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.split-effect.warm-bg { background: var(--rose-50); color: var(--rose-600); }
+.split-effect.cool-bg { background: var(--blue-50); color: var(--blue-600); }
+.split-conclusion {
+  margin-top: 1.25rem; padding: 1rem 1.5rem; border-radius: 12px;
+  background: linear-gradient(135deg, var(--rose-50), var(--blue-50));
+  border: 1px solid var(--border); text-align: center;
+  font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--gold-600);
+}
+
+/* ============================================================
+   CARD GRID
+   ============================================================ */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+.info-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.5rem; text-align: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.info-card.warm-top { border-top: 3px solid var(--rose-400); }
+.info-card.sage-top { border-top: 3px solid var(--sage-400); }
+.info-card.blue-top { border-top: 3px solid var(--blue-400); }
+.info-card-icon {
+  width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1rem;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+.info-card.warm-top .info-card-icon { background: var(--rose-50); }
+.info-card.sage-top .info-card-icon { background: var(--sage-50); }
+.info-card.blue-top .info-card-icon { background: var(--blue-50); }
+.info-card-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.info-card.warm-top .info-card-title { color: var(--rose-600); }
+.info-card.sage-top .info-card-title { color: var(--sage-600); }
+.info-card.blue-top .info-card-title { color: var(--blue-600); }
+.info-card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* ============================================================
+   CHECKLIST VISUAL
+   ============================================================ */
+.checklist-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2rem 0; }
+.checklist-visual-label {
+  font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1rem;
+}
+.checklist-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--white); border-radius: 10px; margin-bottom: 0.5rem;
+  border-left: 3px solid var(--gold-400); transition: transform 0.2s var(--ease);
+}
+.checklist-item:hover { transform: translateX(4px); }
+.checklist-item .check-icon { font-size: 1rem; flex-shrink: 0; }
+.checklist-item .check-text { font-size: 0.9rem; color: var(--text-primary); }
+.checklist-item.warning { border-left-color: var(--rose-400); background: var(--rose-50); }
+.checklist-item.warning .check-text { color: var(--rose-600); font-weight: 600; }
+
+/* ============================================================
+   TAKEAWAY CARDS
+   ============================================================ */
+.takeaways-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+@media (max-width: 600px) { .takeaways-grid { grid-template-columns: 1fr; } }
+.takeaway-card { background: var(--dark-surface-raised); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; transition: transform 0.3s var(--ease); }
+.takeaway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); opacity: 0; transition: opacity 0.3s var(--ease); }
+.takeaway-card:hover { transform: translateY(-4px); }
+.takeaway-card:hover::before { opacity: 1; }
+.takeaway-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.takeaway-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+.takeaway-desc { font-size: 0.85rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer { background: var(--dark-base); color: var(--dark-text-secondary); text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--dark-border); }
+.footer-logo { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; color: var(--dark-text); margin-bottom: 0.5rem; }
+.footer-meta { font-size: 0.75rem; line-height: 1.7; color: var(--dark-text-secondary); }
+
+/* ============================================================
+   REVEAL SYSTEM
+   ============================================================ */
+.reveal { opacity: 1; transform: none; filter: none; }
+
+@media (min-width: 1024px) {
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .chapter-header.reveal { transform: scale(0.85) translateY(30px); transition: opacity 0.95s ease-out, transform 0.95s ease-out; }
+  .section-divider.reveal { transform: scaleX(0.3); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .concept-diagram.reveal, .contrast-diagram.reveal, .split-visual.reveal, .checklist-visual.reveal, .step-timeline.reveal { transform: scale(0.9); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .takeaway-card.reveal { transform: scale(0.9) translateY(20px); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .annotation.reveal { transform: translateY(30px); transition: opacity 1.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .dialogue-item.reveal:nth-child(odd) { transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .dialogue-item.reveal:nth-child(even) { transform: translateX(60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .reveal.pc-revealed { opacity: 1 !important; transform: translateY(0) translateX(0) scale(1) scaleX(1) !important; }
+  html.pc-reveal-ready .guide-text.reveal + .dialogue-block .dialogue-item.reveal { transition-delay: 0.2s; }
+  html.pc-reveal-ready .dialogue-block + .guide-text.reveal { transition-delay: 0.18s; }
+}
+
+@keyframes spotlight { 0% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 12% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateY(0); } 70% { opacity: 1; filter: blur(0); transform: translateY(0); } 80% { opacity: 0.5; } 90% { opacity: 0.25; } 100% { opacity: 0.2; } }
+@keyframes spotlight-left { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(-16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(-4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-right { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-always-visible { 0%, 100% { opacity: 1; filter: none; transform: none; } }
+
+@media (max-width: 1023px) {
+  html.spotlight-ready .reveal { animation: spotlight linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(odd) { animation-name: spotlight-left; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(even) { animation-name: spotlight-right; }
+  html.spotlight-ready .chapter-header.reveal, html.spotlight-ready .concept-diagram.reveal, html.spotlight-ready .contrast-diagram.reveal, html.spotlight-ready .split-visual.reveal, html.spotlight-ready .checklist-visual.reveal, html.spotlight-ready .step-timeline.reveal, html.spotlight-ready .section-divider.reveal { animation-name: spotlight-always-visible; }
+}
+
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+html.reveal-ready .reveal.io-revealed { opacity: 1; transform: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .main-content { padding: 0 1.25rem; }
+  .hero { padding: 1.5rem; }
+  .intro-section { padding: 4rem 0 3rem; }
+  .chapter-section { padding: 4rem 0 3rem; }
+  .conclusion-section { padding: 4rem 0 3rem; }
+  .annotation { padding: 1.5rem; }
+  .progress-context { padding: 0.5rem 1rem; }
+  .progress-label { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .progress-chapter { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== PROGRESS BAR ===== -->
+<div class="progress-bar" id="progressBar">
+  <div class="progress-line" id="progressLine"></div>
+  <div class="progress-context">
+    <span class="progress-label">Funleash Seminar</span>
+    <span class="progress-chapter" id="progressChapter"></span>
+  </div>
+</div>
+
+<!-- ===== SIDE TOC ===== -->
+<nav class="side-toc" id="sideToc">
+  <div class="toc-dot" data-target="intro" data-label="Introduction"></div>
+  <div class="toc-dot" data-target="chapter1" data-label="喉の渇きとジレンマ"></div>
+  <div class="toc-dot" data-target="chapter2" data-label="褒めると存在"></div>
+  <div class="toc-dot" data-target="chapter3" data-label="本と雑味"></div>
+  <div class="toc-dot" data-target="chapter4" data-label="言葉を溶かす"></div>
+  <div class="toc-dot" data-target="conclusion" data-label="Conclusion"></div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="hero">
+  <div class="hero-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="hero-content">
+    <span class="hero-label">Metacreative Document</span>
+    <h1 class="hero-title">育成という言葉の<span class="accent">陥穽</span></h1>
+    <p class="hero-subtitle">「伸びる組織」を阻む見えない力学——Funleash主催セミナーより</p>
+    <div class="hero-meta">
+      <span>2026.01.15</span>
+      <span>神谷俊 ・ 伊達洋駆 ・ 志水静香 ・ 三木芳夫 ・ 石原直子</span>
+    </div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span></div>
+</header>
+
+<!-- ===== INTRODUCTION ===== -->
+<section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎓</span>
+      <span class="chapter-number">Introduction</span>
+      <h2 class="chapter-title">「育成」の中に潜むもの</h2>
+    </div>
+
+    <p class="intro-lead reveal">育成という言葉を口にしたとき、私たちは無意識のうちに何を前提としているだろうか。2026年1月、Funleash主催のセミナー「どんなメンバーも伸びる組織へ」に集まった人と組織の専門家たちは、この使い慣れた言葉の中に潜む複雑な力学を浮かび上がらせていった。</p>
+
+    <div class="speaker-grid reveal">
+      <div class="speaker-card">
+        <div class="speaker-avatar rose-bg">🔍</div>
+        <div class="speaker-name">神谷俊</div>
+        <div class="speaker-role">エスノグラファー代表<br>組織の「見えない世界」を観察</div>
+      </div>
+      <div class="speaker-card">
+        <div class="speaker-avatar purple-bg">📊</div>
+        <div class="speaker-name">伊達洋駆</div>
+        <div class="speaker-role">ビジネスリサーチラボ代表<br>学術知と実践知の融合</div>
+      </div>
+      <div class="speaker-card">
+        <div class="speaker-avatar red-bg">🌏</div>
+        <div class="speaker-name">志水静香</div>
+        <div class="speaker-role">Funleash代表CEO<br>外資系人事責任者として変革を牽引</div>
+      </div>
+      <div class="speaker-card">
+        <div class="speaker-avatar amber-bg">🏗️</div>
+        <div class="speaker-name">三木芳夫</div>
+        <div class="speaker-role">キャリアシンク代表<br>CHRO経験・組織開発支援</div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">セミナー後半のインタラクティブセッション。参加者と登壇者が交わした対話は、人を育てるとはどういうことか、成長とは誰のものか、そしてなぜ私たちは「育成」という言葉にどこか<strong class="hl-warm">居心地の悪さ</strong>を感じるのか——という問いへと収斂していった。</p>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">💧</span></div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="喉の渇きとジレンマ">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">💧</span>
+      <span class="chapter-number">Chapter 01</span>
+      <h2 class="chapter-title">喉の渇きとジレンマ</h2>
+      <p class="chapter-subtitle">レディネス、有能感、そして権力の不可視化</p>
+    </div>
+
+    <p class="guide-text reveal">「育成してもらえると思って入ってきている人がいる」——ある参加者の問題提起から、セッションは動き出した。育成を期待する人と、育成にアレルギーを感じる人。この矛盾をどう理解すればいいのか。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">神谷俊</p>
+        <p class="dialogue-text">「育成してもらえると思って入ってきてるというコンディションも、育成が嫌だというコンディションも、おそらくレディネスという言葉で共通化できるんじゃないかなと思っていて。つまり、育成効果を生み出すための準備状態。喉が渇いている状態であれば、当然水を飲んだときに効果を感じるわけですよね」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">レディネス（Readiness）</h4>
+      <div class="annotation-body">
+        <p>教育心理学における重要概念で、学習が効果的に行われるための準備状態を指す。E・L・ソーンダイクの学習理論に由来し、身体的・知的・情緒的な成熟度に加え、学習への動機づけも含まれる。神谷氏の「喉が渇いている状態」という比喩は、レディネスの本質——学ぶ準備ができているかどうか——を直感的に捉えた表現である。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">しかし問題はそれだけでは終わらない。伊達洋駆は、育成がもたらす感情の構造を<strong class="hl-purple">自己決定理論</strong>の枠組みで解き明かした。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-2">
+        <p class="dialogue-speaker guest-2">伊達洋駆</p>
+        <p class="dialogue-text">「育成って成長実感がもたらされますよね。それって人の根本的な欲求の一つである有能感を満たすことができる。でも育成と言われると自由が奪われるわけですね。自律性が奪われてしまう。有能感を高める面ではポジティブなんですけど、自律性が奪われるという側面が育成に対してネガティブになっている理由なのかなと」</p>
+      </div>
+    </div>
+
+    <div class="split-visual reveal">
+      <p class="split-visual-label">🧠 育成がもたらす二つの力</p>
+      <div class="split-grid">
+        <div class="split-side">
+          <div class="split-side-icon warm">✨</div>
+          <div class="split-side-title">有能感</div>
+          <div class="split-side-subtitle">Competence</div>
+          <div class="split-effects">
+            <div class="split-effect warm-bg">💪 「できるようになった」という実感</div>
+            <div class="split-effect warm-bg">📈 成長の手応え・自己効力感</div>
+          </div>
+        </div>
+        <div class="split-side">
+          <div class="split-side-icon cool">🔗</div>
+          <div class="split-side-title">自律性の喪失</div>
+          <div class="split-side-subtitle">Autonomy Loss</div>
+          <div class="split-effects">
+            <div class="split-effect cool-bg">⛓️ 「やらされている」という感覚</div>
+            <div class="split-effect cool-bg">🚫 自分で選べない不自由さ</div>
+          </div>
+        </div>
+      </div>
+      <div class="split-conclusion">「育成してほしい」と「育成されたくない」は、同一人物の中に共存しうる感情である</div>
+    </div>
+
+    <p class="guide-text reveal">では、このジレンマをどう乗り越えるのか。神谷俊は<strong class="hl-gold">「ヘアカバー」</strong>という実践的な概念を提示した。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">神谷俊</p>
+        <p class="dialogue-text">「マネージャーが外発的な動機をどうやって隠してあげるか。ヘアカバーなんていう風に言うんですけど、上から見えないようにして『好きなことやっていいんだよ』って陰で言いながら、上には『あいつはけしからんですね、ちゃんと注意しておきます』っていう翻訳者になれるかみたいなのは意外と重要なんじゃないかな」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">ヘアカバー——権力を隠す技法</h4>
+      <div class="annotation-body">
+        <p>上層部からの外発的な評価基準を、ミドルマネージャーが遮蔽し、部下が内発的動機に基づいて働ける空間を確保する行為。組織行動論の「バッファリング」に近いが、神谷氏の表現はより積極的な「演技」を含む。上に対しては管理を装い、下に対しては自由を保障する——この二枚舌的な翻訳行為が、内発的動機を守る重要な機能を果たす。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">権力がうまく文脈の中に埋め込まれていって、一見、上から押し付けられている感覚が全くないという状態になると、育成は機能する</p>
+      <p class="pull-quote-attribution">--- 神谷俊, on 権力の不可視化</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">👏</span></div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="褒めるという技術、存在という条件">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">👏</span>
+      <span class="chapter-number">Chapter 02</span>
+      <h2 class="chapter-title">褒めるという技術、存在という条件</h2>
+      <p class="chapter-subtitle">フィードバックの非対称性とオーセンティシティ</p>
+    </div>
+
+    <p class="guide-text reveal">叱られた内容は覚えていないが、叱られた事実は覚えている。褒められた記憶は、そもそも出てこない。参加者から投げかけられたこの<strong class="hl-warm">フィードバックの非対称性</strong>に、伊達洋駆は分析のメスを入れた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-2">
+        <p class="dialogue-speaker guest-2">伊達洋駆</p>
+        <p class="dialogue-text">「叱られ方を考えたとき、大きく2つあるんじゃないか。叱られた内容をきちんと学んで次に生かしていくのが1つ。もう1つが、叱られるストレスをやり過ごせるようになる。右の耳から左の耳に流すのがうまくなっていくという叱られ上手。人間って後者も発達させる可能性があるので、すごく難しいなと」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">一方、「褒める」ことが労働になるとき、育成と同じジレンマがやってくる。参加者から「Aさんを褒めたら次はBさんも褒めないと」という現場のもやもやが共有されると、伊達氏は<strong class="hl-sage">「習慣化」</strong>という処方箋を提示した。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-2">
+        <p class="dialogue-speaker guest-2">伊達洋駆</p>
+        <p class="dialogue-text">「褒めるということを労働的にやると、育成と同じ問題がやってくる。褒める裏側を、褒められる側は結構見てるんですよ。そこで重要になるのが習慣化。自然と相手のいいところを見つけて褒められるようになれば、それはもう自動化されてる状態。そこまで持っていけるかどうか」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">志水静香はここで、ある保育園会社での経験を語った。「褒める」のではなく「感謝する」——評価的な視線から共感的な視線への転換が、組織の空気を変えたという。</p>
+
+    <p class="guide-text reveal">だが神谷俊は、テクニックの話を超えた本質に踏み込んだ。「信じられる褒め」とは何か。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">神谷俊</p>
+        <p class="dialogue-text">「僕が思い浮かべたのは、面白法人カヤックの柴田史郎っていう男。365日、日本全国どこでもTシャツでいる。おばあちゃんの葬式にもTシャツで参加している。彼の言葉だったら信じられるなって。見るからに嘘をついてないし、裏もないし、利害関係に惑わされない。オーセンティシティ、誠実さみたいなものが問われている」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">オーセンティシティ（Authenticity）</h4>
+      <div class="annotation-body">
+        <p>自己の真正性・本来性を指す概念。組織行動論では「オーセンティック・リーダーシップ」として注目され、自己認識、内面化された道徳観、情報のバランスの取れた処理、関係における透明性の四要素から構成される。「365日Tシャツ」という極端な一貫性は、言葉が利害計算ではなく純粋な自己表現であることの証明となる。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">WHAT MAKES FEEDBACK TRUSTED?</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🛠️</span>
+            <span class="contrast-side-title">テクニックとしての褒め</span>
+          </div>
+          <p class="contrast-side-desc">意識的に褒める → 労働化 → 裏を読まれる → 効果が薄れる</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">🌿</span>
+            <span class="contrast-side-title">存在としての信頼</span>
+          </div>
+          <p class="contrast-side-desc">一貫した在り方 → オーセンティシティ → 無条件に信じられる → 言葉が届く</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">📖</span></div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="本という装置、雑味という豊かさ">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">📖</span>
+      <span class="chapter-number">Chapter 03</span>
+      <h2 class="chapter-title">本という装置、雑味という豊かさ</h2>
+      <p class="chapter-subtitle">カレーライスの比喩と「意味のない学び」の意味</p>
+    </div>
+
+    <p class="guide-text reveal">ある参加者が、神谷俊の著書『育成不全』を部下に読んでもらったという実践を語った。マネージャーとして読んで勇気をもらい、でも現場でへこみ、また読む——その繰り返しの果てに、「もう本人に読んでもらった方が早い」と気づいたという。</p>
+
+    <p class="guide-text reveal">神谷氏はこの実践の核心を、<strong class="hl-gold">「カレーライスの比喩」</strong>で解き明かした。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">神谷俊</p>
+        <p class="dialogue-text">「カレーライスを作ろうといったとき、管理職は美味しいカレーライスを作ることを考える。でも部下は玉ねぎを買いに行くことを考える。話が噛み合うわけないじゃないですか。共通言語をどうやって作っていくのかがすごく大事で、本もそうだし、目の前に見える化する、共有していくことで初めてレディネスが整っていく」</p>
+      </div>
+    </div>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">FROM SHARED TEXT TO READINESS</p>
+      <div class="concept-flow">
+        <div class="concept-step">
+          <span class="concept-step-emoji">📚</span>
+          <span class="concept-step-label">共通テキスト</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">👁️</span>
+          <span class="concept-step-label">視野の共有</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">💡</span>
+          <span class="concept-step-label">自分ごと化</span>
+        </div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step">
+          <span class="concept-step-emoji">🌱</span>
+          <span class="concept-step-label">レディネス形成</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">伊達洋駆は、この方法が機能する条件を指摘した。「あなた本を読んでおいてくださいね。私は読みませんけど」ではダメだと。<strong class="hl-sage">「一緒にやる」</strong>という関係性が、自律性を確保する鍵になる。</p>
+
+    <div class="highlight-box reveal">
+      <span class="highlight-box-icon">💬</span>
+      <p>志水静香は付け加えた。「<strong>私も悩みながらこの本読んでるんだよ</strong>って伝えたことが伝わったのかもしれない」——ともに学び、ともに悩む対称的な関係こそが、育成を可能にする条件なのかもしれない。</p>
+    </div>
+
+    <p class="guide-text reveal">セッション終盤、伊達氏は「成長したい人の特徴」について、意外な観察を述べた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-2">
+        <p class="dialogue-speaker guest-2">伊達洋駆</p>
+        <p class="dialogue-text">「成長したいという嗜好性が高い人の特徴って、意味のないことも学んでるんですよ。最近、私はドイツの印刷機について調べてるんです。手で動かす印刷機があるってことを見つけて。一銭にもならないんですけど、今初めてその話をして、成仏できたんですけど」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">この自己開示は会場の笑いを誘ったが、核心を突いている。学びの楽しさは「仕事に役立つか」という功利的な視点が入り込んだ瞬間に損なわれる。神谷俊はこの議論に深く共感し、<strong class="hl-gold">「雑味」</strong>という言葉を取り上げた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">神谷俊</p>
+        <p class="dialogue-text">「今日一番響いているのは、伊達さんの言った『雑味』というキーワード。育成が精緻化されている。エッセンシャルみたいな形で、これさえやればOKと商業化されすぎている。AIの時代を迎えるにあたって、雑な育成みたいな、旧前時代的な育成みたいなものを皆さんで支持していくような時代もこれからやってくるのかなって」</p>
+      </div>
+    </div>
+
+    <div class="card-grid reveal">
+      <div class="info-card warm-top">
+        <div class="info-card-icon">📋</div>
+        <div class="info-card-title">マニュアル</div>
+        <div class="info-card-desc">「こうしなさい」という指示。選択の余地がなく、自律性を損なう</div>
+      </div>
+      <div class="info-card sage-top">
+        <div class="info-card-icon">📖</div>
+        <div class="info-card-title">本</div>
+        <div class="info-card-desc">複数の視点を提示し、読者に選択を委ねる。内発的動機を保護する</div>
+      </div>
+      <div class="info-card blue-top">
+        <div class="info-card-icon">🍵</div>
+        <div class="info-card-title">雑味のある学び</div>
+        <div class="info-card-desc">「余計なもの」まで含む学びこそが、記憶に残り、感情と結びつく</div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">余計なものまで学んだ方が本当はうまくいきやすい。雑味が結構育成には重要で、あまり要素を取り出して効率的に設計しすぎると逆に息苦しくなる</p>
+      <p class="pull-quote-attribution">--- 伊達洋駆, on 雑味のある学び</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">💬</span></div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="育成という言葉を溶かす">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">💬</span>
+      <span class="chapter-number">Chapter 04</span>
+      <h2 class="chapter-title">育成という言葉を溶かす</h2>
+      <p class="chapter-subtitle">専門化への抵抗と、言語がつくる権力構造</p>
+    </div>
+
+    <p class="guide-text reveal">議論は、人事と現場の間にある言語の壁に向かった。「心理的安全性とかよくわかんないし、とりあえず従っとくか」——神谷俊が指摘した現場の空気感は、育成が<strong class="hl-warm">専門化されすぎている</strong>という構造的問題を示していた。</p>
+
+    <p class="guide-text reveal">三木芳夫は、この課題に自身のテーマを重ねた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-4">
+        <p class="dialogue-speaker guest-4">三木芳夫</p>
+        <p class="dialogue-text">「まさに事業にどう人事を溶かすかみたいなところが僕すごいテーマなんですよ。リスキリングだとか人的資本だとか言っちゃうと、完全にアレルギーが出る。みんなと一緒にこの会社を良くするためには何をしていかなきゃいけないんだろうという、しっかりと積み上げていくコミュニケーションをどう進めていけるか」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">「人事を溶かす」——可視から不可視へ</h4>
+      <div class="annotation-body">
+        <p>三木氏の「事業に人事を溶かす」という表現は、人事機能を事業活動の中に見えないように組み込むことで、専門機能としての人事と現場の二項対立を解消しようとするものである。これは神谷氏の「ヘアカバー」（権力を隠す）や「アマチュアとして接する」（専門性を隠す）と同じ発想——可視的な専門機能から不可視のインフラへの転換を意味している。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">セッションの最後に登場した石原直子は、問題の根源を<strong class="hl-purple">言語そのもの</strong>に見出した。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-5">
+        <p class="dialogue-speaker guest-5">石原直子</p>
+        <p class="dialogue-text">「育成って言葉を持っている波動っていうんですかね。絶対に上の人が下の人に向かって使う言葉で、自分が成長する時に育成するとは絶対使わない。私は人材育成にほぼ使わなくて能力開発って言葉を使うんですけど、能力開発って言ったら自分でもやるって話。育成って言った瞬間、上の人が人に向かってやらせる話になる」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">「育成」と「能力開発」の語感の違い</h4>
+      <div class="annotation-body">
+        <p>「育成」は「育てる」という他動詞を含み、行為の主体と対象の非対称性を前提とする。一方「能力開発」は自己開発的なニュアンスを持ち、英語のDevelopmentに近い。日本語の「育成」には独特の上下関係が埋め込まれている。この言語的特性が、育成をめぐる様々なジレンマの一因となっている。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">志水静香は、ずっと感じていた違和感の正体がここにあったと語った。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-3">
+        <p class="dialogue-speaker guest-3">志水静香</p>
+        <p class="dialogue-text">「自分が育成っていう言葉がなんで嫌いでアレルギーなのかなっていうのが今日分かりました。英語でなんて言うんですかねって話をしたら、ないんですよ。ディベロップメントって言うんですよね。外資とかには」</p>
+      </div>
+    </div>
+
+    <div class="checklist-visual reveal">
+      <p class="checklist-visual-label">🔑 セッションから浮かび上がった、育成を機能させる条件</p>
+      <div class="checklist-item"><span class="check-icon">✓</span><span class="check-text">レディネス——「喉が渇いている状態」を作り出す</span></div>
+      <div class="checklist-item"><span class="check-icon">✓</span><span class="check-text">選択の余地——「これだけを学べ」ではなく、選べるようにする</span></div>
+      <div class="checklist-item"><span class="check-icon">✓</span><span class="check-text">共同作業——「一緒にやる」関係性で自律性を確保する</span></div>
+      <div class="checklist-item"><span class="check-icon">✓</span><span class="check-text">権力の不可視化——ヘアカバーの技法でバッファリングする</span></div>
+      <div class="checklist-item warning"><span class="check-icon">⚠</span><span class="check-text">「育成」という言葉そのものが、上下関係をビルトインしている</span></div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">育成って言った瞬間、上の人が、人事が、マネージャーが人に向かってやらせる話になる</p>
+      <p class="pull-quote-attribution">--- 石原直子, on 言葉がつくる権力構造</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="「伸びる組織」の条件">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🌅</span>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="chapter-title">「伸びる組織」の条件</h2>
+    </div>
+
+    <p class="conclusion-text reveal">約1時間のセッションは、<strong>「育成」という言葉の中に潜む複雑な力学</strong>を浮かび上がらせた。有能感と自律性のジレンマ。褒めることの二面性。雑味のある学びの豊かさ。そして、日本語の<span class="gold">「育成」という言葉そのものに埋め込まれた上下関係</span>。</p>
+
+    <p class="conclusion-text reveal">「どんなメンバーも伸びる組織」を作るために必要なのは、もしかすると、<strong>「育成」という言葉そのものを問い直し</strong>、新しい言葉——あるいは<span class="gold">新しい関係性</span>——を見つけることなのかもしれない。</p>
+
+    <div class="takeaways-grid">
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">💧</span>
+        <h4 class="takeaway-title">レディネスから始める</h4>
+        <p class="takeaway-desc">育成する前に「喉が渇いているか」を問う。学ぶ準備状態を整えることが、あらゆる育成の前提条件になる。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🎭</span>
+        <h4 class="takeaway-title">権力を翻訳する</h4>
+        <p class="takeaway-desc">マネージャーの役割は「育成する人」ではなく「翻訳する人」。組織の要請と個人の内発的動機を調停するヘアカバーの技法。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🍵</span>
+        <h4 class="takeaway-title">雑味を残す</h4>
+        <p class="takeaway-desc">効率的に設計された学びよりも、余計なものを含む雑味のある学びの方が豊かに機能する。AI時代だからこそ。</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">💬</span>
+        <h4 class="takeaway-title">言葉を溶かす</h4>
+        <p class="takeaway-desc">専門用語を使わず日常の言葉で語る。人事を事業に溶かす。「育成」という言葉がつくる上下関係を意識する。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <p class="footer-logo">Metacreative Document</p>
+  <p class="footer-meta">2026.01.15 | 神谷俊 ・ 伊達洋駆 ・ 志水静香 ・ 三木芳夫 ・ 石原直子<br>Funleash主催セミナー「どんなメンバーも伸びる組織へ」</p>
+  <p style="margin-top:1.25em;"><a href="../../" style="display:inline-flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:500;color:#fff;background:#8faa8b;border-radius:8px;padding:10px 20px;text-decoration:none;">← メタクリドキュメントについて</a></p>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+(function() {
+  'use strict';
+
+  // === REVEAL SYSTEM (3-branch) ===
+  var supportsScrollTimeline = CSS.supports('animation-timeline', 'view()');
+  var isPC = window.innerWidth >= 1024;
+
+  if (isPC && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('spotlight-ready', 'pc-reveal-ready');
+    initPCReveal();
+  } else if (supportsScrollTimeline) {
+    document.documentElement.classList.add('spotlight-ready');
+    setTimeout(function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; }
+      });
+    }, 5000);
+  } else if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('reveal-ready');
+    initIOFallback();
+  }
+
+  function initPCReveal() {
+    setTimeout(function() {
+      var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+      var threshold = window.innerHeight * 0.3;
+      reveals.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < threshold) {
+          el.style.transition = 'none';
+          el.classList.add('pc-revealed');
+          setTimeout(function() { el.style.transition = ''; }, 10);
+        }
+      });
+      document.querySelectorAll('.dialogue-block').forEach(function(block) {
+        var items = block.querySelectorAll('.dialogue-item.reveal:not(.pc-revealed)');
+        items.forEach(function(item, i) { item.style.transitionDelay = Math.min(i * 80, 300) + 'ms'; });
+      });
+    }, 100);
+
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) { requestAnimationFrame(function() { checkReveals(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+  }
+
+  function checkReveals() {
+    var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+    var triggerLine = window.innerHeight * 0.7;
+    reveals.forEach(function(el) { if (el.getBoundingClientRect().top < triggerLine) el.classList.add('pc-revealed'); });
+  }
+
+  function initIOFallback() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('io-revealed'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal:not(.io-revealed)').forEach(function(el) { el.classList.add('io-revealed'); }); }, 4000);
+  }
+
+  // === PROGRESS BAR + ATMOSPHERE + TOC ===
+  var progressBar = document.getElementById('progressBar');
+  var progressLine = document.getElementById('progressLine');
+  var progressChapter = document.getElementById('progressChapter');
+  var heroEl = document.getElementById('hero');
+  var currentChapterName = '';
+  var sections = document.querySelectorAll('[data-atmosphere]');
+  var tocDots = document.querySelectorAll('.toc-dot');
+  var atmospheres = { 'warm': '#F5F0E8', 'cool': '#F0F2F5', 'creative': '#F8F5EE', 'deep': '#F5F0E8' };
+
+  function updateAll() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressLine.style.width = (scrollTop / docHeight * 100) + '%';
+    if (scrollTop > heroEl.offsetTop + heroEl.offsetHeight - 100) progressBar.classList.add('visible');
+    else progressBar.classList.remove('visible');
+
+    var viewportMid = scrollTop + window.innerHeight * 0.4;
+    var activeId = '';
+    sections.forEach(function(s) {
+      var t = s.offsetTop, b = t + s.offsetHeight;
+      if (viewportMid >= t && viewportMid < b) {
+        activeId = s.id;
+        var atm = s.getAttribute('data-atmosphere');
+        if (atm && atmospheres[atm]) document.body.style.backgroundColor = atmospheres[atm];
+        var cn = s.getAttribute('data-chapter-name') || '';
+        if (cn !== currentChapterName) {
+          progressChapter.style.opacity = '0';
+          setTimeout(function() { progressChapter.textContent = cn; progressChapter.style.opacity = '1'; }, 200);
+          currentChapterName = cn;
+        }
+      }
+    });
+    tocDots.forEach(function(d) { d.classList.toggle('active', d.getAttribute('data-target') === activeId); });
+  }
+
+  tocDots.forEach(function(d) {
+    d.addEventListener('click', function() {
+      var t = document.getElementById(this.getAttribute('data-target'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.annotation').forEach(function(ann) {
+    ann.addEventListener('click', function() { this.classList.toggle('expanded'); });
+  });
+
+  var scrollTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(function() { updateAll(); scrollTicking = false; }); scrollTicking = true; }
+  }, { passive: true });
+  updateAll();
+})();
+</script>
+</body>
+</html>
