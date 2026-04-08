@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「で、何やってんの？」— Metacreative</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --base: #F5F0E8; --surface: #FAF8F5; --white: #FDFCFA;
+  --text-primary: #2C3330; --text-secondary: #6B6560; --text-muted: #9E9690; --border: #E5DFD6;
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC;
+  --sage-400: #8B9A7D; --sage-500: #6B7F5D; --sage-600: #5E6E52;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5;
+  --gold-400: #C4A057; --gold-500: #A68B45; --gold-600: #9A7B3A;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB;
+  --rose-400: #E8A598; --rose-600: #D88B7A;
+  --blue-50: #F0F5FA; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+  --purple-50: #F5F0FA; --purple-400: #9B7DC4; --purple-600: #7B5DA4;
+  --red-50: #FDF2F2; --red-400: #E07070; --red-600: #C05050;
+  --amber-50: #FFF8E1; --amber-400: #D4A030; --amber-600: #B08020;
+  --teal-50: #E8F5F3; --teal-400: #4DA89A; --teal-600: #2D8878;
+  --dark-base: #1C1A17; --dark-surface: #252320; --dark-surface-raised: #2E2B27;
+  --dark-text: #E2DDD5; --dark-text-secondary: #A09890; --dark-border: #3A3630;
+  --dark-gold-400: #B89040; --dark-gold-600: #E0C070;
+  --gradient-accent: linear-gradient(135deg, var(--sage-400) 0%, var(--gold-400) 100%);
+  --gradient-accent-90: linear-gradient(90deg, var(--sage-400), var(--gold-400));
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Noto Sans JP', 'Inter', sans-serif; background-color: var(--base); color: var(--text-primary); line-height: 1.85; transition: background-color 0.8s var(--ease); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; } a { color: inherit; text-decoration: none; }
+.progress-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1100; transform: translateY(-100%); transition: transform 0.4s var(--ease); }
+.progress-bar.visible { transform: translateY(0); }
+.progress-line { height: 3px; background: var(--gradient-accent-90); width: 0%; transition: width 0.1s linear; }
+.progress-context { background: rgba(28, 26, 23, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0.6rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+.progress-label { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-400); }
+.progress-chapter { font-family: 'Noto Sans JP', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); transition: opacity 0.3s var(--ease); }
+.side-toc { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); z-index: 900; display: none; }
+@media (min-width: 1200px) { .side-toc { display: flex; flex-direction: column; gap: 12px; } }
+.toc-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s var(--ease); position: relative; }
+.toc-dot:hover { background: var(--sage-400); transform: scale(1.3); }
+.toc-dot.active { background: var(--gold-400); transform: scale(1.5); box-shadow: 0 0 8px rgba(196, 160, 87, 0.4); }
+.toc-dot::after { content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-family: 'Inter', sans-serif; white-space: nowrap; color: var(--text-muted); opacity: 0; transition: opacity 0.2s var(--ease); pointer-events: none; }
+.toc-dot:hover::after { opacity: 1; }
+.hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--dark-base); color: var(--dark-text); overflow: hidden; text-align: center; padding: 2rem; }
+.hero::before { content: ''; position: absolute; width: 150%; height: 150%; background: radial-gradient(ellipse at 25% 35%, rgba(139, 154, 125, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 75% 65%, rgba(196, 160, 87, 0.25) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(139, 154, 125, 0.15) 0%, transparent 60%); animation: heroGlow 18s ease-in-out infinite; pointer-events: none; }
+@keyframes heroGlow { 0%, 100% { transform: translate(-10%, -10%) rotate(0deg); } 33% { transform: translate(5%, -5%) rotate(120deg); } 66% { transform: translate(-5%, 5%) rotate(240deg); } }
+.hero-shapes { position: absolute; inset: 0; overflow: hidden; opacity: 0.15; }
+.shape { position: absolute; border-radius: 50%; filter: blur(80px); }
+.shape-1 { width: 500px; height: 500px; background: var(--sage-400); top: -10%; left: -10%; animation: float1 20s ease-in-out infinite; }
+.shape-2 { width: 400px; height: 400px; background: var(--gold-400); bottom: -10%; right: -10%; animation: float2 25s ease-in-out infinite; }
+.shape-3 { width: 300px; height: 300px; background: var(--rose-400); top: 40%; left: 60%; animation: float3 22s ease-in-out infinite; }
+@keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 30px); } }
+@keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -40px); } }
+@keyframes float3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+.hero-content { position: relative; z-index: 1; max-width: 900px; }
+.hero-label { display: block; font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.hero-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.3; margin-bottom: 1rem; color: var(--dark-text); }
+.hero-title .accent { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-subtitle { font-size: clamp(0.9rem, 1.5vw, 1.1rem); color: var(--dark-text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+.hero-meta { display: flex; justify-content: center; gap: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--dark-text-secondary); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-family: 'Inter', sans-serif; font-size: 0.7rem; letter-spacing: 0.15em; color: var(--dark-text-secondary); opacity: 0.6; animation: scrollBounce 2s ease-in-out infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+.main-content { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+.intro-section { padding: 6rem 0 4rem; position: relative; }
+.intro-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.chapter-section { padding: 5rem 0 4rem; }
+.conclusion-section { padding: 5rem 0 4rem; background: var(--dark-base); color: var(--dark-text); position: relative; }
+.conclusion-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.intro-lead { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--text-primary); margin-bottom: 2rem; }
+.intro-lead::first-letter { font-size: 3.8rem; font-weight: 700; float: left; line-height: 1; margin-right: 8px; margin-top: 4px; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.chapter-header { text-align: center; margin-bottom: 3rem; }
+.chapter-icon { display: block; font-size: 2.5rem; margin-bottom: 0.75rem; }
+.chapter-number { display: block; font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-400); margin-bottom: 0.5rem; }
+.chapter-title { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.chapter-subtitle { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.5rem; }
+.conclusion-section .chapter-title { color: var(--dark-text); }
+.conclusion-section .chapter-number { color: var(--dark-gold-400); }
+.guide-text { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.9; margin-bottom: 1.5rem; }
+.guide-text strong.hl-warm { color: var(--rose-600); font-weight: 600; }
+.guide-text strong.hl-gold { color: var(--gold-600); font-weight: 600; }
+.guide-text strong.hl-sage { color: var(--sage-600); font-weight: 600; }
+.guide-text strong.hl-blue { color: var(--blue-600); font-weight: 600; }
+.guide-text strong.hl-purple { color: var(--purple-600); font-weight: 600; }
+.body-text { font-size: 0.95rem; line-height: 1.9; margin-bottom: 1.5rem; }
+.conclusion-section .guide-text { color: var(--dark-text-secondary); }
+.conclusion-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1rem, 1.8vw, 1.15rem); line-height: 2; color: var(--dark-text-secondary); margin-bottom: 2rem; }
+.conclusion-text strong { color: var(--dark-text); font-weight: 600; }
+.conclusion-text .gold { color: var(--dark-gold-600); }
+.dialogue-block { margin: 1.5rem 0; }
+.dialogue-item { padding: 1rem 1rem 1rem 1.25rem; position: relative; font-style: normal; }
+.dialogue-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--sage-400); }
+.dialogue-item + .dialogue-item { border-top: 1px dashed var(--border); }
+.dialogue-speaker { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.dialogue-text { font-size: 0.95rem; line-height: 1.85; font-style: normal; }
+.dialogue-item.speaker-tamkai::before { background: var(--sage-400); }
+.dialogue-speaker.tamkai { color: var(--sage-600); }
+.dialogue-item.speaker-guest-1::before { background: var(--rose-400); }
+.dialogue-speaker.guest-1 { color: var(--rose-600); }
+.annotation { margin: 4rem 0; background: var(--dark-surface); color: var(--dark-text); border-radius: 12px; padding: 2rem; position: relative; overflow: hidden; cursor: pointer; }
+.annotation::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); }
+.annotation-badge { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dark-base); background: var(--gold-400); padding: 0.2rem 0.6rem; border-radius: 3px; display: inline-block; margin-bottom: 0.75rem; }
+.annotation-title { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700; color: var(--dark-text); line-height: 1.4; margin-bottom: 0.75rem; }
+.annotation-body { font-family: 'Noto Sans JP', sans-serif; font-size: 0.9rem; line-height: 1.9; color: var(--dark-text-secondary); position: relative; max-height: 4.5em; overflow: hidden; transition: max-height 0.5s var(--ease); }
+.annotation-body::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2em; background: linear-gradient(transparent, var(--dark-surface)); transition: opacity 0.3s var(--ease); }
+.annotation-body p + p { margin-top: 0.75rem; }
+html:not(.reveal-ready) .annotation-body { max-height: none; }
+html:not(.reveal-ready) .annotation-body::after { display: none; }
+html:not(.reveal-ready) .annotation-toggle { display: none; }
+.annotation.expanded .annotation-body { max-height: 500px; }
+.annotation.expanded .annotation-body::after { opacity: 0; }
+.annotation-toggle { font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold-400); margin-top: 0.5rem; display: inline-block; cursor: pointer; }
+.annotation.expanded .annotation-toggle .toggle-more { display: none; }
+.annotation:not(.expanded) .annotation-toggle .toggle-less { display: none; }
+.pull-quote { text-align: center; margin: 4rem 0; padding: 0 1rem; position: relative; }
+.pull-quote::before { content: '\201C'; display: block; font-family: Georgia, serif; font-size: 5rem; line-height: 1; color: var(--gold-200); margin-bottom: -0.5rem; }
+.pull-quote-text { font-family: 'Noto Serif JP', serif; font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.8; color: var(--text-primary); font-style: normal; }
+.pull-quote-attribution { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; }
+.conclusion-section .pull-quote-text { color: var(--dark-text); }
+.conclusion-section .pull-quote::before { color: var(--dark-gold-400); }
+.highlight-box { background: var(--gold-50); border-left: 4px solid var(--gold-400); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 0.75rem; align-items: flex-start; }
+.highlight-box-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 0.1rem; }
+.highlight-box p { font-size: 0.9rem; line-height: 1.8; color: var(--text-primary); }
+.section-divider { text-align: center; padding: 3rem 0; position: relative; }
+.section-divider::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 1px; background: var(--gradient-accent-90); }
+.divider-emoji { position: relative; z-index: 1; background: var(--base); padding: 0 1rem; font-size: 1.3rem; }
+.concept-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.concept-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.concept-flow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.concept-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); min-width: 90px; }
+.concept-step-emoji { font-size: 1.5rem; }
+.concept-step-label { font-size: 0.8rem; font-weight: 500; text-align: center; color: var(--text-primary); }
+.concept-arrow { font-size: 1.2rem; color: var(--sage-400); font-weight: 700; }
+@media (max-width: 600px) { .concept-flow { flex-direction: column; } .concept-arrow { transform: rotate(90deg); } }
+.contrast-diagram { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.contrast-diagram-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.contrast-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: start; }
+.contrast-side { background: var(--white); border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.contrast-side--left { border-top: 3px solid var(--sage-400); }
+.contrast-side--right { border-top: 3px solid var(--gold-500); }
+.contrast-side-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+.contrast-side-emoji { font-size: 1.3rem; }
+.contrast-side-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; }
+.contrast-side-desc { font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+.contrast-vs { display: flex; align-items: center; justify-content: center; padding-top: 2rem; }
+.contrast-vs-text { font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--sage-500); letter-spacing: 0.1em; }
+@media (max-width: 600px) { .contrast-grid { grid-template-columns: 1fr; } .contrast-vs { padding: 0.5rem 0; } }
+.split-visual { background: var(--sage-50); border-radius: 16px; padding: 2rem 1.5rem; margin: 2.5rem 0; }
+.split-visual-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--sage-600); margin-bottom: 1.25rem; }
+.split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 600px) { .split-grid { grid-template-columns: 1fr; } }
+.split-side { background: var(--white); border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.split-side-icon { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border: 2px solid; }
+.split-side-icon.warm { background: var(--rose-50); border-color: var(--rose-400); }
+.split-side-icon.cool { background: var(--blue-50); border-color: var(--blue-400); }
+.split-side-icon.sage { background: var(--sage-50); border-color: var(--sage-400); }
+.split-side-title { font-family: 'Noto Serif JP', serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+.split-side-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.split-effects { display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.split-effect { padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; }
+.split-effect.warm-bg { background: var(--rose-50); color: var(--rose-600); }
+.split-effect.cool-bg { background: var(--blue-50); color: var(--blue-600); }
+.split-conclusion { margin-top: 1.25rem; padding: 1rem 1.5rem; border-radius: 12px; background: linear-gradient(135deg, var(--rose-50), var(--blue-50)); border: 1px solid var(--border); text-align: center; font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--gold-600); }
+.speaker-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 2rem 0; }
+.speaker-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.speaker-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+.speaker-avatar { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 0.75rem; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.speaker-avatar.sage-bg { background: var(--sage-50); border: 2px solid var(--sage-200); }
+.speaker-avatar.rose-bg { background: var(--rose-50); border: 2px solid var(--rose-200); }
+.speaker-name { font-family: 'Noto Serif JP', serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; }
+.speaker-role { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+.info-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+.info-card.warm-top { border-top: 3px solid var(--rose-400); }
+.info-card.sage-top { border-top: 3px solid var(--sage-400); }
+.info-card.blue-top { border-top: 3px solid var(--blue-400); }
+.info-card-icon { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.info-card.warm-top .info-card-icon { background: var(--rose-50); }
+.info-card.sage-top .info-card-icon { background: var(--sage-50); }
+.info-card.blue-top .info-card-icon { background: var(--blue-50); }
+.info-card-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+.info-card.warm-top .info-card-title { color: var(--rose-600); }
+.info-card.sage-top .info-card-title { color: var(--sage-600); }
+.info-card.blue-top .info-card-title { color: var(--blue-600); }
+.info-card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+.takeaways-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+@media (max-width: 600px) { .takeaways-grid { grid-template-columns: 1fr; } }
+.takeaway-card { background: var(--dark-surface-raised); border-radius: 12px; padding: 1.5rem; position: relative; overflow: hidden; transition: transform 0.3s var(--ease); }
+.takeaway-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent-90); opacity: 0; transition: opacity 0.3s var(--ease); }
+.takeaway-card:hover { transform: translateY(-4px); }
+.takeaway-card:hover::before { opacity: 1; }
+.takeaway-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.75rem; }
+.takeaway-title { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; font-weight: 600; color: var(--dark-text); margin-bottom: 0.5rem; }
+.takeaway-desc { font-size: 0.85rem; line-height: 1.7; color: var(--dark-text-secondary); }
+.footer { background: var(--dark-base); color: var(--dark-text-secondary); text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--dark-border); }
+.footer-logo { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; color: var(--dark-text); margin-bottom: 0.5rem; }
+.footer-meta { font-size: 0.75rem; line-height: 1.7; color: var(--dark-text-secondary); }
+.reveal { opacity: 1; transform: none; filter: none; }
+@media (min-width: 1024px) {
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .chapter-header.reveal { transform: scale(0.85) translateY(30px); transition: opacity 0.95s ease-out, transform 0.95s ease-out; }
+  .section-divider.reveal { transform: scaleX(0.3); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .concept-diagram.reveal, .contrast-diagram.reveal, .split-visual.reveal { transform: scale(0.9); transition: opacity 0.85s ease-out, transform 0.85s ease-out; }
+  .takeaway-card.reveal { transform: scale(0.9) translateY(20px); transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .annotation.reveal { transform: translateY(30px); transition: opacity 1.3s cubic-bezier(0.25, 0.1, 0.25, 1), transform 1.3s cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .dialogue-item.reveal:nth-child(odd) { transform: translateX(-60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .dialogue-item.reveal:nth-child(even) { transform: translateX(60px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  .reveal.pc-revealed { opacity: 1 !important; transform: translateY(0) translateX(0) scale(1) scaleX(1) !important; }
+  html.pc-reveal-ready .guide-text.reveal + .dialogue-block .dialogue-item.reveal { transition-delay: 0.2s; }
+  html.pc-reveal-ready .dialogue-block + .guide-text.reveal { transition-delay: 0.18s; }
+}
+@keyframes spotlight { 0% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 12% { opacity: 0.2; filter: blur(1px); transform: translateY(6px); } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateY(0); } 70% { opacity: 1; filter: blur(0); transform: translateY(0); } 80% { opacity: 0.5; } 90% { opacity: 0.25; } 100% { opacity: 0.2; } }
+@keyframes spotlight-left { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(-16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(-4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-right { 0% { opacity: 0.2; filter: blur(1px); transform: translateX(16px) translateY(6px); } 12% { opacity: 0.2; } 25% { opacity: 0.7; filter: blur(0.3px); transform: translateX(4px) translateY(1px); } 30% { opacity: 1; filter: blur(0); transform: translateX(0) translateY(0); } 70% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0.2; } }
+@keyframes spotlight-always-visible { 0%, 100% { opacity: 1; filter: none; transform: none; } }
+@media (max-width: 1023px) {
+  html.spotlight-ready .reveal { animation: spotlight linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(odd) { animation-name: spotlight-left; }
+  html.spotlight-ready .dialogue-item.reveal:nth-child(even) { animation-name: spotlight-right; }
+  html.spotlight-ready .chapter-header.reveal, html.spotlight-ready .concept-diagram.reveal, html.spotlight-ready .contrast-diagram.reveal, html.spotlight-ready .split-visual.reveal, html.spotlight-ready .section-divider.reveal { animation-name: spotlight-always-visible; }
+}
+html.reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+html.reveal-ready .reveal.io-revealed { opacity: 1; transform: none; }
+@media (max-width: 768px) {
+  .main-content { padding: 0 1.25rem; }
+  .hero { padding: 1.5rem; }
+  .intro-section { padding: 4rem 0 3rem; }
+  .chapter-section { padding: 4rem 0 3rem; }
+  .conclusion-section { padding: 4rem 0 3rem; }
+  .annotation { padding: 1.5rem; }
+  .progress-context { padding: 0.5rem 1rem; }
+  .progress-label { font-size: 0.6rem; letter-spacing: 0.15em; }
+  .progress-chapter { font-size: 0.7rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar">
+  <div class="progress-line" id="progressLine"></div>
+  <div class="progress-context">
+    <span class="progress-label">Metacreative Document</span>
+    <span class="progress-chapter" id="progressChapter"></span>
+  </div>
+</div>
+
+<nav class="side-toc" id="sideToc">
+  <div class="toc-dot" data-target="intro" data-label="Introduction"></div>
+  <div class="toc-dot" data-target="chapter1" data-label="アンドーナッツ"></div>
+  <div class="toc-dot" data-target="chapter2" data-label="対話の設計"></div>
+  <div class="toc-dot" data-target="chapter3" data-label="1対1対1"></div>
+  <div class="toc-dot" data-target="chapter4" data-label="二つの円"></div>
+  <div class="toc-dot" data-target="conclusion" data-label="Conclusion"></div>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="hero-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="hero-content">
+    <span class="hero-label">Metacreative Document</span>
+    <h1 class="hero-title">「で、<span class="accent">何やってんの？</span>」</h1>
+    <p class="hero-subtitle">18年のパパ友が初めて仕事を語り合った日——縦割りの向こう側で「掛け算」を仕掛ける二人の交差点</p>
+    <div class="hero-meta"><span>2026.04.08</span><span>タムカイ ・ 浜野良太</span></div>
+  </div>
+  <div class="scroll-indicator"><span>Scroll</span></div>
+</header>
+
+<!-- ===== INTRODUCTION ===== -->
+<section class="intro-section" id="intro" data-atmosphere="warm" data-chapter-name="Introduction">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🤝</span>
+      <span class="chapter-number">Introduction</span>
+      <h2 class="chapter-title">18年越しの「で、何やってんの？」</h2>
+    </div>
+
+    <p class="intro-lead reveal">タムカイと浜野良太は、18年来のパパ友だ。子どもたちの誕生日が1日違いで、家族ぐるみの付き合いが始まった。しかし、仕事の話をしたことは一度もなかった。「なんとなく、こういうことやってるんだな」——互いにそれくらいの解像度で、18年を過ごしてきた。</p>
+
+    <div class="speaker-grid reveal">
+      <div class="speaker-card">
+        <div class="speaker-avatar sage-bg">🎨</div>
+        <div class="speaker-name">タムカイ</div>
+        <div class="speaker-role">株式会社AFFLATUS代表<br>富士通デザインフェロー</div>
+      </div>
+      <div class="speaker-card">
+        <div class="speaker-avatar rose-bg">🍩</div>
+        <div class="speaker-name">浜野良太</div>
+        <div class="speaker-role">株式会社アンドーナッツ代表取締役<br>博報堂</div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">この日の対話は、その境界線を初めて越えてみようという試みだった。お互いの仕事の輪郭を知れば、思いもよらない<strong class="hl-gold">交差点</strong>が見えるかもしれない。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「俺、アンドーナツ聞きてえわ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「そうだよね。何やってるかわかんないよね。ホームページはわけわかんないしね」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「俺のとこもわかんない」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">お互いのホームページが「わけわかんない」のは、相手の仕事を知らないからではない。相手の仕事を語る言葉を、まだ共有していなかったからだ。この対話は、その言葉を一つずつ交換していく作業になる。</p>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🍩</span></div>
+
+<!-- ===== CHAPTER 1 ===== -->
+<section class="chapter-section" id="chapter1" data-atmosphere="warm" data-chapter-name="利害を編んで全員が勝つ">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🏗️</span>
+      <span class="chapter-number">Chapter 01</span>
+      <h2 class="chapter-title">利害を編んで全員が勝つ</h2>
+      <p class="chapter-subtitle">浜野良太と「アンドーナッツ」の共創設計</p>
+    </div>
+
+    <p class="guide-text reveal">浜野良太は博報堂でビールを売り続けた十数年の間に、一つの問いを抱え続けていた。なぜ、この知恵をもっと広く使えないのか。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「代理店も縦割り、官僚も縦割り、企業も縦割り。僕らもサントリーチームトヨタチームアサヒビールチーム花王チーム縦割りで同じ会社なのに全然連携しない。でも本当はサントリーとトヨタと花王で一緒になって、若者の生活を良くするための企画を考えて、ビールも売れるし、化粧品も売れるし、車も乗るみたいなことって本当はできる」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">「本当はできる」——この一語に十数年分のフラストレーションが凝縮されている。能力がないのではない。<strong class="hl-warm">構造が許さない</strong>だけだ。そこで浜野は博報堂内で社内起業し、ライゾマティクスの斎藤誠一氏と共同でアンドーナッツを立ち上げた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「利害を編んで全員が勝てる社会の仕組みを実装する」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「やれることは三つで、全員がハッピーいいねと思うアウトカム北極星を定義して、ウィンウィンの関係で持ってゴールを設定して、座組を作る。交渉も自分で頑張ってやる。企画座組交渉」</p>
+      </div>
+    </div>
+
+    <div class="annotation reveal" onclick="this.classList.toggle('expanded')">
+      <span class="annotation-badge">Annotation</span>
+      <h4 class="annotation-title">座組——浜野の仕事の核</h4>
+      <div class="annotation-body">
+        <p>もともとは歌舞伎や演劇で役者の配役を決める用語。ビジネスでは「誰が場所を出し、誰がコンテンツを出し、誰が資金を出すか」を設計し、全員がメリットを得られるように交渉する行為を指す。アンドーナッツの独自性は「企画→座組→交渉→実装」を一気通貫で行う点にある。コンサルは「設計まで」、代理店は「プロモーションから」が主戦場である中、両方を一人で貫く。</p>
+      </div>
+      <span class="annotation-toggle"><span class="toggle-more">+ more</span><span class="toggle-less">- less</span></span>
+    </div>
+
+    <p class="guide-text reveal">具体例は明快だ。カゴメと福島浜通りの農家を繋いだ事例では、零細農家の物流コストを大企業が負担し、双方が持続的に得をする仕組みを作った。モスバーガーと三越の「モス越し」では、1700円のなだ万バーガーが大行列を生み、売上の1%がアンドーナッツの収益になる。</p>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">FOUR CO-CREATION MODELS</p>
+      <div class="concept-flow">
+        <div class="concept-step"><span class="concept-step-emoji">🌾</span><span class="concept-step-label">地域×大企業</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🏬</span><span class="concept-step-label">場所×企業</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🏛️</span><span class="concept-step-label">官民連携</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">✨</span><span class="concept-step-label">企業×企業IP</span></div>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「自分でこの会社を経営するのはすごく楽しいし、自分が決められるのはすごいいい」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">利害を編んで全員が勝てる社会の仕組みを実装する</p>
+      <p class="pull-quote-attribution">--- 浜野良太, on アンドーナッツのミッション</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">💬</span></div>
+
+<!-- ===== CHAPTER 2 ===== -->
+<section class="chapter-section" id="chapter2" data-atmosphere="cool" data-chapter-name="対話の設計という旅路">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🎙️</span>
+      <span class="chapter-number">Chapter 02</span>
+      <h2 class="chapter-title">対話の設計という長い旅路</h2>
+      <p class="chapter-subtitle">タムカイが「グラレコの人」をやめた理由</p>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「もともと僕が今何をやってるかが一番大きく言うと、ずっと対話の設計っていうのをやってます」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">UIデザインから始まり、ワークショップ設計、組織変革へ。タムカイのキャリアは<strong class="hl-sage">「対話の設計」</strong>という一本の線で貫かれている。</p>
+
+    <div class="concept-diagram reveal">
+      <p class="concept-diagram-label">TAMKAI'S CAREER ARC</p>
+      <div class="concept-flow">
+        <div class="concept-step"><span class="concept-step-emoji">🖥️</span><span class="concept-step-label">UIデザイン</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🎨</span><span class="concept-step-label">グラレコ</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🏢</span><span class="concept-step-label">全社変革</span></div>
+        <span class="concept-arrow">&rarr;</span>
+        <div class="concept-step"><span class="concept-step-emoji">🚀</span><span class="concept-step-label">出向起業</span></div>
+      </div>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「絵が描きたいわけじゃないんだよね。本当は。みんなが絵を描いてるのを見たいっていうのと、この絵を使ってみんなが対話してるところが見たい。じゃあグラレコの人として一緒に生きていくの嫌だなと思って、グラレコを1回ちょっと止めて」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">グラレコを降ろしたタムカイが次に向かったのは、富士通の全社変革だった。「トップファースト」と名づけたプログラムでは、社長から率先して体験する設計にした。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「すごいゼロ歳から十歳のこととかを思い出すとか、いつもやらないような思い出し方をしたりとか。そうすると、ただ聞かれてるのにめっちゃ嬉しいみたいな気持ちになるわけ。めっちゃ嬉しい気持ちで作ったパーパスみたいな言葉は、みんな結構『研修のやつね』ってならない」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">浜野はタムカイの本質を、ひと言で捉えた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「あぶり出す力というか、掘り起こさせる力。結局は人間、自分のことは自分でしか掘れないから、その掘り方を横でサポートしてあげる。人間の本質に気づくみたいなものをやってるかな」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">絵が描きたいわけじゃないんだよね。本当は</p>
+      <p class="pull-quote-attribution">--- タムカイ, on グラレコの看板を降ろした理由</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🤖</span></div>
+
+<!-- ===== CHAPTER 3 ===== -->
+<section class="chapter-section" id="chapter3" data-atmosphere="warm" data-chapter-name="1対1対1の実験">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">🧠</span>
+      <span class="chapter-number">Chapter 03</span>
+      <h2 class="chapter-title">AIは「横にいる」べきかもしれない</h2>
+      <p class="chapter-subtitle">1対1対1という実験</p>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「ずっといるAIって作ったらどうなるかなっていう実験をして、ものを作った。人と人とのやり取りの横でAIがそれに対してコメントをしている。無視してもいい」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「今まではAIとの1対1はみんなやってるんだけど、1対1対1でAI入れるっていうのがあんまりなくて」</p>
+      </div>
+    </div>
+
+    <div class="contrast-diagram reveal">
+      <p class="contrast-diagram-label">AI PLACEMENT DESIGN</p>
+      <div class="contrast-grid">
+        <div class="contrast-side contrast-side--left">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">👤</span>
+            <span class="contrast-side-title">従来の1対1</span>
+          </div>
+          <p class="contrast-side-desc">人間がAIに質問し、AIが回答する。会話の文脈は人間側が管理する。</p>
+        </div>
+        <div class="contrast-vs"><span class="contrast-vs-text">VS</span></div>
+        <div class="contrast-side contrast-side--right">
+          <div class="contrast-side-header">
+            <span class="contrast-side-emoji">👥</span>
+            <span class="contrast-side-title">タムカイの1対1対1</span>
+          </div>
+          <p class="contrast-side-desc">人間同士の対話チャネルにAIが常駐。全文脈を把握し、求められた時だけ介入する。</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">この仕組みを結婚相談所に持ち込もうとしている。カウンセラーと会員のやり取りに、AIが<strong class="hl-blue">「横にいる」</strong>構造だ。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「結婚相談所の人と会員のやり取りの横でChatGPTとめっちゃやり取りをしちゃって、結果だけ持ってこられたりする。いや、私に聞けよみたいになるらしい」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「一緒のメッセンジャーの中のAIと壁打ちしてくれれば、なんでそういうことを思ったのかっていう途中経過が見える」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">もう一つの実験がメタクリドキュメントだ。AIの要約は大事なところが抜け落ちる。逆に、対話を三層構造で詳しく記録し、<strong class="hl-gold">理論と具体例を紐づける</strong>ことで、対話をデータ資産に変えようとしている。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「対話が全部資産に変わっていくっていう世界をちょっと夢見て、そこの変換方式で特許を取るかっつって、要はノリで特許を取りにかかっている」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「お金の匂いが全くしないんだけど、楽しいことやりたいねっていうふうに言うとね、本当甘えなんだけど」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">1対1対1でAI入れるっていうのがあんまりなくて</p>
+      <p class="pull-quote-attribution">--- タムカイ, on AIの新しい配置</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider reveal"><span class="divider-emoji">🔗</span></div>
+
+<!-- ===== CHAPTER 4 ===== -->
+<section class="chapter-section" id="chapter4" data-atmosphere="creative" data-chapter-name="二つの円が重なるところ">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">⚡</span>
+      <span class="chapter-number">Chapter 04</span>
+      <h2 class="chapter-title">「あぶり出す力」と「座組を組む力」</h2>
+      <p class="chapter-subtitle">二つの円が重なるところ</p>
+    </div>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「かいくんのさっきのあぶり出す力をどこの会社にインストールするといいんだろう。一人では一人は百人だって百人しか行けないから、メソッドをフランチャイズのように使ってもらってビジネスになるとか」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「それのね、近いことを富士通で結構目指したのね。十万人とかやってるわけで。業界異常値にも一応なった。なんだけど、富士通で本当にそのケイパビリティがあるのって数人ぐらいしかいなくて、あとは劣化コピーしてるから」</p>
+      </div>
+    </div>
+
+    <div class="split-visual reveal">
+      <p class="split-visual-label">🔍 TWO COMPLEMENTARY FORCES</p>
+      <div class="split-grid">
+        <div class="split-side">
+          <div class="split-side-icon warm">🔥</div>
+          <div class="split-side-title">あぶり出す力</div>
+          <div class="split-side-subtitle">タムカイ — B2C2B</div>
+          <div class="split-effects">
+            <div class="split-effect warm-bg">💎 一人ひとりの本質を引き出す</div>
+            <div class="split-effect warm-bg">🎯 ワークショップ・対話設計</div>
+          </div>
+        </div>
+        <div class="split-side">
+          <div class="split-side-icon cool">🏗️</div>
+          <div class="split-side-title">座組を組む力</div>
+          <div class="split-side-subtitle">浜野良太 — B2B</div>
+          <div class="split-effects">
+            <div class="split-effect cool-bg">🤝 企業・地域・官を配置する</div>
+            <div class="split-effect cool-bg">📐 ウィンウィンの設計図を書く</div>
+          </div>
+        </div>
+      </div>
+      <div class="split-conclusion">あぶり出す力は座組がなければ活かしきれない。座組を組む力はあぶり出すべき何かがなければ空箱になる。</div>
+    </div>
+
+    <p class="guide-text reveal">そして対話の終盤、思いがけない接点が浮上した。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「俺、今日ね、アサヒビールマーケティング部の方と打ち合わせなの」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-guest-1">
+        <p class="dialogue-speaker guest-1">浜野良太</p>
+        <p class="dialogue-text">「いや、アサヒビール俺、今月2回ぐらい行ってるよ」</p>
+      </div>
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「マジで」</p>
+      </div>
+    </div>
+
+    <p class="guide-text reveal">タムカイは組織変革の文脈から、浜野は広告の文脈から、<strong class="hl-gold">同じ企業に異なるルートでアクセス</strong>していた。</p>
+
+    <div class="dialogue-block">
+      <div class="dialogue-item reveal speaker-tamkai">
+        <p class="dialogue-speaker tamkai">Tamkai</p>
+        <p class="dialogue-text">「ちょっと話題に使わせてもらうわ」</p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p class="pull-quote-text">それ役割だからね</p>
+      <p class="pull-quote-attribution">--- 浜野良太, on タムカイの「稼ぐのが弱い」という自嘲に対して</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONCLUSION ===== -->
+<section class="conclusion-section" id="conclusion" data-atmosphere="deep" data-chapter-name="おわりに">
+  <div class="main-content">
+    <div class="chapter-header reveal">
+      <span class="chapter-icon">✦</span>
+      <span class="chapter-number">Conclusion</span>
+      <h2 class="chapter-title">わからないまま動き始めること</h2>
+    </div>
+
+    <p class="conclusion-text reveal">「で、何やってんの？」という問いから始まったこの対話は、<strong>二つの力</strong>の補完関係を浮かび上がらせた。浜野の「座組を組む力」とタムカイの「あぶり出す力」。そしてアサヒビールという<span class="gold">偶然の接点</span>は、この対話の価値を象徴していた。</p>
+
+    <p class="conclusion-text reveal">「お金の匂いが全くしないんだけど、楽しいことやりたいね」とタムカイは言った。わからないまま動き始めること——それを<strong>プランドハプンスタンス</strong>と呼ぶなら、この対話そのものが、<span class="gold">二人の共創設計の第一歩</span>であった。</p>
+
+    <div class="takeaways-grid">
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🏗️</span>
+        <h4 class="takeaway-title">座組 × あぶり出し</h4>
+        <p class="takeaway-desc">浜野の「面」のアプローチとタムカイの「点」のアプローチは補完関係にある</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🤖</span>
+        <h4 class="takeaway-title">1対1対1</h4>
+        <p class="takeaway-desc">AIは「話し相手」ではなく「同席する第三者」として配置する新しい設計思想</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">🍺</span>
+        <h4 class="takeaway-title">偶然の接点</h4>
+        <p class="takeaway-desc">アサヒビールに異なるルートからアクセスしていた——計画的偶発性の実例</p>
+      </div>
+      <div class="takeaway-card reveal">
+        <span class="takeaway-emoji">📊</span>
+        <h4 class="takeaway-title">異常値の先</h4>
+        <p class="takeaway-desc">まず一つの圧倒的な事例を作り、その噂で需要を喚起する拡大戦略</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p class="footer-logo">Metacreative Document</p>
+  <p class="footer-meta">2026.04.08 | タムカイ ・ 浜野良太<br>Metacreative Document</p>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+  var supportsScrollTimeline = CSS.supports('animation-timeline', 'view()');
+  var isPC = window.innerWidth >= 1024;
+  if (isPC && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('spotlight-ready', 'pc-reveal-ready');
+    initPCReveal();
+  } else if (supportsScrollTimeline) {
+    document.documentElement.classList.add('spotlight-ready');
+    setTimeout(function() {
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        if (getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none'; }
+      });
+    }, 5000);
+  } else if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('reveal-ready');
+    initIOFallback();
+  }
+  function initPCReveal() {
+    setTimeout(function() {
+      var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+      var threshold = window.innerHeight * 0.3;
+      reveals.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < threshold) { el.style.transition = 'none'; el.classList.add('pc-revealed'); setTimeout(function() { el.style.transition = ''; }, 10); }
+      });
+      document.querySelectorAll('.dialogue-block').forEach(function(block) {
+        var items = block.querySelectorAll('.dialogue-item.reveal:not(.pc-revealed)');
+        items.forEach(function(item, i) { item.style.transitionDelay = Math.min(i * 80, 300) + 'ms'; });
+      });
+    }, 100);
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) { requestAnimationFrame(function() { checkReveals(); ticking = false; }); ticking = true; }
+    }, { passive: true });
+  }
+  function checkReveals() {
+    var reveals = document.querySelectorAll('.reveal:not(.pc-revealed)');
+    var triggerLine = window.innerHeight * 0.7;
+    reveals.forEach(function(el) { if (el.getBoundingClientRect().top < triggerLine) el.classList.add('pc-revealed'); });
+  }
+  function initIOFallback() {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('io-revealed'); observer.unobserve(entry.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal:not(.io-revealed)').forEach(function(el) { el.classList.add('io-revealed'); }); }, 4000);
+  }
+  var progressBar = document.getElementById('progressBar');
+  var progressLine = document.getElementById('progressLine');
+  var progressChapter = document.getElementById('progressChapter');
+  var heroEl = document.getElementById('hero');
+  var currentChapterName = '';
+  var sections = document.querySelectorAll('[data-atmosphere]');
+  var tocDots = document.querySelectorAll('.toc-dot');
+  var atmospheres = { 'warm': '#F5F0E8', 'cool': '#F0F2F5', 'creative': '#F8F5EE', 'deep': '#F5F0E8' };
+  function updateAll() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progressLine.style.width = (scrollTop / docHeight * 100) + '%';
+    if (scrollTop > heroEl.offsetTop + heroEl.offsetHeight - 100) progressBar.classList.add('visible');
+    else progressBar.classList.remove('visible');
+    var viewportMid = scrollTop + window.innerHeight * 0.4;
+    var activeId = '';
+    sections.forEach(function(s) {
+      var t = s.offsetTop, b = t + s.offsetHeight;
+      if (viewportMid >= t && viewportMid < b) {
+        activeId = s.id;
+        var atm = s.getAttribute('data-atmosphere');
+        if (atm && atmospheres[atm]) document.body.style.backgroundColor = atmospheres[atm];
+        var cn = s.getAttribute('data-chapter-name') || '';
+        if (cn !== currentChapterName) {
+          progressChapter.style.opacity = '0';
+          setTimeout(function() { progressChapter.textContent = cn; progressChapter.style.opacity = '1'; }, 200);
+          currentChapterName = cn;
+        }
+      }
+    });
+    tocDots.forEach(function(d) { d.classList.toggle('active', d.getAttribute('data-target') === activeId); });
+  }
+  tocDots.forEach(function(d) {
+    d.addEventListener('click', function() {
+      var t = document.getElementById(this.getAttribute('data-target'));
+      if (t) t.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+  document.querySelectorAll('.annotation').forEach(function(ann) {
+    ann.addEventListener('click', function() { this.classList.toggle('expanded'); });
+  });
+  var scrollTicking = false;
+  window.addEventListener('scroll', function() {
+    if (!scrollTicking) { requestAnimationFrame(function() { updateAll(); scrollTicking = false; }); scrollTicking = true; }
+  }, { passive: true });
+  updateAll();
+})();
+</script>
+</body>
+</html>
