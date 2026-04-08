@@ -67,6 +67,28 @@
         "standard": "d/T_20260220_pencil-sharpener_s.html"
       },
       "protected": false
+    },
+    {
+      "id": "T_20260403_pilot-fujisaki-interview-short",
+      "title": "創造力は、窮地から生まれる——PILOT社長 藤崎照幸（Short）",
+      "date": "2026-04-03",
+      "type": "transcript",
+      "tags": ["PILOT", "パーパス", "インタビュー"],
+      "formats": {
+        "standard": "d/T_20260403_pilot-fujisaki-interview-short_s.html"
+      },
+      "protected": true
+    },
+    {
+      "id": "T_20260403_pilot-kodaira-interview-short",
+      "title": "石炭を入れる人——PILOT副社長 小平岳志（Short）",
+      "date": "2026-04-03",
+      "type": "transcript",
+      "tags": ["PILOT", "パーパス", "インタビュー"],
+      "formats": {
+        "standard": "d/T_20260403_pilot-kodaira-interview-short_s.html"
+      },
+      "protected": true
     }
   ]
 }
