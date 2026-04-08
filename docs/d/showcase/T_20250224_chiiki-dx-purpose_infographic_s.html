@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>デジタルだけじゃない？ 共感とパーパスがつむぐ新しい地域DX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage-50: #F4F6F2; --sage-100: #E2E8DD; --sage-200: #C5D1BC; --sage-400: #8B9A7D; --sage-600: #5E6E52;
+  --rose-50: #FDF5F3; --rose-100: #F8E4DF; --rose-200: #F0C4BB; --rose-400: #E8A598; --rose-600: #D88B7A;
+  --gold-50: #FDF9EE; --gold-100: #F7EDCC; --gold-200: #EEDEA5; --gold-400: #C4A057; --gold-600: #9A7B3A;
+  --red-400: #E74C3C;
+  --blue-50: #F0F5FA; --blue-100: #D6E4F0; --blue-400: #5B8DB8; --blue-600: #3A6B91;
+  --purple-50: #F5F2F8; --purple-100: #E4DCF0; --purple-400: #8B7AAD; --purple-600: #6B5A8E;
+  --red-50: #FDF2F2; --red-600: #C05050;
+  --base: #F5F0E8; --surface: #FAF8F5; --white: #FDFCFA;
+  --text-primary: #2C3330; --text-secondary: #6B6560; --text-muted: #9E9690; --border: #E5DFD6;
+  --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --font-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
+  --font-inter: 'Inter', 'Noto Sans JP', sans-serif;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px;
+  --content-standard: 800px; --content-wide: 1080px;
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+  --shadow-sm: 0 1px 2px rgba(44, 51, 48, 0.05); --shadow-md: 0 4px 12px rgba(44, 51, 48, 0.08);
+  --duration-fast: 150ms; --duration-normal: 250ms; --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-sans); color: var(--text-primary); background-color: var(--base); line-height: 1.85; font-size: 0.9375rem; }
+.title-page { text-align: center; padding: 5em 2em 4em; max-width: var(--content-wide); margin: 0 auto; }
+.title-ornament { font-size: 2.5em; color: var(--gold-400); margin: 0.5em 0; line-height: 1; }
+.title-page h1 { font-family: var(--font-serif); font-size: 2.25rem; font-weight: 700; line-height: 1.3; color: var(--text-primary); margin-bottom: 0.3em; }
+.title-subtitle { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 400; color: var(--text-secondary); margin-bottom: 1.5em; line-height: 1.6; }
+.title-meta { font-family: var(--font-inter); font-size: 0.8125rem; color: var(--text-muted); letter-spacing: 0.02em; }
+.title-meta span { display: inline-block; margin: 0 0.75em; }
+.title-meta-sub { margin-top: var(--space-2); font-size: 0.75rem; }
+.title-divider { width: 60px; height: 1px; background: var(--border); margin: 2em auto; }
+.document-wrapper { display: flex; gap: var(--space-8); max-width: var(--content-wide); margin: 0 auto; padding: 0 var(--space-6) var(--space-16); }
+.sidebar { width: 220px; flex-shrink: 0; position: sticky; top: var(--space-8); align-self: flex-start; max-height: calc(100vh - 64px); overflow-y: auto; }
+.sidebar-toc { padding: var(--space-4); border-right: 1px solid var(--border); }
+.sidebar-toc .toc-label { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-4); }
+.sidebar-toc ul { list-style: none; }
+.sidebar-toc li { margin-bottom: var(--space-1); }
+.sidebar-toc li a { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-1) var(--space-2); font-family: var(--font-sans); font-size: 0.8125rem; color: var(--text-muted); text-decoration: none; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--easing-default); line-height: 1.4; }
+.sidebar-toc li a:hover { color: var(--text-secondary); background: var(--sage-50); }
+.sidebar-toc li.active a { color: var(--sage-600); font-weight: 500; background: var(--sage-50); }
+.sidebar-toc .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 6px; transition: all var(--duration-fast) var(--easing-default); }
+.sidebar-toc li.active .dot { background: var(--sage-400); width: 6px; height: 6px; margin-top: 5px; }
+.content { flex: 1; min-width: 0; max-width: var(--content-standard); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-8); box-shadow: var(--shadow-sm); }
+.chapter { margin-bottom: var(--space-12); }
+.chapter + .chapter { padding-top: var(--space-8); border-top: 1px solid var(--border); }
+.chapter-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: min(560px, 100%);
+  margin: var(--space-4) auto var(--space-6);
+  background: none;
+  border-radius: var(--radius-lg);
+}
+.chapter-heading { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-6); padding-bottom: var(--space-3); border-bottom: 1px solid var(--border); line-height: 1.5; }
+.chapter-number { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage-400); display: block; margin-bottom: var(--space-1); }
+.subsection-heading { font-family: var(--font-sans); font-size: 1.125rem; font-weight: 700; color: var(--text-primary); margin-top: var(--space-8); margin-bottom: var(--space-4); padding-left: var(--space-3); border-left: 3px solid var(--sage-200); line-height: 1.5; }
+.guide { font-family: var(--font-sans); font-weight: 500; line-height: 2; color: var(--text-secondary); margin: var(--space-6) 0; }
+.guide strong { color: var(--text-primary); font-weight: 700; }
+.dialogue-block { margin: var(--space-6) 0; }
+.dialogue-item { padding: var(--space-3) var(--space-4); border-left: 4px solid var(--border); border-radius: var(--radius-sm); margin-bottom: var(--space-2); }
+.dialogue-item.speaker-tamkai { background-color: var(--sage-50); border-left-color: var(--sage-400); }
+.dialogue-item.speaker-guest-1 { background-color: var(--rose-50); border-left-color: var(--rose-400); }
+.dialogue-item.speaker-guest-2 { background-color: var(--purple-50); border-left-color: var(--purple-400); }
+.dialogue-item.speaker-guest-3 { background-color: var(--red-50); border-left-color: var(--red-400); }
+.dialogue-speaker { font-family: var(--font-inter); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; margin-bottom: var(--space-1); }
+.speaker-tamkai .dialogue-speaker { color: var(--sage-600); }
+.speaker-guest-1 .dialogue-speaker { color: var(--rose-600); }
+.speaker-guest-2 .dialogue-speaker { color: var(--purple-600); }
+.speaker-guest-3 .dialogue-speaker { color: var(--red-600); }
+.dialogue-text { font-size: 0.9375rem; line-height: 1.85; }
+.annotation { margin: var(--space-6) 0; padding: var(--space-4) var(--space-6); background: var(--gold-50); border-left: 3px solid var(--gold-200); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.annotation-title { font-family: var(--font-inter); font-size: 0.8125rem; font-weight: 700; color: var(--gold-600); letter-spacing: 0.02em; margin-bottom: var(--space-2); }
+.annotation-title::before { content: "📚 "; font-size: 1em; }
+.annotation-text { font-size: 0.8125rem; line-height: 1.7; color: var(--text-secondary); }
+.annotation-text + .annotation-text { margin-top: var(--space-2); }
+.section-break { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-8) 0; color: var(--text-muted); }
+.section-break::before, .section-break::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-break span { font-family: var(--font-inter); font-size: 0.625rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.document-footer { max-width: var(--content-wide); margin: 0 auto; padding: var(--space-8) var(--space-6) var(--space-16); text-align: center; }
+.footer-about { max-width: var(--content-standard); margin: 0 auto; padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); font-size: 0.8125rem; line-height: 1.7; color: var(--text-secondary); }
+.footer-about strong { display: block; font-family: var(--font-inter); font-size: 0.75rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: var(--space-2); }
+.footer-date { font-family: var(--font-inter); font-size: 0.75rem; color: var(--text-muted); margin-top: var(--space-4); }
+.mobile-toc-toggle { display: none; position: fixed; bottom: var(--space-6); right: var(--space-6); z-index: 100; width: 48px; height: 48px; border-radius: 50%; background: var(--sage-400); color: var(--white); border: none; box-shadow: var(--shadow-md); cursor: pointer; align-items: center; justify-content: center; }
+.mobile-toc-toggle:hover { background: var(--sage-600); }
+.mobile-toc-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+.mobile-toc-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(44, 51, 48, 0.3); backdrop-filter: blur(2px); opacity: 0; transition: opacity var(--duration-normal) var(--easing-default); }
+.mobile-toc-overlay.is-open { opacity: 1; }
+.mobile-toc-panel { position: fixed; bottom: 0; left: 0; right: 0; z-index: 201; background: var(--surface); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: var(--space-6); transform: translateY(100%); transition: transform var(--duration-normal) var(--easing-default); max-height: 60vh; overflow-y: auto; display: none; }
+.mobile-toc-panel.is-open { transform: translateY(0); }
+.mobile-toc-panel .toc-label { font-family: var(--font-inter); font-size: 0.6875rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-4); }
+.mobile-toc-panel .toc-close { position: absolute; top: var(--space-4); right: var(--space-4); width: 32px; height: 32px; border-radius: 50%; background: none; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 1.25rem; line-height: 1; }
+.mobile-toc-panel .toc-close:hover { background: var(--sage-50); color: var(--text-primary); }
+.mobile-toc-panel ul { list-style: none; }
+.mobile-toc-panel li { margin-bottom: var(--space-2); }
+.mobile-toc-panel li a { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-2); font-family: var(--font-sans); font-size: 0.9375rem; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all var(--duration-fast) var(--easing-default); }
+.mobile-toc-panel li a:hover, .mobile-toc-panel li.active a { color: var(--sage-600); background: var(--sage-50); }
+.mobile-toc-panel .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.mobile-toc-panel li.active .dot { background: var(--sage-400); }
+@page { margin: 15mm; }
+@media print { body { background-color: white; } .sidebar { display: none; } .mobile-toc-toggle { display: none !important; } .document-wrapper { display: block; padding: 0; } .content { background: white; border: none; box-shadow: none; padding: 0; max-width: 100%; } .title-page { page-break-after: always; } .chapter + .chapter { page-break-before: always; } }
+@media (max-width: 768px) { .document-wrapper { padding: 0 var(--space-4) var(--space-8); } .sidebar { display: none; } .mobile-toc-toggle { display: flex; } .mobile-toc-overlay, .mobile-toc-panel { display: block; } .mobile-toc-panel:not(.is-open) { display: block; pointer-events: none; } .content { padding: var(--space-6) var(--space-4); } .title-page { padding: 3em 1em 2em; } .title-page h1 { font-size: 1.75rem; } .chapter-heading { font-size: 1.2rem; } .chapter-image { font-size: 1.75em; } }
+
+/* Chapter infographic images */
+.chapter-image img {
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+</style>
+</head>
+<body>
+
+<header class="title-page">
+  <div class="title-ornament">✦</div>
+  <h1>デジタルだけじゃない？ 共感とパーパスがつむぐ新しい地域DX</h1>
+  <p class="title-subtitle">美濃加茂市・パーパスカービング・富士通トランスフォーメーションナウ</p>
+  <div class="title-ornament">✦</div>
+  <div class="title-divider"></div>
+  <p class="title-meta">
+    <span>メタクリドキュメント</span>
+    <span>2025年2月24日</span>
+    <span>タムラカイ ・ 福田譲 ・ 藤井浩人 ・ 田中友美乃</span>
+  </p>
+  <p class="title-meta title-meta-sub">
+    <span>FXN（富士通トランスフォーメーションナウ）サイクル18</span>
+  </p>
+</header>
+<figure style="margin: 0 auto 2em; padding: 0 2em; max-width: var(--content-wide);">
+  <img src="img/T_20250224_chiiki-dx-purpose_hero.jpg" alt="全体図解" style="width: 100%; height: auto; display: block; border-radius: var(--radius-lg);">
+</figure>
+
+
+<div class="document-wrapper">
+<nav class="sidebar">
+  <div class="sidebar-toc">
+    <p class="toc-label">Contents</p>
+    <ul>
+      <li><a href="#intro"><span class="dot"></span>はじめに</a></li>
+      <li class="active"><a href="#ch1"><span class="dot"></span>第1章：酒を酌み交わした夜</a></li>
+      <li><a href="#ch2"><span class="dot"></span>第2章：大理石の中の天使</a></li>
+      <li><a href="#ch3"><span class="dot"></span>第3章：北極星は磨かれる</a></li>
+      <li><a href="#ch4"><span class="dot"></span>第4章：5万7千人のパーパス</a></li>
+      <li><a href="#outro"><span class="dot"></span>おわりに</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="content">
+
+<!-- はじめに -->
+<section class="chapter" id="intro">
+  <div class="chapter-heading">
+    <span class="chapter-number">Introduction</span>
+    はじめに
+  </div>
+
+  <p class="guide">FXN（富士通トランスフォーメーションナウ）——3ヶ月に1度、富士通の全社変革の現在地を社内外に向けて発信するイベントである。サイクル18を数えたこの日、川崎の会場に岐阜県美濃加茂市の市長・藤井浩人が招かれた。テーマは「デジタルだけじゃない？ 共感とパーパスがつむぐ新しい地域DX」。</p>
+
+  <p class="guide">デジタルトランスフォーメーションを冠するイベントでありながら、「デジタルだけじゃない」と銘打つ。この逆説的なタイトルの背後には、富士通自身が5年にわたる全社変革の中で体得してきた一つの確信がある。<strong>変革の起点はテクノロジーではなく、人の思いである</strong>、という確信だ。</p>
+
+  <p class="guide">人口5万7千人、外国人住民が10%を占める岐阜県の小都市に、富士通から2人の社員が「中に入って」やってきた。彼らが最初にやったのは、デジタル化でもシステム導入でもなく、夜の居酒屋で酒を酌み交わすことだった。80分の対話は、そこから始まる。</p>
+</section>
+
+<!-- 第1章 -->
+<section class="chapter" id="ch1">
+  <div class="chapter-heading">
+    <span class="chapter-number">Chapter 01</span>
+    「古臭い大企業」が酒を酌み交わした夜——信頼がテクノロジーに先行するとき
+  </div>
+  <div class="chapter-image"><img src="img/T_20250224_chiiki-dx-purpose_ch01_infographic.jpg" alt="「古臭い大企業」が酒を酌み交わした夜——信頼がテクノロジーに先行するとき インフォグラフィック"></div>
+
+  <p class="guide">美濃加茂市は岐阜県のちょうど真ん中の南部に位置する。名古屋まで電車で1時間弱、かつて富士通の工場があった縁もある町だ。藤井浩人は28歳で全国最年少の市長に選ばれ、今年41歳になる。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「うちでうまくいけば他の自治体でも横展開できるんじゃないかということもあるので、様々なことにチャレンジしている自治体だというところで、ご理解いただきたいなと」</p>
+    </div>
+  </div>
+
+  <p class="guide">「うちでうまくいけば他でも横展開できる」——この言葉は、タムラの記憶を刺激した。富士通も変革の初期にまったく同じことを言っていたからだ。12万人の巨大企業と5万7千人の地方都市が、同じ自己認識から出発していた。</p>
+
+  <p class="guide">美濃加茂市には国の「地域活性化企業人」制度を利用して富士通から2名の社員が常駐していた。しかし、富士通に対する第一印象は決して好意的ではなかった。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「富士通さんとコラボってきた時は、いや、古臭い大企業さんがね、ベンダー企業さんと何ができるのかなと。なんか協賛金でもいただければありがたいなぐらいの。やっぱり老舗のイメージが強かったのが正直なところだというと、生きて帰れるかわかりませんけど」</p>
+    </div>
+  </div>
+
+  <p class="guide">では、その印象はどこで変わったのか。藤井が語ったのは、技術の話ではなかった。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「若い職員に聞いたら、大下さんも大久保さんも、まず酒飲んでくれると。夜誘っても断らないと。市役所から歩いていけるところに住んでいただいて。技術とかテクノロジーがどうのこうのではなくて、やっぱりまず信頼関係を作ることが仕事をする上で大事だっていうことをご理解いただいているというか、むしろ僕も学ぶことができた」</p>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <p class="annotation-title">地域活性化企業人制度</p>
+    <p class="annotation-text">総務省が推進する仕組みで、三大都市圏の企業に勤務する人材を、地方自治体が一定期間受け入れる制度。派遣される社員は自治体の職員として業務に当たるため、外部コンサルタントとは異なり、組織の「内側」から変革を推進できる。</p>
+    <p class="annotation-text"><strong>この対話の文脈では</strong>、単なる人材派遣ではなく「信頼関係の構築装置」として機能していた。市役所から歩いて行ける場所に住み、夜の酒席にも顔を出す。その物理的な近さが、デジタル以前の人間的な結びつきを可能にした。</p>
+  </div>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「多分ね、2人ともあれでしょう。行きたくて行ったんでしょう。パーパスに一番合った仕事を、自分で手を挙げて選ぶっていう人事制度に変わってきたことを受けて、やりたくてやってるから、そういう情熱を持ってやるとか、人と人の付き合いを大切にする」</p>
+    </div>
+  </div>
+
+  <p class="guide">「行きたくて行った」人間と「行かされた」人間では、同じ場所で同じ仕事をしても、まったく異なる関係が生まれる。藤井はその「恥ずかしげもなく語る」姿勢が職員に与えた印象を振り返る。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「なんでわざわざ来たのって、多分相当聞かれたと思うんですよ。そこをやっぱり的確に、明るく答えられてる。移動する時ってだいたい、どこどこに移動させられたから始まりがちなんですよね。やっぱりそこら辺の印象から違う」</p>
+    </div>
+  </div>
+</section>
+
+<!-- 第2章 -->
+<section class="chapter" id="ch2">
+  <div class="chapter-heading">
+    <span class="chapter-number">Chapter 02</span>
+    大理石の中の天使を掘り出す——パーパスカービングと「1回の表の先発ピッチャー」
+  </div>
+  <div class="chapter-image"><img src="img/T_20250224_chiiki-dx-purpose_ch02_infographic.jpg" alt="大理石の中の天使を掘り出す——パーパスカービングと「1回の表の先発ピッチャー」 インフォグラフィック"></div>
+
+  <p class="guide">富士通との取り組みの中で、藤井がひときわ強い共鳴を覚えたのが「パーパス」という概念だった。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「政治家っていうのは政策を語ったり、未来を語るんですけど、その語る口は何に基づいて生まれているのか。薄っぺらい言葉を述べるだけじゃなくて、自分の経験をもとにして人に伝えることが、やっぱ人に伝わることなんじゃないかっていうことを、政治家を十数年やっていて感じる」</p>
+    </div>
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「このパーパスという体系で職員さんに共有することができれば、これは職員さんにとっても良いでしょうし、市民の皆さんにとっても、改めてこの市役所というものを理解してもらえるきっかけになるんじゃないか」</p>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <p class="annotation-title">パーパスカービング</p>
+    <p class="annotation-text">富士通が全社変革の中で開発した、個人のパーパス（存在意義）を言語化するためのワークショップ型プログラム。富士通グループ約12万人中10万人が参加。「カービング」は英語の "carve"（彫る、掘り出す）に由来し、パーパスを「外から付け加える」のではなく「内側から掘り出す」ものとして位置づけている。</p>
+    <p class="annotation-text"><strong>この対話の文脈では</strong>、「押し付けがましさを回避しながら、本質的な価値観を共有する装置」として語られている。藤井が感じていた「小っ恥ずかしさ」——トップが直接「こう生きろ」と言うことへのためらい——を、構造化されたワークショップという形式が解消した。</p>
+  </div>
+
+  <h3 class="subsection-heading">ミケランジェロの天使、父の彫刻</h3>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-tamkai">
+      <p class="dialogue-speaker">タムラ</p>
+      <p class="dialogue-text">「僕、父親が彫刻家をやってまして。ミケランジェロの言葉の、彫刻家の仕事っていうのは天使の像を作るわけじゃなくて、大理石の中にいる天使を自由にする仕事なんだっていう言葉があるところから、パーパスって掘り出すっていう言葉にしたいっていうので、この名前をつけている」</p>
+    </div>
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「多分、人間ももともと内面的にはあるんですよね。それがあまりね、言葉になってないとか、徐々に世俗にまみれて忘れていく。それをもう1回ね、垢を落として掘り出すみたいな」</p>
+    </div>
+  </div>
+
+  <h3 class="subsection-heading">デジタルではないものから変革は始まる</h3>
+
+  <p class="guide">福田は、パーパスカービングを富士通の全社変革における「1回の表の先発ピッチャー」と呼んだ。DXの「先発」が、デジタルとは何の関係もないプログラムだったという事実は、一見すると矛盾に映る。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「ギャラップ社の調査によると、日本は情熱を持って職務に当たっている人ってのは世界最低レベルなんですよね。5%から6%しかワクワクドキドキして仕事を楽しんでいないと。そういうマインドのまま変革だって言ってもなかなか変わんないだろうなということで。一体我々何のために仕事してるんだっけっていうのをもう1回思い出そうと」</p>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <p class="annotation-title">エンゲージメント（ギャラップ調査）</p>
+    <p class="annotation-text">ギャラップ社は毎年「State of the Global Workplace」レポートを発行し、世界各国の従業員エンゲージメントを調査している。日本の「engaged（熱意ある）」従業員の割合は継続的に一桁台で、調査対象国の中で最低水準に位置する。</p>
+    <p class="annotation-text"><strong>この対話の文脈では</strong>、福田はこの数字を「変革の前提条件の不在」として引用している。ワクワクしていない人間に「変わろう」と言っても変わらない。だからまず「何のために仕事をしているのか」を思い出すところから始めるしかない。</p>
+  </div>
+
+  <p class="guide">タムラは、パーパスカービングを富士通に展開する際、あえて「トップファースト」の戦略を取った。美濃加茂市でも同じアプローチが取られ、藤井市長が自ら研修を受け、全350人の職員に実施。匿名アンケートの結果は関係者が「良すぎるんじゃないの」と驚くほどの満足度だった。</p>
+</section>
+
+<!-- 第3章 -->
+<section class="chapter" id="ch3">
+  <div class="chapter-heading">
+    <span class="chapter-number">Chapter 03</span>
+    北極星は磨かれる——パーパスの持続と組織の変化
+  </div>
+  <div class="chapter-image"><img src="img/T_20250224_chiiki-dx-purpose_ch03_infographic.jpg" alt="北極星は磨かれる——パーパスの持続と組織の変化 インフォグラフィック"></div>
+
+  <p class="guide">パーパスカービングは「一度やって終わり」なのか。この問いに対して、福田は自身の経験を重ねる。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「私は5年前に最初やって、去年実は2回目やって、ちょっと言葉をアップデートするかどうか迷って、今のところまだ元のままなんですけど。ITのシステムとかゲームと同じようにバージョンアップさせていくとね、その時々の自分のよりどころにするものを常に持った状態にできる」</p>
+    </div>
+    <div class="dialogue-item speaker-tamkai">
+      <p class="dialogue-speaker">タムラ</p>
+      <p class="dialogue-text">「実は僕は8年ぐらい同じ言葉なんですけれど、言葉自体はずっと同じなんですよね。ただその言葉をどう話すかの話し方とか、ついてくる言葉みたいなのがずっと変わる」</p>
+    </div>
+  </div>
+
+  <p class="guide">福田は「言葉をバージョンアップする」、タムラは「言葉は同じでも話し方が変わる」。アプローチは対照的だが、パーパスが生きた関係として持続するものであるという認識は共通している。</p>
+
+  <h3 class="subsection-heading">壁にぶつかった時こそ</h3>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「ある方が言ってたのがですね、壁にぶつかったときに意味があると思ったって。自分は何のために働いているのかっていうことを思い出して、つらかったときに乗り越えられた。目的がしっかりあれば、じゃあアプローチの仕方変えようっていう発想は出てくる。ここで目的がないと、そこで潰れちゃう」</p>
+    </div>
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「北極星みたいなものがあるんですね」</p>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <p class="annotation-title">北極星（ノーススター）</p>
+    <p class="annotation-text">北極星は「目的地」ではなく「方角」である。パーパスもまた、到達すべきゴールではなく、どちらに向かって歩くかを示す方位磁針として機能する。だからこそ、壁にぶつかったときに意味を持つ。ゴールであれば壁は挫折を意味するが、方角であれば壁は「迂回して同じ方向に向かう」きっかけになる。</p>
+  </div>
+
+  <h3 class="subsection-heading">「部長ってそんな趣味があったんですか」</h3>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「パーパス研修をするだけで、部長ってそんな趣味があったんですかとか、そんな顔してクワガタムシ好きだったんですかとか、そういう話が生まれて、すごく職員さんとの距離が縮まった」</p>
+    </div>
+  </div>
+
+  <p class="guide">さらに、富士通では社内の自己紹介の作法そのものが変わった。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「昔はですね、なんとかかんとか本部の第三なんとかかんとかにいる何々ですとか言われても、正直どんな人か全くわからなかったんですけど、今はこういう形で私のパーパスはって言って自己紹介するのが定着化してきて。何々課の何々さんっていうよりは、こういう思いを持って仕事をしてるなんとかさんっていうね」</p>
+    </div>
+  </div>
+
+  <p class="guide">「第三なんとかかんとかにいる何々です」から「こういう思いを持って仕事をしているなんとかさん」へ——この変化は、組織における人間の認識単位が「所属」から「志」に移行したことを意味する。</p>
+
+  <p class="guide">名刺の裏面にパーパスを印刷するバリエーションも生まれた。藤井がその名刺を見て言った。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「この情報量だと話題がなかなか広がらないですけど、これだったらもうこれでもう20分、30分喋れちゃいます」</p>
+    </div>
+  </div>
+
+  <p class="guide">名刺の表面——会社名、部署名、名前。それだけでは20分話すのは難しい。しかし裏面にパーパスが一行書いてあるだけで、30分の対話が生まれる。短い言葉が深い対話を引き出すという逆説は、パーパスカービングの力を最も端的に示している。</p>
+</section>
+
+<!-- 第4章 -->
+<section class="chapter" id="ch4">
+  <div class="chapter-heading">
+    <span class="chapter-number">Chapter 04</span>
+    5万7千人のパーパスが拓く未来
+  </div>
+  <div class="chapter-image"><img src="img/T_20250224_chiiki-dx-purpose_ch04_infographic.jpg" alt="Chapter 04 Infographic" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"></div>
+
+  <p class="guide">藤井には、パーパスカービングを市役所内部にとどめず、市民5万7千人に広げたいという野望があった。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「おまかせ民主主義っていう言葉がまだまだ言われて、自分の地域のことや未来のことが自分ごとになってないっていうのは、どういう未来に進んでいるのかっていう目的が具体化できてなかったり、未来に対して主体性が持ててないんじゃないかなという仮説を持っている。富士通十万人、美濃加茂市5万7千人ですので、市民の皆さんともこのパーパスカービングを何か共有できたら面白いな」</p>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <p class="annotation-title">おまかせ民主主義</p>
+    <p class="annotation-text">市民が政治や行政への参加を放棄し、選挙で代表者を選んだ後は「お任せ」にしてしまう状態を指す批判的な表現。藤井は「おまかせ民主主義」の原因を「目的の不在」に求めている。投票率が低いのは政治への不信だけが理由ではなく、「自分の未来に対する主体性」が持てていないからではないか——この仮説は、パーパスの不在が市民の政治参加にまで影響するという、より大きなスケールでの問題提起になっている。</p>
+  </div>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「美濃加茂市っていう人がいたとしたら、美濃加茂市さんは人間のどうなりたい人なんだろうというところを考えようと。お互いにそのパーパスの、組織のパーパスと組織のパーパスを重なり合わせたところで、テクノロジーで何ができるんだろうねっていうのが、富士通の興味関心でして」</p>
+    </div>
+  </div>
+
+  <p class="guide">「美濃加茂市という人がいたとしたら」——組織を人格化するこの問いかけは、抽象的な「ミッション」とは異なる手触りを持つ。</p>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-2">
+      <p class="dialogue-speaker">藤井浩人</p>
+      <p class="dialogue-text">「行政とかってよく無駄って言われるんですけど、無駄っていう言葉の裏にあるのって、要するに目的から外れてるんじゃないかっていうことがいっぱいある。目的が一緒ならそこは一緒にやろうとすごく平和的な道筋が見えてくる気がしますよね」</p>
+    </div>
+  </div>
+
+  <p class="guide">「無駄は目的から外れていること」——この定義は鮮やかだ。パーパスが明確であれば、それに沿っているかどうかで「無駄」と「必要」を判断できる。対立の構造は目的の不一致から生まれ、パーパスが可視化されたとき、「競い合い」は「協働」に転じる。</p>
+</section>
+
+<!-- おわりに -->
+<section class="chapter" id="outro">
+  <div class="chapter-heading">
+    <span class="chapter-number">Outro</span>
+    おわりに
+  </div>
+
+  <div class="dialogue-block">
+    <div class="dialogue-item speaker-guest-1">
+      <p class="dialogue-speaker">福田譲</p>
+      <p class="dialogue-text">「DXでいうと、やっぱりね、DよりXが俄然難しいんですよね。人間、今まで通りが一番安心安全で居心地いいんで、その居心地がいいところから出て行って、物事を変える。そういうところの、ある意味練習としてもね、このパーパスカービングってすごくいいなというふうに改めて思った」</p>
+    </div>
+  </div>
+
+  <p class="guide">「DよりXが俄然難しい」——DXにおいてデジタル（D）は手段であり、本当に難しいのはトランスフォーメーション（X）の方だ。変わることは怖い。今まで通りが安心だ。その「安心」を手放してでも変わろうとするとき、自分の中にある「なぜ変わるのか」という問いへの答えが必要になる。パーパスカービングは、その答えを自分の内側から掘り出す作業なのだ。</p>
+
+  <p class="guide">パーパスから始まった80分の対話は、信頼の構築から組織の変革へ、組織から市民へ、市民から教育へと、同心円のように広がっていった。「デジタルだけじゃない」——その言葉は、セッションが終わる頃には、もはや逆説ではなくなっていた。デジタルは手段であり、変革の核心にあるのは、人が自分自身の中にある天使を掘り出し、その天使の名前を他者と共有する、という果てしなく人間的な営みなのだ。</p>
+</section>
+
+</main>
+</div><!-- document-wrapper -->
+
+<button class="mobile-toc-toggle" id="mobileTocToggle" aria-label="目次を開く">
+  <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+</button>
+<div class="mobile-toc-overlay" id="mobileTocOverlay"></div>
+<div class="mobile-toc-panel" id="mobileTocPanel">
+  <button class="toc-close" id="mobileTocClose" aria-label="目次を閉じる">×</button>
+  <p class="toc-label">Contents</p>
+  <ul>
+    <li><a href="#intro"><span class="dot"></span>はじめに</a></li>
+    <li><a href="#ch1"><span class="dot"></span>第1章：酒を酌み交わした夜</a></li>
+    <li><a href="#ch2"><span class="dot"></span>第2章：大理石の中の天使</a></li>
+    <li><a href="#ch3"><span class="dot"></span>第3章：北極星は磨かれる</a></li>
+    <li><a href="#ch4"><span class="dot"></span>第4章：5万7千人のパーパス</a></li>
+    <li><a href="#outro"><span class="dot"></span>おわりに</a></li>
+  </ul>
+</div>
+
+<footer class="document-footer">
+  <div class="footer-about">
+    <strong>About MetaCreative Document</strong>
+    <p>メタクリドキュメントは、クリエイティブにまつわる対話を三層構造（対話引用・導の文・註釈）で再構成し、知的な読み物として編集したものです。</p>
+  </div>
+  <p class="footer-date">編集日：2025年2月24日</p>
+</footer>
+
+<script>
+  const sections = document.querySelectorAll('.chapter[id]');
+  const sidebarLinks = document.querySelectorAll('.sidebar-toc li');
+  const mobileLinks = document.querySelectorAll('.mobile-toc-panel li');
+  function setActive(id) {
+    [sidebarLinks, mobileLinks].forEach(links => { links.forEach(li => li.classList.remove('active')); });
+    const sa = document.querySelector(`.sidebar-toc li a[href="#${id}"]`);
+    const ma = document.querySelector(`.mobile-toc-panel li a[href="#${id}"]`);
+    if (sa) sa.parentElement.classList.add('active');
+    if (ma) ma.parentElement.classList.add('active');
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) setActive(entry.target.id); });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  sections.forEach(section => observer.observe(section));
+  const toggle = document.getElementById('mobileTocToggle');
+  const overlay = document.getElementById('mobileTocOverlay');
+  const panel = document.getElementById('mobileTocPanel');
+  const closeBtn = document.getElementById('mobileTocClose');
+  function openMobileToc() { overlay.style.display = 'block'; panel.style.display = 'block'; requestAnimationFrame(() => { overlay.classList.add('is-open'); panel.classList.add('is-open'); }); }
+  function closeMobileToc() { overlay.classList.remove('is-open'); panel.classList.remove('is-open'); setTimeout(() => { overlay.style.display = 'none'; }, 250); }
+  toggle.addEventListener('click', openMobileToc);
+  overlay.addEventListener('click', closeMobileToc);
+  closeBtn.addEventListener('click', closeMobileToc);
+  panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMobileToc); });
+</script>
+
+</body>
+</html>
