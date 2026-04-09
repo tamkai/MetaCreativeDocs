@@ -244,7 +244,7 @@
 
     async function loadCatalog() {
       try {
-        const res = await fetch('catalog.json');
+        const res = await fetch('catalog.json?v=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
         catalog = data.documents;
         renderStats();
