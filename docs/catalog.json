@@ -1,6 +1,21 @@
 {
   "documents": [
     {
+      "id": "V_20260420_llm-no-shoutai",
+      "title": "LLMの正体——次の文字を当てるだけの機械が、なぜ「知性」に見えるのか",
+      "date": "2026-04-20",
+      "type": "virtual",
+      "tags": [
+        "LLM",
+        "AI",
+        "認知科学"
+      ],
+      "formats": {
+        "standard": "d/V_20260420_llm-no-shoutai_s.html"
+      },
+      "protected": false
+    },
+    {
       "id": "T_20260409_kochi-ai-camp-kickoff",
       "title": "高知AI合宿キックオフ、前夜のZoomで交差する五つの視線",
       "date": "2026-04-09",
