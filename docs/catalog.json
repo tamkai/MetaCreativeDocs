@@ -1,6 +1,23 @@
 {
   "documents": [
     {
+      "id": "T_20260611_asahi-jiritsu-bunsan",
+      "title": "自律分散型組織に必要なものとは——13万人の変革に飛び込んだ、一社員の視点から",
+      "date": "2026-06-11",
+      "type": "transcript",
+      "tags": [
+        "自律分散型組織",
+        "フジトラ",
+        "Purpose Carving",
+        "リスペクト",
+        "組織変革"
+      ],
+      "formats": {
+        "standard": "d/T_20260611_asahi-jiritsu-bunsan_s.html"
+      },
+      "protected": true
+    },
+    {
       "id": "V_20260420_llm-no-shoutai",
       "title": "LLMの正体——次の文字を当てるだけの機械が、なぜ「知性」に見えるのか",
       "date": "2026-04-20",
