@@ -1,6 +1,22 @@
 {
   "documents": [
     {
+      "id": "T_20260618_hamamatsu-ai-web",
+      "title": "WordPressは滅びる、では何が残るのか——浜松AI導入支援・事前打ち合わせ",
+      "date": "2026-06-18",
+      "type": "transcript",
+      "tags": [
+        "浜松AI導入",
+        "Web制作",
+        "Claude Code",
+        "WordPress"
+      ],
+      "formats": {
+        "standard": "d/T_20260618_hamamatsu-ai-web_s.html"
+      },
+      "protected": true
+    },
+    {
       "id": "T_20260611_asahi-jiritsu-bunsan",
       "title": "自律分散型組織に必要なものとは——13万人の変革に飛び込んだ、一社員の視点から",
       "date": "2026-06-11",

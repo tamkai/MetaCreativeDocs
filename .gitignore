@@ -4,3 +4,6 @@ __pycache__/
 
 # Archive of old site (local only)
 _archive/
+
+# Infographic engine backup (local only)
+**/_gemini_backup/
