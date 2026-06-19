@@ -1,6 +1,24 @@
 {
   "documents": [
     {
+      "id": "T_20260619_obara-metacreativity",
+      "title": "メタクリエイティビティは、なぜ人を「まだまだやれる」にするのか——尾原和啓×タムカイ",
+      "date": "2026-06-19",
+      "type": "transcript",
+      "tags": [
+        "メタクリエイティビティ",
+        "尾原和啓",
+        "AI協業",
+        "テクスチャー",
+        "パーパスカービング",
+        "創造性"
+      ],
+      "formats": {
+        "standard": "d/T_20260619_obara-metacreativity_s.html"
+      },
+      "protected": false
+    },
+    {
       "id": "T_20260618_hamamatsu-ai-web",
       "title": "WordPressは滅びる、では何が残るのか——浜松AI導入支援・事前打ち合わせ",
       "date": "2026-06-18",
