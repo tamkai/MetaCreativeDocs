@@ -1,6 +1,23 @@
 {
   "documents": [
     {
+      "id": "V_20260620_llm-wiki-vs-kff",
+      "title": "LLM Wiki と KFF／メタクリグラフは何が違うのか——収束する知識と、発散する知識",
+      "date": "2026-06-20",
+      "type": "virtual",
+      "tags": [
+        "LLM Wiki",
+        "KFF",
+        "メタクリグラフ",
+        "ナレッジグラフ",
+        "知識構造"
+      ],
+      "formats": {
+        "standard": "d/V_20260620_llm-wiki-vs-kff_s.html"
+      },
+      "protected": false
+    },
+    {
       "id": "T_20260619_obara-metacreativity",
       "title": "メタクリエイティビティは、なぜ人を「まだまだやれる」にするのか——尾原和啓×タムカイ",
       "date": "2026-06-19",

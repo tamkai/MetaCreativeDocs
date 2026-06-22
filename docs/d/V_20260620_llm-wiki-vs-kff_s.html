@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Wiki と KFF / メタクリグラフ — 似ているのに真逆な、ふたつの知識のつなげ方</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --base:#F5F0E8; --surface:#FAF8F5; --white:#FDFCFA;
+    --text-primary:#2C3330; --text-secondary:#6B6560; --text-muted:#9E9690;
+    --border:#E5DFD6;
+    --sage-50:#F4F6F2; --sage-100:#E2E8DD; --sage-200:#C5D1BC; --sage-400:#8B9A7D; --sage-600:#5E6E52;
+    --rose-50:#FDF5F3; --rose-100:#F8E4DF; --rose-200:#F0C4BB; --rose-400:#E8A598; --rose-600:#D88B7A;
+    --gold-50:#FDF9EE; --gold-100:#F7EDCC; --gold-200:#EEDEA5; --gold-400:#C4A057; --gold-600:#9A7B3A;
+    --blue-50:#F0F5FA; --blue-100:#D6E4F0; --blue-400:#5B8DB8; --blue-600:#3A6B91;
+    --purple-50:#F5F2F8; --purple-100:#E4DCF0; --purple-400:#8B7AAD; --purple-600:#6B5A8E;
+    --red-400:#E74C3C; --red-600:#C0392B;
+    --radius-sm:4px; --radius-md:8px; --radius-lg:12px; --radius-xl:16px;
+    --shadow-sm:0 1px 2px rgba(44,51,48,.05);
+    --shadow-md:0 4px 12px rgba(44,51,48,.08);
+    --shadow-lg:0 8px 24px rgba(44,51,48,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--base); color:var(--text-primary);
+    font-family:"Noto Sans JP",sans-serif; font-weight:400; line-height:1.9;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 24px;}
+  /* ---- Hero ---- */
+  .hero{
+    padding:88px 24px 64px; text-align:center; position:relative; overflow:hidden;
+    background:
+      radial-gradient(900px 460px at 20% -10%, rgba(196,160,87,.18), transparent 60%),
+      radial-gradient(800px 420px at 88% 8%, rgba(139,154,125,.16), transparent 60%);
+  }
+  .hero .kicker{
+    font-family:"Inter",sans-serif; font-weight:600; letter-spacing:.14em;
+    font-size:.75rem; color:var(--gold-600); text-transform:uppercase; margin-bottom:20px;
+  }
+  .hero h1{
+    font-family:"Noto Serif JP",serif; font-weight:700; line-height:1.35;
+    font-size:2.05rem; max-width:600px; margin:0 auto 22px;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(120deg,var(--sage-600),var(--gold-600));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .hero p{
+    font-size:1.02rem; color:var(--text-secondary); max-width:560px; margin:0 auto;
+  }
+  .hero-img{
+    max-width:760px; width:100%; margin:36px auto 0; display:block;
+    border-radius:var(--radius-xl); box-shadow:var(--shadow-lg);
+  }
+  /* 章アイキャッチ */
+  .sec-eyecatch{
+    width:100%; border-radius:var(--radius-lg); margin:0 0 20px; display:block;
+    box-shadow:var(--shadow-sm); border:1px solid var(--border);
+  }
+  /* 擬人化対比 */
+  .chars{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:26px 0 8px; align-items:start;}
+  .chars figure{margin:0; text-align:center;}
+  .chars img{width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow-md);}
+  .chars figcaption{margin-top:10px; font-size:.86rem; color:var(--text-secondary); line-height:1.6;}
+  .chars .nm{display:block; font-family:"Inter",sans-serif; font-weight:700; font-size:.78rem; letter-spacing:.04em; margin-bottom:2px;}
+  .chars .wiki-cap .nm{color:var(--blue-600);}
+  .chars .kff-cap .nm{color:var(--sage-600);}
+  .hero .meta{
+    margin-top:30px; font-family:"Inter",sans-serif; font-size:.78rem; color:var(--text-muted);
+    display:flex; gap:18px; justify-content:center; flex-wrap:wrap;
+  }
+  .hero .meta span{display:inline-flex; align-items:center; gap:7px;}
+  .hero .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--gold-400);}
+  /* ---- Section ---- */
+  section{padding:48px 0;}
+  .sec-label{
+    font-family:"Inter",sans-serif; font-weight:600; letter-spacing:.1em; font-size:.72rem;
+    color:var(--sage-600); text-transform:uppercase; margin-bottom:12px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .sec-label::before{content:""; width:26px; height:2px; background:var(--sage-400); border-radius:2px;}
+  h2{font-family:"Noto Serif JP",serif; font-weight:700; font-size:1.6rem; line-height:1.4; margin-bottom:8px;}
+  h3{font-family:"Noto Sans JP",sans-serif; font-weight:700; font-size:1.15rem; margin:28px 0 10px;}
+  p{margin-bottom:16px;}
+  .lead{color:var(--text-secondary); font-size:1.05rem; margin-bottom:24px;}
+  strong{font-weight:700; color:var(--text-primary);}
+  .em-sage{color:var(--sage-600); font-weight:700;}
+  .em-blue{color:var(--blue-600); font-weight:700;}
+  .em-gold{color:var(--gold-600); font-weight:700;}
+  .em-rose{color:var(--rose-600); font-weight:700;}
+  code,.mono{font-family:"Inter","SF Mono",monospace; font-size:.86em; background:var(--sage-50);
+    border:1px solid var(--sage-200); border-radius:var(--radius-sm); padding:1px 6px; color:var(--sage-600);}
+  /* ---- callout: 一言でいうと ---- */
+  .tldr{
+    background:var(--gold-50); border:1px solid var(--gold-100); border-left:4px solid var(--gold-400);
+    border-radius:var(--radius-md); padding:20px 24px; margin:24px 0;
+  }
+  .tldr .t{font-family:"Inter",sans-serif; font-weight:600; font-size:.74rem; letter-spacing:.08em;
+    color:var(--gold-600); text-transform:uppercase; margin-bottom:8px;}
+  .tldr p:last-child{margin-bottom:0;}
+  /* ---- analogy box ---- */
+  .analogy{
+    background:var(--rose-50); border:1px solid var(--rose-100); border-radius:var(--radius-lg);
+    padding:20px 24px; margin:22px 0;
+  }
+  .analogy .t{font-weight:700; color:var(--rose-600); font-size:.95rem; margin-bottom:6px; display:flex; gap:8px; align-items:center;}
+  .analogy .t::before{content:"たとえると"; font-family:"Inter",sans-serif; font-size:.66rem; letter-spacing:.06em;
+    background:var(--rose-200); color:#8a4a3c; padding:2px 8px; border-radius:var(--radius-full,9999px); font-weight:600;}
+  .analogy p:last-child{margin-bottom:0; color:var(--text-secondary);}
+  /* ---- two-card compare ---- */
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0;}
+  .card{border-radius:var(--radius-lg); padding:22px; border:1px solid var(--border); background:var(--surface);}
+  .card.wiki{border-top:4px solid var(--blue-400); background:var(--blue-50);}
+  .card.kff{border-top:4px solid var(--sage-400); background:var(--sage-50);}
+  .card .name{font-family:"Inter",sans-serif; font-weight:700; font-size:.78rem; letter-spacing:.05em; margin-bottom:4px;}
+  .card.wiki .name{color:var(--blue-600);}
+  .card.kff .name{color:var(--sage-600);}
+  .card .sub{font-size:.82rem; color:var(--text-muted); margin-bottom:14px;}
+  .card ul{list-style:none; font-size:.92rem;}
+  .card li{padding:7px 0 7px 22px; position:relative; border-top:1px dashed var(--border); color:var(--text-secondary);}
+  .card li:first-child{border-top:none;}
+  .card li::before{content:""; position:absolute; left:2px; top:15px; width:8px; height:8px; border-radius:50%;}
+  .card.wiki li::before{background:var(--blue-400);}
+  .card.kff li::before{background:var(--sage-400);}
+  .card li b{color:var(--text-primary); font-weight:700;}
+  /* ---- table ---- */
+  .tbl-wrap{overflow-x:auto; margin:22px 0; border-radius:var(--radius-lg); border:1px solid var(--border);}
+  table{width:100%; border-collapse:collapse; font-size:.9rem; background:var(--surface); min-width:540px;}
+  th,td{padding:13px 16px; text-align:left; vertical-align:top; border-bottom:1px solid var(--border);}
+  thead th{background:var(--sage-50); font-family:"Inter",sans-serif; font-weight:600; font-size:.8rem; color:var(--text-primary);}
+  thead th:nth-child(2){color:var(--blue-600);}
+  thead th:nth-child(3){color:var(--sage-600);}
+  tbody tr:last-child td{border-bottom:none;}
+  td:first-child{font-weight:700; color:var(--text-primary); white-space:nowrap;}
+  td .wiki-c{color:var(--blue-600); font-weight:600;}
+  td .kff-c{color:var(--sage-600); font-weight:600;}
+  /* ---- ladder (4 layers) ---- */
+  .ladder{margin:26px 0; display:flex; flex-direction:column; gap:0;}
+  .rung{
+    position:relative; padding:18px 22px 18px 22px; border-radius:var(--radius-lg);
+    border:1px solid var(--border); background:var(--surface); margin-left:0;
+  }
+  .rung + .rung{margin-top:26px;}
+  .rung + .rung::before{
+    content:"↓"; position:absolute; top:-23px; left:50%; transform:translateX(-50%);
+    color:var(--gold-400); font-size:1.1rem; font-family:"Inter",sans-serif;
+  }
+  .rung .arrow-note{position:absolute; top:-26px; left:50%; transform:translateX(-50%) translateX(18px);
+    font-size:.72rem; color:var(--text-muted); white-space:nowrap;}
+  .rung .lv{font-family:"Inter",sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.08em;
+    padding:2px 9px; border-radius:var(--radius-full,9999px); display:inline-block; margin-bottom:8px;}
+  .rung h4{font-family:"Noto Sans JP",sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:4px;}
+  .rung p{font-size:.9rem; color:var(--text-secondary); margin-bottom:0;}
+  .rung .ex{display:block; margin-top:8px; font-size:.84rem;}
+  .rung.l1{border-left:4px solid var(--text-muted);}
+  .rung.l1 .lv{background:#eceae5; color:var(--text-secondary);}
+  .rung.l2{border-left:4px solid var(--blue-400); background:var(--blue-50);}
+  .rung.l2 .lv{background:var(--blue-100); color:var(--blue-600);}
+  .rung.l3{border-left:4px solid var(--purple-400); background:var(--purple-50);}
+  .rung.l3 .lv{background:var(--purple-100); color:var(--purple-600);}
+  .rung.l4{border-left:4px solid var(--sage-400); background:var(--sage-50);}
+  .rung.l4 .lv{background:var(--sage-100); color:var(--sage-600);}
+  .rung .tag{font-family:"Inter",sans-serif; font-size:.66rem; font-weight:600; color:var(--white);
+    background:var(--text-secondary); padding:2px 8px; border-radius:var(--radius-sm); margin-left:8px;}
+  .rung.l2 .tag{background:var(--blue-400);}
+  .rung.l4 .tag{background:var(--sage-400);}
+  /* ---- direction diagram ---- */
+  .dir{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:26px 0; text-align:center;}
+  .dir .pole{border-radius:var(--radius-lg); padding:26px 20px; border:1px solid var(--border);}
+  .dir .wiki-pole{background:var(--blue-50); border-top:4px solid var(--blue-400);}
+  .dir .kff-pole{background:var(--sage-50); border-top:4px solid var(--sage-400);}
+  .dir .pole .big{font-size:2.4rem; line-height:1; margin-bottom:8px;}
+  .dir .pole .word{font-family:"Noto Serif JP",serif; font-weight:700; font-size:1.3rem; margin-bottom:6px;}
+  .dir .wiki-pole .word{color:var(--blue-600);}
+  .dir .kff-pole .word{color:var(--sage-600);}
+  .dir .pole .desc{font-size:.85rem; color:var(--text-secondary);}
+  .dir .pole .nm{font-family:"Inter",sans-serif; font-size:.72rem; font-weight:600; letter-spacing:.05em; color:var(--text-muted); margin-bottom:14px;}
+  /* ---- steps (causality) ---- */
+  .chain{margin:24px 0; counter-reset:step;}
+  .step{position:relative; padding:0 0 24px 46px; border-left:2px solid var(--gold-200); margin-left:14px;}
+  .step:last-child{border-left:2px solid transparent; padding-bottom:0;}
+  .step::before{counter-increment:step; content:counter(step); position:absolute; left:-15px; top:-2px;
+    width:30px; height:30px; border-radius:50%; background:var(--gold-400); color:var(--white);
+    font-family:"Inter",sans-serif; font-weight:700; font-size:.9rem; display:flex; align-items:center; justify-content:center;}
+  .step h4{font-weight:700; font-size:1.02rem; margin-bottom:4px;}
+  .step p{font-size:.92rem; color:var(--text-secondary); margin-bottom:0;}
+  /* ---- pull quote ---- */
+  .pull{
+    font-family:"Noto Serif JP",serif; font-style:italic; font-size:1.18rem; line-height:1.8;
+    color:var(--text-primary); border-left:4px solid var(--rose-400); background:var(--rose-50);
+    padding:20px 26px; margin:28px 0; border-radius:0 var(--radius-md) var(--radius-md) 0;
+  }
+  /* ---- final summary ---- */
+  .summary-figure{margin:8px 0 28px;}
+  .summary-figure img{width:100%; border-radius:var(--radius-xl); display:block;
+    box-shadow:var(--shadow-lg); border:1px solid var(--border);}
+  .summary-figure figcaption{margin-top:10px; font-size:.86rem; color:var(--text-secondary);
+    text-align:center; line-height:1.6;}
+  .final{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-xl);
+    padding:30px 28px; margin:24px 0; box-shadow:var(--shadow-sm);}
+  .final h3{margin-top:0;}
+  .final .one{display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); align-items:flex-start;}
+  .final .one:last-child{border-bottom:none;}
+  .final .badge{flex-shrink:0; font-family:"Inter",sans-serif; font-weight:700; font-size:.74rem;
+    padding:4px 10px; border-radius:var(--radius-sm); margin-top:2px;}
+  .final .one.w .badge{background:var(--blue-100); color:var(--blue-600);}
+  .final .one.k .badge{background:var(--sage-100); color:var(--sage-600);}
+  .final .one p{margin:0; font-size:.95rem;}
+  /* footer */
+  footer{padding:50px 24px 70px; text-align:center; color:var(--text-muted); font-size:.82rem;
+    border-top:1px solid var(--border); margin-top:30px;}
+  footer a{color:var(--sage-600);}
+  /* responsive */
+  @media(max-width:640px){
+    .hero h1{font-size:1.65rem;}
+    .duo,.dir{grid-template-columns:1fr;}
+    h2{font-size:1.35rem;}
+    .rung .arrow-note{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">Knowledge Forging · 比較ノート</div>
+  <h1>似ているのに<span class="accent">真逆</span>。<br>ふたつの「知識のつなげ方」</h1>
+  <p>Karpathy が提案した <strong>LLM Wiki</strong> と、タムカイとOpiの <strong>KFF / メタクリグラフ</strong>。<br>パッと見そっくりな仕組みが、なぜ正反対の道具になるのか。</p>
+  <img class="hero-img" src="img/V_20260620_llm-wiki-vs-kff_hero.png" alt="左に収束する青い書類群、右に発散するセージグリーンのネットワーク。2つの知識のつなげ方の対比">
+  <div class="meta">
+    <span><span class="dot"></span>専門知識ゼロでも読めます</span>
+    <span><span class="dot"></span>具体例つき</span>
+    <span><span class="dot"></span>2026-06-20</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 0. 導入 ============ -->
+<section>
+  <div class="sec-label">はじめに</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-intro.png" alt="そっくりな2つの装置が並んでいる">
+  <h2>そっくりな2つの仕組みがある</h2>
+  <p class="lead">どちらも「AIが、バラバラの知識を読み込んで、つなげて、整理してくれる」道具です。形だけ見ると、ほとんど同じに見えます。</p>
+  <p>LLM Wiki は、AI研究者の Andrej Karpathy が提案したアイデア。論文やWeb記事を放り込むと、AIが要約ページや概念ページを自動で作り、新しい資料が増えるたびに既存ページを書き直して、知識を「積み上げて」いきます。</p>
+  <p>KFF（ナレッジフォージング）/ メタクリグラフは、タムカイとOpiが考案した仕組み。自分の対話やラジオの文字起こしをAIが読み込み、概念どうしを線でつないで「ナレッジコア」という構造体に鍛え上げます。</p>
+  <div class="tldr">
+    <div class="t">この記事のゴール</div>
+    <p>「どちらも知識をつなげる仕組みでしょ?」という第一印象から出発して、<strong>実は目的が真逆を向いている</strong>こと、そして<strong>データの作りも根本的に違う</strong>ことを、具体例で腑に落とすこと。</p>
+  </div>
+</section>
+
+<!-- ============ 1. まず似ているところ ============ -->
+<section>
+  <div class="sec-label">第1章 · なぜ混同するのか</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-similar.png" alt="3つの層が積み重なった構造">
+  <h2>似ているところは、本当に似ている</h2>
+  <p>違いを語る前に、正直に認めます。両者は表面だけでなく<strong>骨格レベルで似ています</strong>。だから混同するのは自然なことです。</p>
+
+  <h3>① どちらも「3つの層」でできている</h3>
+  <p>素材をそのまま使うのではなく、間に「整理された中間層」を挟み、そこから最終的な成果物を生む。この三段構えが完全に一致します。</p>
+  <div class="duo">
+    <div class="card wiki">
+      <div class="name">LLM WIKI</div>
+      <div class="sub">Karpathy の構成</div>
+      <ul>
+        <li><b>素材</b>：論文PDF・Web記事</li>
+        <li><b>中間層</b>：AIが書くWikiページ</li>
+        <li><b>使う</b>：そのページを読む／執筆に使う</li>
+      </ul>
+    </div>
+    <div class="card kff">
+      <div class="name">KFF / メタクリグラフ</div>
+      <div class="sub">タムカイの構成</div>
+      <ul>
+        <li><b>素材</b>：対話・ラジオの文字起こし</li>
+        <li><b>中間層</b>：ナレッジコア（構造体）</li>
+        <li><b>使う</b>：本・スライド・記事を派生</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>② どちらも「AIが、つなげて、更新し続ける」</h3>
+  <p>新しい素材が入ったら、AIが既存の中身を読み返して、関連を貼り直し、矛盾を見つけ、更新する。人間が手作業でやると続かないこの「片付け仕事」を、AIが疲れずに回す。ここも同じ発想です。</p>
+
+  <div class="tldr">
+    <div class="t">ここまでの結論</div>
+    <p>「中間構造を作ってから成果物を派生させる」というパイプラインの<strong>形そのものは、ほぼ同じ</strong>。KFF も現に大量の成果物を出しているので、「Wikiは読むため／コアは派生のため」という雑な切り分けは成り立ちません。<strong>違いはもっと深いところにあります。</strong></p>
+  </div>
+</section>
+
+<!-- ============ 2. 本当の違い① 目的が真逆 ============ -->
+<section>
+  <div class="sec-label">第2章 · 本当の違い ①</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-direction.png" alt="内へ収束する青い矢印と、外へ発散する緑の矢印">
+  <h2>目的が、真逆を向いている</h2>
+  <p class="lead">同じ三層構造でも、<strong>中間層を「どっちに向かって」磨くか</strong>が正反対です。ここがいちばんの核心。</p>
+
+  <div class="chars">
+    <figure>
+      <img src="img/V_20260620_llm-wiki-vs-kff_char-wiki.png" alt="青い司書のキャラクター。紙を整理して一冊にまとめる">
+      <figcaption class="wiki-cap"><span class="nm">LLM WIKI ＝ 司書</span>たくさんの資料を、誰が見ても同じ一冊に整え上げる。収束させるのが仕事。</figcaption>
+    </figure>
+    <figure>
+      <img src="img/V_20260620_llm-wiki-vs-kff_char-kff.png" alt="セージグリーンの鍛冶師のキャラクター。炉で結晶を鍛え、ノードが外へ広がる">
+      <figcaption class="kff-cap"><span class="nm">KFF ＝ 鍛冶師</span>自分の言葉を炉で鍛え、自分だけの形の結晶にする。角度を残すのが仕事。</figcaption>
+    </figure>
+  </div>
+
+  <div class="dir">
+    <div class="pole wiki-pole">
+      <div class="nm">LLM WIKI</div>
+      <div class="big">🎯</div>
+      <div class="word">正しさ</div>
+      <div class="desc">客観的に・収束する方へ。<br>誰が読んでも同じ結論に至るのが理想。</div>
+    </div>
+    <div class="pole kff-pole">
+      <div class="nm">KFF / メタクリグラフ</div>
+      <div class="big">🎨</div>
+      <div class="word">偏り（角度）</div>
+      <div class="desc">その人固有に・発散する方へ。<br>本人ならではのつながりが残るのが理想。</div>
+    </div>
+  </div>
+
+  <p>LLM Wiki が目指すのは<span class="em-blue">正しさ</span>です。10本の論文を読まなくても評価軸が4カテゴリにきれいに整理される。3本の論文に散らばった数字が「AIによる採点にはバイアスがある」という1つのパターンに集約される。<strong>誰がやっても同じ結論に収束すること</strong>が、品質の証になります。</p>
+
+  <p>KFF が目指すのは、その逆の<span class="em-sage">偏り＝個人の角度</span>です。同じ概念（ノード）でも、<strong>誰が線を引くかで、つながり方が変わる</strong>。むしろ「みんなと同じ結論」に収束してしまったら、それは失敗です。タムカイという人の見方そのものを結晶化するのが目的だから。</p>
+
+  <div class="pull">「2人のナレッジコアは、ノードが同じでも、エッジ（線）の貼り方が違う。同じ答えが出ないことが大事なんだ」</div>
+
+  <table style="width:100%; border-collapse:collapse; margin:8px 0 0;">
+  </table>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>　</th><th>LLM Wiki</th><th>KFF / メタクリグラフ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>向いている方向</td><td><span class="wiki-c">正しさ（客観・収束）</span></td><td><span class="kff-c">偏り（角度・発散）</span></td></tr>
+        <tr><td>良い中間層とは</td><td>誰が見ても同じ結論に至る</td><td>その人固有の線が残っている</td></tr>
+        <tr><td>収束したら</td><td><span class="wiki-c">成功</span></td><td><span class="kff-c">失敗</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 3. 素材は結果 ============ -->
+<section>
+  <div class="sec-label">第3章 · なぜ素材まで違うのか</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-material.png" alt="運ばれてくる書類の束と、人の口から出る吹き出し">
+  <h2>「素材の違い」は、目的の結果にすぎない</h2>
+  <p class="lead">「片方は論文、片方は自分の発話」── これがいちばん目立つ違いですが、実は<strong>目的が上流にあって、素材はそこから自然に決まる</strong>従属変数です。</p>
+
+  <div class="chain">
+    <div class="step">
+      <h4>LLM Wiki は「正しさ」を目指す</h4>
+      <p>だから素材は、外から検証できる知識（論文・記事）になる。自分の感想を入れたら偏ってしまい、目的に反するので不適。</p>
+    </div>
+    <div class="step">
+      <h4>KFF は「偏り（角度）」を目指す</h4>
+      <p>だから素材は、自分の口から出た発話になる。論文を入れたら角度が消えてしまい、目的に反するので不適。</p>
+    </div>
+    <div class="step">
+      <h4>結論：素材は原因ではなく結果</h4>
+      <p>「論文か、自分の発話か」は、それぞれの目的から逆算して必然的にそうなっただけ。本当の分岐点は、その手前の「何を良しとするか」にある。</p>
+    </div>
+  </div>
+
+  <p>ついでに言うと、KFF にだけ「<strong>テクスチャー（言葉の外の肌触り）</strong>」という悩みが出てくるのも、これで説明がつきます。素材が自分の発話だから、整理された構造体になったときに「自分のはずなのに手触りがない」という違和感が生まれる。論文を整理したWikiに、その悩みは生まれません。</p>
+</section>
+
+<!-- ============ 3.5 外部ソースを入れたら ============ -->
+<section>
+  <div class="sec-label">第4章 · よくある誤解をほどく</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-external.png" alt="中央の本から、左へ収束する青い道と右へ発散する緑の道に分岐する">
+  <h2>「じゃあ KFF に論文を入れたら、Wiki と同じ?」</h2>
+  <p class="lead">ここまで読むと、こう思うかもしれません。「結局ちがいは素材でしょ。なら <strong>KFF に論文や書籍を入れたら、LLM Wiki と同じになる</strong>のでは?」── これは鋭い問いで、そして<strong>答えは「ならない」</strong>。その理由が、この記事でいちばん大事なところです。</p>
+
+  <p>まず事実として、<strong>KFF に外部ソース（論文・書籍）を入れることはできます</strong>。実際にKFFには、自分以外の人へのインタビューを束ねたコアや、各コアが持つ外部参照のレイヤーが既にあります。だから「外部ソース禁止」ではありません。</p>
+
+  <p>そのうえで、論文を1本入れたとき、<strong>あなたが「何を良しとするか」で道が2つに分かれます</strong>。さっきの「目的＝収束か発散か」が、ここでもそのまま効くのです。</p>
+
+  <div class="duo">
+    <div class="card wiki">
+      <div class="name">道A：正しく要約・統合したい</div>
+      <div class="sub">＝ 収束させる</div>
+      <ul>
+        <li>評価軸を<b>客観的に整理</b>する</li>
+        <li>矛盾を解消し、<b>誰が見ても同じ結論</b>に</li>
+        <li>→ これは <b>LLM Wiki そのもの</b></li>
+        <li>なら本家Wikiを使う方が向いている</li>
+      </ul>
+    </div>
+    <div class="card kff">
+      <div class="name">道B：自分の角度でつなぐ</div>
+      <div class="sub">＝ 角度を残す</div>
+      <ul>
+        <li>論文を<b>自分の理論に接続</b>する</li>
+        <li>「自分のあの概念をこの論文が<b>補強/反証する</b>」</li>
+        <li>→ これは <b>KFF 固有</b>の使い方</li>
+        <li>誰がやっても同じにはならない</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>つまり <strong>分かれ目はソース（論文か発話か）ではなく、扱い方（収束か角度か）</strong>。同じ論文を入れても、道Aを選べばWikiに、道Bを選べばKFFになる。素材は問題の本質ではない ── これがこの章の結論です。</p>
+
+  <h3>カギは「ノードは正確に、エッジは主観的に」</h3>
+  <p>ここで矛盾に気づくかもしれません。「論文の中身は正確に保ちたい。でも角度をつけたい。両立する?」── します。<strong>層を分ければいい</strong>のです。</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>層</th><th>論文を入れたとき</th><th>性質</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ノード（中身）</td><td>論文の事実・データはそのまま正確に</td><td><span class="wiki-c">客観</span></td></tr>
+        <tr><td>エッジ（つなぎ方）</td><td>自分のコアに「補強/反証/例示」で縫い付ける</td><td><span class="kff-c">主観（角度）</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>事実は曲げない。曲げるのは「つなぎ方」だけ。</strong> 論文Aと論文Bを「同じトピックだ」とつなぐのは誰でもできる客観的な線（Wikiの線）。一方「この論文のデータは、自分のあの理論を反証している」とつなぐのは、<strong>あなたにしか引けない線</strong>です。後者がKFFの線。</p>
+
+  <div class="analogy">
+    <div class="t"></div>
+    <p>論文という<span class="em-blue">「事実のレンガ」</span>は、誰が持っても同じ形。でも、そのレンガを<span class="em-sage">「自分の建物のどこに、どう積むか」</span>は人によって違う。KFFがやるのは、レンガを正確なまま受け取って、<strong>自分の設計図に沿って積む</strong>ことです。レンガを溶かして平らにならすのがLLM Wiki。</p>
+  </div>
+
+  <div class="tldr">
+    <div class="t">設計上の指針</div>
+    <p>だから論文・書籍コアを作るなら、<strong>それ単体で完結させないこと</strong>。単体で客観的にまとめるだけなら、LLM Wikiの劣化版にしかならない。価値が出るのは、<strong>外部ソースのノードを、自分の既存のコアに「角度のエッジ」で縫い付けたとき</strong>です。</p>
+  </div>
+</section>
+
+<!-- ============ 4. 本当の違い② 構造 ============ -->
+<section>
+  <div class="sec-label">第5章 · 本当の違い ②</div>
+  <img class="sec-eyecatch" src="img/V_20260620_llm-wiki-vs-kff_sec-structure.png" alt="点と点を太い線で結んだネットワーク・グラフ構造">
+  <h2>「線」の正体が、まるで違う</h2>
+  <p class="lead">目的だけでなく、<strong>データの作り</strong>も別物です。ここを理解するには「リンク（線）」に4つの段階があることを知ると一気に見通せます。下に行くほど、線が「文章の中の文字」から「独立したデータ」へと進化します。</p>
+
+  <div class="ladder">
+    <div class="rung l1">
+      <span class="lv">LEVEL 1</span>
+      <h4>ハイパーリンク</h4>
+      <p>ふつうのWebリンク。「<b>場所（住所＝URL）</b>」を指す。本文の中に書かれた文字で、一方向。引っ越し（ファイル移動）すると壊れる。</p>
+      <span class="ex"><code>[詳しくはこちら](https://example.com/b)</code></span>
+    </div>
+    <div class="rung l2">
+      <span class="lv">LEVEL 2</span>
+      <h4>wikilink <span class="tag">LLM Wiki はここ</span></h4>
+      <p>住所ではなく「<b>名前</b>」で指すリンク。アプリが「その名前のページ」を後から探して結びつける。だから引っ越しに強く、<b>まだ存在しないページ</b>も指せる。ただし正体は依然「本文の中の文字」。</p>
+      <span class="ex"><code>[[LLM-as-Judgeのバイアス]]</code></span>
+    </div>
+    <div class="rung l3">
+      <span class="lv">LEVEL 3</span>
+      <h4>グラフDBのエッジ（一般的なもの）</h4>
+      <p>ここで質が変わる。線が本文から飛び出して「<b>独立したデータ</b>」になる。線そのものに<b>種類（型）</b>や<b>属性（重み・日付）</b>を持たせられ、「AからBへ3つ先まで」のような<b>経路検索</b>ができる。</p>
+      <span class="ex"><code>(田中)-[:購入した {日付:2026}]->(商品X)</code></span>
+    </div>
+    <div class="rung l4">
+      <span class="lv">LEVEL 4</span>
+      <h4>メタクリグラフのエッジ <span class="tag">KFF はここ</span></h4>
+      <p>土台は Level 3 と同じグラフDB（Neo4j）。違うのは線に込めた意味。事実の関係ではなく「<b>意味・思考のつながり</b>」を、AIが鍛造時に判断して貼る。さらに<b>ベクトル（意味の座標）</b>も併用する。</p>
+      <span class="ex"><code>(概念A)-[:relates_to / exemplifies / shares_concept]->(概念B)</code></span>
+    </div>
+  </div>
+
+  <div class="analogy">
+    <div class="t"></div>
+    <p><span class="em-blue">wikilink（Level 2）</span>は、本のページの欄外に手書きで「→ 〇〇のページ参照」とメモするようなもの。メモを消せば線も消えるし、線そのものを取り出して数えたり検索したりはできません。<br><br><span class="em-sage">グラフのエッジ（Level 3-4）</span>は、ページとは別に「索引カード」を1枚ずつ作って、線だけを束ねて管理するようなもの。線を取り出して「赤い線だけ」「3本先まで」とたどれます。</p>
+  </div>
+
+  <p>だから、ある重要な事実が見えてきます。LLM Wiki の「グラフ表示」は <span class="em-blue">Obsidian というアプリが、本文中の <code>[[ ]]</code> を後から読み取って描いた絵</span>にすぎません。データとしてのグラフは存在せず、<strong>見た目（ビュー）として現れているだけ</strong>。一方メタクリグラフは、<strong>グラフが最初から一次データそのもの</strong>です。</p>
+
+  <div class="pull">LLM Wiki にとってグラフは「結果（描画）」。<br>KFF にとってグラフは「前提（基盤）」。</div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>線について</th><th>LLM Wiki（Lv2）</th><th>メタクリグラフ（Lv4）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>線の正体</td><td>本文中の <code>[[文字]]</code></td><td>独立した一級データ</td></tr>
+        <tr><td>種類（型）</td><td>1種類だけ</td><td>意味ごとに複数（relates_to 等）</td></tr>
+        <tr><td>属性を持てる</td><td>持てない</td><td>持てる（重み・スコア）</td></tr>
+        <tr><td>検索</td><td>全文検索どまり</td><td>経路探索＋意味のベクトル検索</td></tr>
+        <tr><td>グラフは</td><td><span class="wiki-c">事後の可視化</span></td><td><span class="kff-c">一次データ構造</span></td></tr>
+        <tr><td>最終的に</td><td>ずっと人間が読める文章のまま</td><td>座標化し人間には読めなくなる</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>最後の行が効きます。LLM Wiki は最後まで「人間が読むMarkdown」に留まる設計。KFF のコアは、いずれベクトル化されて<strong>人間には読めない構造体</strong>になることを前提にしている。だからこそ、人間が触れる「本・スライド・要約」という出力層を別に用意する ── これが両者の設計思想の根っこの違いです。</p>
+</section>
+
+<!-- ============ 5. まとめ ============ -->
+<section>
+  <div class="sec-label">まとめ</div>
+  <h2>一枚で振り返る</h2>
+
+  <figure class="summary-figure">
+    <img src="img/V_20260620_llm-wiki-vs-kff_summary-overview.png" alt="LLM Wiki（司書・収束・青）とKFF／メタクリグラフ（鍛冶師・発散・セージと金）を左右対称に対比した俯瞰図。目的・素材・構造の3軸で、左は外部の知識を客観的にまとめて読むための百科事典へ収束し、右は自分の発話を角度のエッジで縫って出力を生む鍛造炉へ発散する。結論は「分けるのはソースではなく、扱い方（収束か、角度か）」">
+    <figcaption>3つの軸（目的・素材・構造）で見た、収束（LLM Wiki）と発散（KFF）の対比。</figcaption>
+  </figure>
+
+  <div class="final">
+    <h3>3つの違い</h3>
+    <div class="one w"><span class="badge">目的</span><p><b>正しさ</b>へ収束（LLM Wiki） vs <b>偏り＝角度</b>へ発散（KFF）。中間層をどっちに磨くかが真逆。</p></div>
+    <div class="one k"><span class="badge">素材</span><p><b>外部の知識</b> vs <b>自分の発話</b>。ただしこれは目的から決まる結果であって、原因ではない。</p></div>
+    <div class="one w"><span class="badge">構造</span><p>線が<b>本文中の文字（wikilink）</b>か、<b>独立したグラフ＋ベクトル</b>か。グラフが「絵」か「基盤」かの差。</p></div>
+  </div>
+
+  <div class="final">
+    <h3>ひとことで言うと</h3>
+    <div class="one w"><span class="badge">Wiki</span><p>外の知識を、<b>誰が見ても同じ理解に収束させる</b>、読むための自動百科事典。</p></div>
+    <div class="one k"><span class="badge">KFF</span><p>自分の発話を、<b>固有の角度を保ったまま結晶化する</b>、出力を生むための鍛造炉。</p></div>
+  </div>
+
+  <p style="margin-top:24px;">同じ「知識をつなげる」三層パイプラインを、<strong>逆向きの目的で回している</strong>。だから素材が変わり、構造の作りまで変わる。表面の相似に惑わされず、「何を良しとするか（収束か、角度か）」を見れば、2つはきれいに別物として腑に落ちます。</p>
+
+  <div class="tldr" style="margin-top:24px;">
+    <div class="t">最後にもう一度</div>
+    <p>違いは「素材」ではありません。<strong>KFF に論文を入れてもいい。それでもLLM Wikiにはならない。</strong>同じ論文でも、客観的にまとめれば Wiki に、自分のコアに角度のエッジで縫い付ければ KFF になる。<strong>ソースではなく、扱い方（収束か、角度か）が2つを分けます。</strong></p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Knowledge Forging Factory — 比較ノート</p>
+  <p style="margin-top:8px;">参照元：Andrej Karpathy「LLM Wiki」gist ／ Zenn 解説記事（tsurubee）<br>作成：タムカイ + Claude Code · 2026-06-20</p>
+</footer>
+
+</body>
+</html>
