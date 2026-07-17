@@ -1,6 +1,26 @@
 {
   "documents": [
     {
+      "id": "T_20260707_obara-guest-ep31",
+      "title": "揺らぎに、賭ける——尾原和啓と、正しさに溺れないための対話",
+      "date": "2026-07-07",
+      "type": "transcript",
+      "tags": [
+        "尾原和啓",
+        "メタクリラジオ",
+        "ルサンチマン",
+        "テクスチャー",
+        "ナレッジグラフ",
+        "AI地政学",
+        "オーセンティシティ",
+        "創造性"
+      ],
+      "formats": {
+        "standard": "d/T_20260707_obara-guest-ep31_s.html"
+      },
+      "protected": false
+    },
+    {
       "id": "V_20260620_llm-wiki-vs-kff",
       "title": "LLM Wiki と KFF／メタクリグラフは何が違うのか——収束する知識と、発散する知識",
       "date": "2026-06-20",
