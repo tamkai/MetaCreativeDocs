@@ -204,7 +204,7 @@
   <script>
     // Simple password check (hash-based for minimal protection)
     // In production, use StatiCrypt for real encryption
-    const PW_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // sha256 of "password"
+    const PW_HASH = '31da6deaee783d4b10f7ad3ba334b5fb69fe5716650b448bd8a6d3279349ba41'; // sha256 of the shared passphrase
 
     async function sha256(text) {
       const data = new TextEncoder().encode(text);
@@ -259,11 +259,12 @@
     function renderStats() {
       const total = catalog.length;
       const types = { radio: 0, transcript: 0, virtual: 0 };
-      const formats = { standard: 0, rich: 0 };
+      const formats = { standard: 0, rich: 0, infographic: 0 };
       catalog.forEach(d => {
         types[d.type] = (types[d.type] || 0) + 1;
         if (d.formats.standard) formats.standard++;
         if (d.formats.rich) formats.rich++;
+        if (d.formats.infographic) formats.infographic++;
       });
       document.getElementById('stats').innerHTML = `
         <div class="stat"><div class="stat__number">${total}</div><div class="stat__label">Total</div></div>
@@ -272,6 +273,7 @@
         <div class="stat"><div class="stat__number">${types.virtual}</div><div class="stat__label">Virtual</div></div>
         <div class="stat"><div class="stat__number">${formats.standard}</div><div class="stat__label">Standard</div></div>
         <div class="stat"><div class="stat__number">${formats.rich}</div><div class="stat__label">Rich</div></div>
+        <div class="stat"><div class="stat__number">${formats.infographic}</div><div class="stat__label">Infographic</div></div>
       `;
     }
 
@@ -310,12 +312,16 @@
           links.push(`<button class="doc-item__link" onclick="copyUrl('${d.formats.rich}')">R Copy</button>`);
           links.push(`<a class="doc-item__link" href="${d.formats.rich}" target="_blank">R Open</a>`);
         }
+        if (d.formats.infographic) {
+          links.push(`<button class="doc-item__link" onclick="copyUrl('${d.formats.infographic}')">I Copy</button>`);
+          links.push(`<a class="doc-item__link" href="${d.formats.infographic}" target="_blank">I Open</a>`);
+        }
 
         return `
           <div class="doc-item">
             <span class="doc-item__date">${d.date}</span>
             <span class="tag ${typeTag[d.type]}">${typeLabel[d.type]}</span>
-            <span class="doc-item__title">${d.protected ? '🔒 ' : ''}${d.title}</span>
+            <span class="doc-item__title">${d.protected ? '🔒 ' : ''}${d.listed ? '★ ' : ''}${d.title}</span>
             <div class="doc-item__actions">${links.join('')}</div>
           </div>
         `;

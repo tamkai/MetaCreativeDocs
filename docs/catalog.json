@@ -1,6 +1,45 @@
 {
   "documents": [
     {
+      "id": "T_20260707_obara-guest-ep31",
+      "title": "揺らぎに、賭ける——尾原和啓と、正しさに溺れないための対話",
+      "date": "2026-07-07",
+      "type": "transcript",
+      "tags": [
+        "尾原和啓",
+        "メタクリラジオ",
+        "ルサンチマン",
+        "テクスチャー",
+        "ナレッジグラフ",
+        "AI地政学",
+        "オーセンティシティ",
+        "創造性"
+      ],
+      "formats": {
+        "standard": "d/T_20260707_obara-guest-ep31_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "V_20260620_llm-wiki-vs-kff",
+      "title": "LLM Wiki と KFF／メタクリグラフは何が違うのか——収束する知識と、発散する知識",
+      "date": "2026-06-20",
+      "type": "virtual",
+      "tags": [
+        "LLM Wiki",
+        "KFF",
+        "メタクリグラフ",
+        "ナレッジグラフ",
+        "知識構造"
+      ],
+      "formats": {
+        "standard": "d/V_20260620_llm-wiki-vs-kff_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
       "id": "T_20260619_obara-metacreativity",
       "title": "メタクリエイティビティは、なぜ人を「まだまだやれる」にするのか——尾原和啓×タムカイ",
       "date": "2026-06-19",
@@ -16,23 +55,8 @@
       "formats": {
         "standard": "d/T_20260619_obara-metacreativity_s.html"
       },
-      "protected": false
-    },
-    {
-      "id": "T_20260618_hamamatsu-ai-web",
-      "title": "WordPressは滅びる、では何が残るのか——浜松AI導入支援・事前打ち合わせ",
-      "date": "2026-06-18",
-      "type": "transcript",
-      "tags": [
-        "浜松AI導入",
-        "Web制作",
-        "Claude Code",
-        "WordPress"
-      ],
-      "formats": {
-        "standard": "d/T_20260618_hamamatsu-ai-web_s.html"
-      },
-      "protected": true
+      "protected": false,
+      "listed": false
     },
     {
       "id": "T_20260611_asahi-jiritsu-bunsan",
@@ -49,7 +73,8 @@
       "formats": {
         "standard": "d/T_20260611_asahi-jiritsu-bunsan_s.html"
       },
-      "protected": true
+      "protected": true,
+      "listed": false
     },
     {
       "id": "V_20260420_llm-no-shoutai",
@@ -59,12 +84,14 @@
       "tags": [
         "LLM",
         "AI",
-        "認知科学"
+        "認知科学",
+        "リサーチ → 架空対話"
       ],
       "formats": {
         "standard": "d/V_20260420_llm-no-shoutai_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": false
     },
     {
       "id": "T_20260409_kochi-ai-camp-kickoff",
@@ -74,126 +101,190 @@
       "tags": [
         "高知AI合宿",
         "Claude Code",
-        "エージェント"
+        "エージェント",
+        "高知AI合宿 キックオフZoom"
       ],
       "formats": {
         "standard": "d/T_20260409_kochi-ai-camp-kickoff_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": false
     },
     {
-      "id": "R_20251208_ep12-bricolage",
-      "title": "Ep.12 ブリコラージュ — 楽屋が一番面白い",
-      "date": "2025-12-08",
+      "id": "T_20260408_jigyo-sogorikai-renkei",
+      "title": "「で、何やってんの？」——18年のパパ友が初めて仕事を語り合った日",
+      "date": "2026-04-08",
+      "type": "transcript",
+      "tags": [
+        "タムカイ × 浜野良太"
+      ],
+      "formats": {
+        "rich": "d/showcase/T_20260408_jigyo-sogorikai-renkei_r.html",
+        "infographic": "d/showcase/T_20260408_jigyo-sogorikai-renkei_infographic_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "T_20260326_shoseki-soshiki-ni-ne",
+      "title": "書籍が組織に根を下ろすとき",
+      "date": "2026-03-26",
+      "type": "transcript",
+      "tags": [
+        "アイソメ＋ラベル版",
+        "伝統工芸の工房と処方箋としての本"
+      ],
+      "formats": {
+        "infographic": "d/showcase/T_20260326_shoseki-soshiki-ni-ne_isolabel_s.html",
+        "rich": "d/showcase/T_20260326_shoseki-soshiki-ni-ne_r.html",
+        "standard": "d/showcase/T_20260326_shoseki-soshiki-ni-ne_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "T_20260315_naze-ima-podcast",
+      "title": "なぜ今Podcastなのか？",
+      "date": "2026-03-15",
+      "type": "transcript",
+      "tags": [
+        "けんすう × 高木新平"
+      ],
+      "formats": {
+        "rich": "d/showcase/T_20260315_naze-ima-podcast_r.html",
+        "standard": "d/showcase/T_20260315_naze-ima-podcast_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "R_20260126_ep18-noise",
+      "title": "予期せぬ「ノイズ」を愛して、デザインする",
+      "date": "2026-01-26",
       "type": "radio",
       "tags": [
-        "メタクリラジオ",
-        "創造性"
+        "メタクリラジオ"
       ],
       "formats": {
-        "standard": "d/R_20251208_ep12-bricolage_s.html",
-        "rich": "showcase/R_20251208_ep12-bricolage_r.html"
+        "infographic": "d/showcase/R_20260126_ep18-noise_infographic_s.html",
+        "standard": "d/showcase/R_20260126_ep18-noise_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "R_20260202_ep19-travel",
-      "title": "Ep.19 僕らが旅に出る理由",
-      "date": "2026-02-02",
+      "id": "T_20260115_ikusei-feedback",
+      "title": "育成という名の権力装置",
+      "date": "2026-01-15",
+      "type": "transcript",
+      "tags": [
+        "Funleashセミナー"
+      ],
+      "formats": {
+        "rich": "d/showcase/T_20260115_ikusei-feedback_r.html",
+        "standard": "d/showcase/T_20260115_ikusei-feedback_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "T_20260115_ikusei-kansei",
+      "title": "育成という言葉の陥穽",
+      "date": "2026-01-15",
+      "type": "transcript",
+      "tags": [
+        "Funleashセミナー"
+      ],
+      "formats": {
+        "rich": "d/showcase/T_20260115_ikusei-kansei_r.html",
+        "standard": "d/showcase/T_20260115_ikusei-kansei_s.html"
+      },
+      "protected": false,
+      "listed": false
+    },
+    {
+      "id": "R_20251229_ep15-mitate",
+      "title": "遠いものを結びつける知性",
+      "date": "2025-12-29",
       "type": "radio",
       "tags": [
-        "メタクリラジオ",
-        "旅"
+        "メタクリラジオ"
       ],
       "formats": {
-        "rich": "showcase/R_20260202_ep19-travel_r.html"
+        "standard": "d/showcase/R_20251229_ep15-mitate_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "V_20250127_protopia",
-      "title": "プロトピア — ユートピアでもディストピアでもない未来",
-      "date": "2025-01-27",
-      "type": "virtual",
+      "id": "R_20250922_ep01-jikoshoukai",
+      "title": "自己紹介という名の存在証明",
+      "date": "2025-09-22",
+      "type": "radio",
       "tags": [
-        "未来",
-        "TechGALA"
+        "メタクリラジオ"
       ],
       "formats": {
-        "standard": "d/V_20250127_protopia_s.html",
-        "rich": "showcase/V_20250127_protopia_r.html"
+        "standard": "d/showcase/R_20250922_ep01-jikoshoukai_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "T_20260206_boundary-paradox",
-      "title": "越境のパラドックス",
-      "date": "2026-02-06",
+      "id": "T_20250521_zassou-radio-171",
+      "title": "ラクガキみたいに生きる",
+      "date": "2025-05-21",
       "type": "transcript",
       "tags": [
-        "経産省",
-        "越境"
+        "ザッソウラジオ"
       ],
       "formats": {
-        "rich": "showcase/T_20260206_boundary-paradox_r.html"
+        "standard": "d/showcase/T_20250521_zassou-radio-171_s.html"
       },
-      "protected": true
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "T_20260130_business-creativity-money",
-      "title": "事業と創造性とお金の壁",
-      "date": "2026-01-30",
+      "id": "T_20250514_zazuradio170-kangaeru",
+      "title": "言葉の地層を掘る手つき",
+      "date": "2025-05-14",
       "type": "transcript",
       "tags": [
-        "事業開発"
+        "ザッソウラジオ"
       ],
       "formats": {
-        "standard": "d/T_20260130_business-creativity-money_s.html"
+        "standard": "d/showcase/T_20250514_zazuradio170-kangaeru_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "T_20260220_pencil-sharpener",
-      "title": "鉛筆削りを作る",
-      "date": "2026-02-20",
+      "id": "T_20250507_zassou-radio-169",
+      "title": "テントの中で始まる戦略",
+      "date": "2025-05-07",
       "type": "transcript",
       "tags": [
-        "ワークショップ"
+        "ザッソウラジオ"
       ],
       "formats": {
-        "standard": "d/T_20260220_pencil-sharpener_s.html"
+        "standard": "d/showcase/T_20250507_zassou-radio-169_s.html"
       },
-      "protected": false
+      "protected": false,
+      "listed": true
     },
     {
-      "id": "T_20260403_pilot-fujisaki-interview-short",
-      "title": "創造力は、窮地から生まれる——PILOT社長 藤﨑文男（Short）",
-      "date": "2026-04-03",
+      "id": "T_20250224_chiiki-dx-purpose",
+      "title": "デジタルだけじゃない？ 共感とパーパスがつむぐ新しい地域DX",
+      "date": "2025-02-24",
       "type": "transcript",
       "tags": [
-        "PILOT",
-        "パーパス",
-        "インタビュー"
+        "FXN サイクル18"
       ],
       "formats": {
-        "standard": "d/T_20260403_pilot-fujisaki-interview-short_s.html"
+        "infographic": "d/showcase/T_20250224_chiiki-dx-purpose_infographic_s.html"
       },
-      "protected": true
-    },
-    {
-      "id": "T_20260403_pilot-kodaira-interview-short",
-      "title": "石炭を入れる人——PILOT副社長 小平岳志（Short）",
-      "date": "2026-04-03",
-      "type": "transcript",
-      "tags": [
-        "PILOT",
-        "パーパス",
-        "インタビュー"
-      ],
-      "formats": {
-        "standard": "d/T_20260403_pilot-kodaira-interview-short_s.html"
-      },
-      "protected": true
+      "protected": false,
+      "listed": false
     }
   ]
 }
